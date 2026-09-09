@@ -1,7 +1,6 @@
 export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'Unique Dressup';
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-export const API_URL = "https://api.theuniquedressup.com/api/v1";
-// export const API_URL = 'http://localhost:5000/api/v1';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 export const CURRENCY = process.env.NEXT_PUBLIC_DEFAULT_CURRENCY || 'INR';
 export const CURRENCY_SYMBOL = process.env.NEXT_PUBLIC_DEFAULT_CURRENCY_SYMBOL || '₹';
 

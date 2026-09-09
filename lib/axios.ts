@@ -1,7 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import { API_URL } from '../constants';
-console.log("🚀 ~ API_URL:", API_URL)
 
 const api = axios.create({
   baseURL: API_URL,
