@@ -9,7 +9,7 @@ interface Props {
 
 async function fetchCmsPage(slug: string) {
   try {
-    const res = await fetch(`${API_URL}/cms/${slug}`, {
+    const res = await fetch(`${API_URL}/seo/cms/${slug}`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return null;
