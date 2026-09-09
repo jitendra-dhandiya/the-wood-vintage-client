@@ -9,6 +9,7 @@ import { NavigateNext } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { productApi } from '../../services/api.service';
 import ProductCard from '../product/ProductCard';
+import { useCountry } from '../../contexts/CountryContext';
 
 const SORT_OPTIONS = [
   { value: 'createdAt:desc', label: 'Newest' },
@@ -23,6 +24,7 @@ export default function CollectionPageClient({ collection }: { collection: any }
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState('createdAt:desc');
+  const { country } = useCountry();
   const limit = 24;
 
   /** Banner first, card image next, dark block last. */
@@ -32,10 +34,10 @@ export default function CollectionPageClient({ collection }: { collection: any }
   const fetchProducts = useCallback(() => {
     setLoading(true);
     const [sortBy, sortOrder] = sort.split(':');
-    productApi.getAll({ collectionId: collection.id, page, limit, sortBy, sortOrder })
+    productApi.getAll({ collectionId: collection.id, page, limit, sortBy, sortOrder, country: country || undefined })
       .then(({ data }) => { setProducts(data.data || []); setTotal(data.meta?.total || 0); })
       .finally(() => setLoading(false));
-  }, [collection.id, page, sort]);
+  }, [collection.id, page, sort, country]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 

@@ -1,16 +1,26 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { cookies } from 'next/headers';
 import ProductDetailClient from '../../../../components/product/ProductDetailClient';
 import { API_URL } from '@/constants';
+import { COUNTRY_COOKIE } from '../../../../lib/countryPreference';
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-async function getProduct(slug: string) {
+/**
+ * `country`, when present, is passed straight through as `?country=` — no
+ * client-side validation against the enabled-countries list here, because a
+ * bad/stale/disabled value degrades gracefully on this read-only endpoint
+ * (falls back to base pricing server-side), unlike `POST /orders` which
+ * hard-400s on one. See docs/decisions/0009-country-architecture-implemented.md.
+ */
+async function getProduct(slug: string, country?: string) {
   try {
     const apiUrl = API_URL;
-    const res = await fetch(`${apiUrl}/products/${slug}`, { next: { revalidate: 120 } });
+    const qs = country ? `?country=${encodeURIComponent(country)}` : '';
+    const res = await fetch(`${apiUrl}/products/${slug}${qs}`, { next: { revalidate: 120 } });
     if (!res.ok) return null;
     const json = await res.json();
     return json.data;
@@ -39,7 +49,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const country = (await cookies()).get(COUNTRY_COOKIE)?.value;
+  const product = await getProduct(slug, country);
   if (!product) notFound();
 
   const schema = {

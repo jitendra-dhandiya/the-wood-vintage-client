@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { cookies } from 'next/headers';
 import { Toaster } from 'react-hot-toast';
 import ThemeProvider from '../providers/ThemeProvider';
 import ReduxProvider from '../providers/ReduxProvider';
@@ -6,6 +7,8 @@ import QueryProvider from '../providers/QueryProvider';
 import { Suspense } from 'react';
 import NavigationProgress from '../components/common/NavigationProgress';
 import { SITE_NAME, SITE_URL, API_URL } from '../constants';
+import { CountryProvider } from '../contexts/CountryContext';
+import { COUNTRY_COOKIE } from '../lib/countryPreference';
 
 /**
  * Scheme + host of the image/API origin, derived from API_URL by dropping the
@@ -52,7 +55,21 @@ export const viewport: Viewport = {
   themeColor: '#1a1a1a',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Root, not `(store)/layout.tsx`: `Navbar` — which reads `useCountry()` for
+  // the country switcher — is rendered by both the `(store)` and `(account)`
+  // route groups (sibling branches under this one, not nested inside each
+  // other), so the provider has to sit above both. `(admin)`/`(auth)` render
+  // neither Navbar nor anything country-aware, but inheriting the provider is
+  // harmless for them.
+  //
+  // Seeded here, unvalidated, from whatever this request's `wv_country`
+  // cookie says — CountryProvider itself checks it against the real
+  // enabled-countries list (`GET /countries` only returns enabled markets,
+  // so validity can only be confirmed once that call resolves; see the
+  // provider's file comment).
+  const initialCountry = (await cookies()).get(COUNTRY_COOKIE)?.value ?? null;
+
   return (
     <html lang="en">
       <head>
@@ -79,26 +96,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReduxProvider>
           <QueryProvider>
             <ThemeProvider>
-              {/* Suspense because it reads useSearchParams, which opts its
-                  subtree into client rendering — without the boundary that
-                  would deopt every static page in the app. */}
-              <Suspense fallback={null}>
-                <NavigationProgress />
-              </Suspense>
-              {children}
-              <Toaster
-                position="top-right"
-                toastOptions={{
-                  duration: 3000,
-                  style: {
-                    background: '#1a1a1a',
-                    color: '#fff',
-                    fontSize: '0.875rem',
-                    fontFamily: 'Inter, sans-serif',
-                  },
-                  success: { iconTheme: { primary: '#c9a84c', secondary: '#fff' } },
-                }}
-              />
+              <CountryProvider initialCountry={initialCountry}>
+                {/* Suspense because it reads useSearchParams, which opts its
+                    subtree into client rendering — without the boundary that
+                    would deopt every static page in the app. */}
+                <Suspense fallback={null}>
+                  <NavigationProgress />
+                </Suspense>
+                {children}
+                <Toaster
+                  position="top-right"
+                  toastOptions={{
+                    duration: 3000,
+                    style: {
+                      background: '#1a1a1a',
+                      color: '#fff',
+                      fontSize: '0.875rem',
+                      fontFamily: 'Inter, sans-serif',
+                    },
+                    success: { iconTheme: { primary: '#c9a84c', secondary: '#fff' } },
+                  }}
+                />
+              </CountryProvider>
             </ThemeProvider>
           </QueryProvider>
         </ReduxProvider>

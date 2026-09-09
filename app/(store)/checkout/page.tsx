@@ -19,6 +19,7 @@ import { formatPrice } from '../../../utils/format';
 import { SHIPPING_METHODS, type ShippingMethodId } from '../../../constants';
 import { useAppSelector, useAppDispatch } from '../../../store';
 import { openLoginModal } from '../../../store/slices/uiSlice';
+import { useCountry } from '../../../contexts/CountryContext';
 import type { Address } from '../../../types';
 import toast from 'react-hot-toast';
 
@@ -48,6 +49,7 @@ export default function CheckoutPage() {
   const { cart, subtotal, clearCart } = useCart();
   const dispatch = useAppDispatch();
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
+  const { country, countries, currencySymbol } = useCountry();
 
   const [shippingMethod, setShippingMethod] = useState<ShippingMethodId>('STANDARD');
   const [paymentMethod,  setPaymentMethod]  = useState('CASHFREE');
@@ -87,7 +89,7 @@ export default function CheckoutPage() {
       toast.success(
         d.freeShipping
           ? 'Free delivery applied'
-          : `Coupon applied — you save ${formatPrice(Number(d.discountAmount) || 0)}`,
+          : `Coupon applied — you save ${formatPrice(Number(d.discountAmount) || 0, currencySymbol)}`,
       );
     } catch (e: any) {
       toast.error(e?.response?.data?.message || 'That coupon could not be applied');
@@ -243,12 +245,23 @@ export default function CheckoutPage() {
     if (!cart?.items.length) { toast.error('Your cart is empty'); return; }
     setLoading(true);
     try {
+      // `POST /orders` hard-400s on a country it cannot resolve (unlike the
+      // read-only product endpoints, which degrade gracefully) — see
+      // docs/decisions/0009-country-architecture-implemented.md. A stale
+      // `wv_country` cookie from a market that has since been disabled must
+      // not be forwarded blindly, so only a value CountryContext has itself
+      // confirmed against the live `GET /countries` list is sent; otherwise
+      // the field is simply omitted, which the backend treats exactly like
+      // the default country (unchanged, pre-existing behaviour).
+      const validCountry = country && countries.some((c) => c.code === country) ? country : undefined;
+
       const { data: orderData } = await orderApi.create({
         addressId:      selectedAddressId || undefined,
         paymentMethod,
         shippingMethod,
         couponCode,
         shippingAddress,
+        country: validCountry,
         items: cart.items.map((i) => ({
           productId: i.productId,
           variantId: i.variantId,
@@ -459,7 +472,7 @@ export default function CheckoutPage() {
                                 </Box>
                               </Box>
                               <Typography variant="body2" fontWeight={800} sx={{ flexShrink: 0, ml: 2 }}>
-                                {formatPrice(method.charge)}
+                                {formatPrice(method.charge, currencySymbol)}
                               </Typography>
                             </Box>
                           );
@@ -585,7 +598,7 @@ export default function CheckoutPage() {
                             </Typography>
                             <Typography variant="caption" color="text.secondary" component="div" sx={{ mt: 0.5 }}>
                               You pay <strong>₹{selectedShipping.charge} now</strong> (delivery charge) via UPI / Card / Net Banking.
-                              The remaining <strong>{formatPrice(subtotal - couponDiscount)}</strong> is paid in cash when your order arrives.
+                              The remaining <strong>{formatPrice(subtotal - couponDiscount, currencySymbol)}</strong> is paid in cash when your order arrives.
                             </Typography>
                           </Box>
                         </Box>
@@ -606,7 +619,7 @@ export default function CheckoutPage() {
                       ? <CircularProgress size={20} sx={{ color: 'white' }} />
                       : shippingMethod === 'COD'
                         ? `Pay Delivery ₹${selectedShipping.charge} & Place Order`
-                        : `Place Order & Pay — ${formatPrice(total)}`
+                        : `Place Order & Pay — ${formatPrice(total, currencySymbol)}`
                     }
                   </Button>
                 </Form>
@@ -633,7 +646,7 @@ export default function CheckoutPage() {
                         </Typography>
                         <Typography variant="body2" noWrap sx={{ maxWidth: 180 }}>{item.product?.name}</Typography>
                       </Box>
-                      <Typography variant="body2" fontWeight={600}>{formatPrice(item.price * item.quantity)}</Typography>
+                      <Typography variant="body2" fontWeight={600}>{formatPrice(item.price * item.quantity, currencySymbol)}</Typography>
                     </Box>
                   ))}
                 </Stack>
@@ -680,12 +693,12 @@ export default function CheckoutPage() {
                 <Stack spacing={1} sx={{ mb: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="body2" color="text.secondary">Subtotal</Typography>
-                    <Typography variant="body2">{formatPrice(subtotal)}</Typography>
+                    <Typography variant="body2">{formatPrice(subtotal, currencySymbol)}</Typography>
                   </Box>
                   {couponDiscount > 0 && (
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant="body2" color="success.main">Discount</Typography>
-                      <Typography variant="body2" color="success.main">-{formatPrice(couponDiscount)}</Typography>
+                      <Typography variant="body2" color="success.main">-{formatPrice(couponDiscount, currencySymbol)}</Typography>
                     </Box>
                   )}
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -701,13 +714,13 @@ export default function CheckoutPage() {
                     {freeShipping ? (
                       <Typography variant="body2" fontWeight={700} color="success.main">FREE</Typography>
                     ) : (
-                      <Typography variant="body2" fontWeight={600}>{formatPrice(shippingCharge)}</Typography>
+                      <Typography variant="body2" fontWeight={600}>{formatPrice(shippingCharge, currencySymbol)}</Typography>
                     )}
                   </Box>
                   <Divider />
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography fontWeight={800}>Total</Typography>
-                    <Typography fontWeight={800} fontSize="1.1rem">{formatPrice(total)}</Typography>
+                    <Typography fontWeight={800} fontSize="1.1rem">{formatPrice(total, currencySymbol)}</Typography>
                   </Box>
                 </Stack>
 

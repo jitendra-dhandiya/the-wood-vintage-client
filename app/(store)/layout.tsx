@@ -81,6 +81,11 @@ export default async function StoreLayout({ children }: { children: React.ReactN
     getNavLinks(HEADER_AFTER),
   ]);
 
+  // Note: CountryProvider itself lives in the root `app/layout.tsx`, not here
+  // — `Navbar` (which reads `useCountry()` for the country switcher) is also
+  // rendered by the sibling `(account)` route group's layout, so the provider
+  // has to sit above both, not just above this one.
+
   return (
     <MobileMotionConfig>
       <AuthInitializer />

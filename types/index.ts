@@ -1,3 +1,20 @@
+// ─── Country ──────────────────────────────────
+// Mirrors the backend `Country` model (see
+// documentation/docs/architecture/country-architecture-spec.md). `GET
+// /countries` (public) returns only `isEnabled: true` rows of this shape.
+export interface Country {
+  id: string;
+  code: string;           // ISO 3166-1 alpha-2, e.g. "IN", "AE"
+  name: string;
+  currency: string;       // ISO 4217, e.g. "INR"
+  currencySymbol: string;
+  locale: string;         // e.g. "en-IN"
+  timezone: string;
+  isEnabled: boolean;
+  isDefault: boolean;
+  sortOrder: number;
+}
+
 // ─── Common ──────────────────────────────────
 export interface PaginatedResponse<T> {
   success: boolean;

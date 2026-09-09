@@ -1,9 +1,21 @@
 import { CURRENCY_SYMBOL } from '../constants';
 
-export const formatPrice = (price: number | string | null | undefined): string => {
+/**
+ * `symbol` is optional and defaults to the app-wide `CURRENCY_SYMBOL` — every
+ * existing call site (most of the admin panel, order history, etc., which
+ * show already-resolved historical/admin data and are out of scope for the
+ * country-pricing work) keeps behaving exactly as before. Storefront call
+ * sites that display live, country-aware pricing (ProductCard,
+ * ProductDetailClient, cart, checkout) pass `useCountry().currencySymbol`
+ * explicitly instead.
+ */
+export const formatPrice = (
+  price: number | string | null | undefined,
+  symbol: string = CURRENCY_SYMBOL,
+): string => {
   if (price === null || price === undefined) return '';
   const num = typeof price === 'string' ? parseFloat(price) : price;
-  return `${CURRENCY_SYMBOL}${num.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  return `${symbol}${num.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 };
 
 export const getDiscountPercent = (basePrice: number, salePrice: number): number => {

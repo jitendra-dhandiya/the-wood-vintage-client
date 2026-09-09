@@ -14,6 +14,7 @@ import { productApi } from '../../../services/api.service';
 import { PRODUCT_SIZES, PRODUCT_COLORS, SORT_OPTIONS } from '../../../constants';
 import type { Product } from '../../../types';
 import { useAppSelector } from '../../../store';
+import { useCountry } from '../../../contexts/CountryContext';
 
 const PRICE_RANGE = [0, 5000];
 
@@ -115,6 +116,7 @@ export default function ShopPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const searchParams = useSearchParams();
   const gender = useAppSelector((s) => s.gender.selected);
+  const { country } = useCountry();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
@@ -143,6 +145,7 @@ export default function ShopPage() {
         isNewArrival: searchParams.get('isNewArrival') || undefined,
         isBestSeller: searchParams.get('isBestSeller') || undefined,
         gender: gender || undefined,
+        country: country || undefined,
       };
 
       if (selectedSizes.length) params.sizes = selectedSizes.join(',');
@@ -159,7 +162,7 @@ export default function ShopPage() {
       setFetching(false);
       setInitialLoading(false);
     }
-  }, [page, sortBy, selectedSizes, selectedColors, priceRange, searchParams, gender]);
+  }, [page, sortBy, selectedSizes, selectedColors, priceRange, searchParams, gender, country]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 

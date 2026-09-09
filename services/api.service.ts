@@ -28,6 +28,12 @@ export const authApi = {
 
 // ─── Products ─────────────────────────────────────────────────
 export const productApi = {
+  /**
+   * `params.country` (ISO alpha-2) resolves country-specific pricing on the
+   * backend when a `ProductCountryPricing` override exists for it, else falls
+   * back to base pricing — same call, no separate endpoint. Omitting it is
+   * unchanged from before this existed.
+   */
   getAll: (params?: Record<string, unknown>) => api.get('/products', { params }),
   /**
    * Admin catalogue listing. `/products` is the storefront endpoint and hides
@@ -43,7 +49,8 @@ export const productApi = {
   exportAdmin: (params?: Record<string, unknown>) =>
     api.get('/products/admin/export', { params, responseType: 'blob' }),
   getById: (id: string) => api.get(`/products/admin/${id}`),
-  getBySlug: (slug: string) => api.get<{ data: Product }>(`/products/${slug}`),
+  getBySlug: (slug: string, country?: string | null) =>
+    api.get<{ data: Product }>(`/products/${slug}`, { params: country ? { country } : undefined }),
   getFeatured: (opts?: { limit?: number; gender?: string | null }) =>
     api.get<{ data: Product[] }>('/products/featured', { params: { limit: opts?.limit ?? 8, ...(opts?.gender ? { gender: opts.gender } : {}) } }),
   getTrending: (opts?: { limit?: number; gender?: string | null }) =>

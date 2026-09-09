@@ -23,6 +23,8 @@ import { openLoginModal } from '../../store/slices/uiSlice';
 import { useAuth } from '../../hooks/useAuth';
 import { productApi } from '../../services/api.service';
 import { MegaMenuDesktop, MegaMenuMobile, resolveQuickLinks, type NavCategory, type QuickLink } from './MegaMenu';
+import CountrySelector from '../common/CountrySelector';
+import { useCountry } from '../../contexts/CountryContext';
 import { visibleNavCategories } from '../../lib/navMenu';
 import { resolveNavLayout } from '../../lib/navLayout';
 import {
@@ -76,6 +78,9 @@ export default function Navbar({
   const dispatch = useAppDispatch();
   const { itemCount } = useAppSelector((s) => s.cart);
   const gender = useAppSelector((s) => s.gender.selected);
+  // Multi-market chrome only shows once there is something to switch between.
+  const { countries: enabledCountries } = useCountry();
+  const showCountrySwitcher = enabledCountries.length >= 2;
 
   // Parents AND their children are filtered — see lib/navMenu. Previously only
   // the parents were, which is how "Mens denim" appeared under DENIM while the
@@ -377,6 +382,7 @@ export default function Navbar({
 
             {/* Icons */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              {!isMobile && showCountrySwitcher && <CountrySelector />}
               <IconButton onClick={() => setSearchOpen(true)} size="small">
                 <Search fontSize="small" />
               </IconButton>
@@ -599,6 +605,12 @@ export default function Navbar({
               <Close />
             </IconButton>
           </Box>
+          {/* Country selector in mobile drawer — same "nothing to switch to yet" guard as desktop. */}
+          {showCountrySwitcher && (
+            <Box sx={{ px: 2.5, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
+              <CountrySelector variant="full" />
+            </Box>
+          )}
           {/* Gender toggle in mobile drawer */}
           {genderToggleEnabled && (
             <Box sx={{ display: 'flex', borderBottom: '1px solid', borderColor: 'divider' }}>

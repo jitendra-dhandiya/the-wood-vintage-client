@@ -11,10 +11,12 @@ import { useCart } from '../../../hooks/useCart';
 import { cartApi } from '../../../services/api.service';
 import { formatPrice } from '../../../utils/format';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_CHARGE } from '../../../constants';
+import { useCountry } from '../../../contexts/CountryContext';
 import toast from 'react-hot-toast';
 
 export default function CartPage() {
   const { cart, subtotal, updateQuantity, removeFromCart, fetchCart } = useCart();
+  const { currencySymbol } = useCountry();
   const [couponCode, setCouponCode] = useState('');
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState('');
@@ -40,7 +42,7 @@ export default function CartPage() {
       toast.success(
         d.freeShipping
           ? 'Free delivery applied'
-          : `Coupon applied! You save ${formatPrice(amount)}`,
+          : `Coupon applied! You save ${formatPrice(amount, currencySymbol)}`,
       );
     } catch (e: any) {
       toast.error(e?.response?.data?.message || 'Invalid coupon');
@@ -121,9 +123,9 @@ export default function CartPage() {
                           </IconButton>
                         </Box>
                         <Box sx={{ textAlign: 'right' }}>
-                          <Typography fontWeight={700}>{formatPrice(item.price * item.quantity)}</Typography>
+                          <Typography fontWeight={700}>{formatPrice(item.price * item.quantity, currencySymbol)}</Typography>
                           {item.quantity > 1 && (
-                            <Typography variant="caption" color="text.secondary">{formatPrice(item.price)} each</Typography>
+                            <Typography variant="caption" color="text.secondary">{formatPrice(item.price, currencySymbol)} each</Typography>
                           )}
                         </Box>
                       </Box>
@@ -169,24 +171,24 @@ export default function CartPage() {
               <Stack spacing={1.5} sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography color="text.secondary">Subtotal</Typography>
-                  <Typography fontWeight={500}>{formatPrice(subtotal)}</Typography>
+                  <Typography fontWeight={500}>{formatPrice(subtotal, currencySymbol)}</Typography>
                 </Box>
                 {couponDiscount > 0 && (
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography color="success.main">Coupon Discount</Typography>
-                    <Typography fontWeight={500} color="success.main">-{formatPrice(couponDiscount)}</Typography>
+                    <Typography fontWeight={500} color="success.main">-{formatPrice(couponDiscount, currencySymbol)}</Typography>
                   </Box>
                 )}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography color="text.secondary">Shipping</Typography>
                   <Typography fontWeight={500} sx={{ color: shippingCharge === 0 ? 'success.main' : 'inherit' }}>
-                    {shippingCharge === 0 ? 'FREE' : formatPrice(shippingCharge)}
+                    {shippingCharge === 0 ? 'FREE' : formatPrice(shippingCharge, currencySymbol)}
                   </Typography>
                 </Box>
                 <Divider />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography fontWeight={800} variant="h6">Total</Typography>
-                  <Typography fontWeight={800} variant="h6">{formatPrice(total)}</Typography>
+                  <Typography fontWeight={800} variant="h6">{formatPrice(total, currencySymbol)}</Typography>
                 </Box>
               </Stack>
 

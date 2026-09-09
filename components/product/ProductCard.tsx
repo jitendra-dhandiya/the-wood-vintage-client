@@ -11,6 +11,7 @@ import { formatPrice, getDiscountPercent } from '../../utils/format';
 import { useCart } from '../../hooks/useCart';
 import { wishlistApi } from '../../services/api.service';
 import { useAppSelector } from '../../store';
+import { useCountry } from '../../contexts/CountryContext';
 import toast from 'react-hot-toast';
 
 interface ProductCardProps {
@@ -35,6 +36,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAppSelector((s) => s.auth);
+  const { currencySymbol } = useCountry();
   const [inWishlist, setInWishlist] = useState(initialInWishlist);
   const [hovered, setHovered] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
@@ -270,12 +272,12 @@ export default function ProductCard({
         {/* Price */}
         <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.75, flexWrap: 'wrap' }}>
           <Typography sx={{ fontWeight: 700, fontSize: '0.875rem', color: '#111' }}>
-            {formatPrice(displayPrice)}
+            {formatPrice(displayPrice, currencySymbol)}
           </Typography>
           {product.salePrice && product.salePrice < product.basePrice && (
             <>
               <Typography sx={{ textDecoration: 'line-through', color: '#aaa', fontSize: '0.8rem' }}>
-                {formatPrice(product.basePrice)}
+                {formatPrice(product.basePrice, currencySymbol)}
               </Typography>
               <Typography sx={{ color: '#d93025', fontWeight: 700, fontSize: '0.72rem' }}>
                 {discount}% OFF

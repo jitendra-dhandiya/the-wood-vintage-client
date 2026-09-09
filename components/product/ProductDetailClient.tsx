@@ -24,6 +24,7 @@ import OptionBox from './OptionBox';
 import { galleryFor, groupGalleryByColor, firstIndexOfColor, sameColor } from '../../lib/productImages';
 import { sortSizes } from '../../lib/sizeSort';
 import { getRecentlyViewed, recordView } from '../../lib/recentlyViewed';
+import { useCountry } from '../../contexts/CountryContext';
 
 interface Props {
   product: Product;
@@ -32,6 +33,7 @@ interface Props {
 export default function ProductDetailClient({ product }: Props) {
   const { addToCart, isLoading } = useCart();
   const { isAuthenticated } = useAppSelector((s) => s.auth);
+  const { currencySymbol } = useCountry();
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -251,7 +253,7 @@ export default function ProductDetailClient({ product }: Props) {
       try {
         await navigator.share({
           title: product.name,
-          text: `${product.name} - ${formatPrice(displayPrice)}`,
+          text: `${product.name} - ${formatPrice(displayPrice, currencySymbol)}`,
           url,
         });
         return;
@@ -474,12 +476,12 @@ export default function ProductDetailClient({ product }: Props) {
               {/* Price */}
               <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mb: 3 }}>
                 <Typography variant="h4" sx={{ fontWeight: 800, color: '#1a1a1a' }}>
-                  {formatPrice(displayPrice)}
+                  {formatPrice(displayPrice, currencySymbol)}
                 </Typography>
                 {product.salePrice && (
                   <>
                     <Typography variant="h6" sx={{ textDecoration: 'line-through', color: 'text.secondary', fontWeight: 400 }}>
-                      {formatPrice(product.basePrice)}
+                      {formatPrice(product.basePrice, currencySymbol)}
                     </Typography>
                     <Chip label={`Save ${discount}%`} size="small" sx={{ bgcolor: '#d32f2f', color: 'white', fontWeight: 700 }} />
                   </>
