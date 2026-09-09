@@ -1,0 +1,195 @@
+/* ─── Fonts are loaded via <link> in layout.tsx — NOT @import ────────────────
+   @import is render-blocking: browser stops painting to fetch the font CSS.
+   <link rel="preconnect"> + <link rel="stylesheet"> runs in parallel with HTML. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-playfair: 'Playfair Display', serif;
+  --gold: #c9a84c;
+  --dark-gold: #a07c20;
+  --cream: #f8f4ef;
+  --charcoal: #2c2c2c;
+  --midnight: #0d0d0d;
+}
+
+html {
+  /* NO scroll-behavior: smooth here.
+     CSS smooth-scroll fights native momentum fling on iOS/Android — the two
+     interpolation algorithms conflict and freeze the page mid-scroll. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /*
+   * CRITICAL: Tells the compositor this page scrolls ONLY vertically.
+   * Without this the browser consults JS on every touch before committing
+   * to a scroll direction → 100-300 ms freeze before scroll starts.
+   *
+   * `pinch-zoom` is listed explicitly. A bare `pan-y` rules out every gesture
+   * it does not name, zoom included — so a page that ended up zoomed (iOS does
+   * this on its own, see the form-control rule below) could not be zoomed back
+   * out, and with horizontal panning also ruled out, everything past the right
+   * edge became unreachable. Naming pinch-zoom keeps the compositor fast path
+   * — horizontal panning is still excluded, so the axis decision needs no JS.
+   */
+  touch-action: pan-y pinch-zoom;
+}
+
+body {
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #fafafa;
+  touch-action: pan-y pinch-zoom;
+  overscroll-behavior-y: none;
+}
+
+/* ── Form controls: 16px on phones ──────────────────────────────────
+   iOS Safari zooms the whole page in when a form control whose text is under
+   16px takes focus. Tapping the "Sort by" dropdown on a category page was
+   enough: it is 0.9rem = 14.4px. The zoom is not undone when the field blurs,
+   so the page stays ~10% wider than the screen and everything below the sticky
+   header is clipped on the right — which is exactly what a phone screenshot of
+   it looks like, and reads as a broken layout rather than as zoom.
+
+   16px is the threshold, so this removes the trigger instead of papering over
+   it. Desktop is untouched — the size is a deliberate part of the design there,
+   and no desktop browser does this. */
+@media (max-width: 899px) {
+  input,
+  select,
+  textarea,
+  .MuiInputBase-input,
+  .MuiSelect-select {
+    font-size: 16px;
+  }
+}
+
+/* Remove tap highlight on interactive elements */
+a, button, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/*
+ * Horizontal scroll containers override to pan-x.
+ * Inherit pan-y from body would break left/right swiping.
+ */
+.h-scroll {
+  /*
+   * pan-x pan-y: allows BOTH axes.
+   * pan-x alone blocks vertical scroll when finger starts ON a carousel card —
+   * the exact reason "Best Sellers / Fan Favourites" sections felt stuck.
+   * The browser uses the initial gesture direction to pick which axis to scroll.
+   */
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* Swiper: pan-y lets page-scroll pass through; Swiper captures horizontal */
+.swiper {
+  touch-action: pan-y;
+}
+
+/* Mobile bottom nav safe area */
+@media (max-width: 899px) {
+  main {
+    padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* MUI Drawers/Dialogs: contain their own scroll */
+[class*="MuiDrawer"],
+[class*="MuiDialog"] {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+/* Image optimization */
+img { max-width: 100%; height: auto; }
+
+/* Selection */
+::selection { background: #1a1a1a; color: white; }
+
+/* Focus */
+:focus-visible { outline: 2px solid #c9a84c; outline-offset: 2px; }
+
+/* Swiper overrides */
+.swiper-pagination-bullet-active { background: #1a1a1a !important; }
+.swiper-button-next, .swiper-button-prev { color: #1a1a1a !important; }
+
+/* MUI overrides */
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline { border-color: #1a1a1a !important; }
+.MuiFormLabel-root.Mui-focused { color: #1a1a1a !important; }
+
+/* ── Skeleton shimmer ──────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ── Page fade-in ──────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeInUp 0.5s ease forwards; }
+
+/* ── Marquee strip ─────────────────────────────────────────────────
+   Defined here (not inside MUI sx) to avoid Emotion injecting a new
+   @keyframes rule on every render — which triggers style recalculation. */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .mobile-bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+
+/* ── Page transition ───────────────────────────────────────────────
+   Applied by components/common/PageTransition via a route template, so it
+   replays on every navigation. Only opacity and transform are animated, which
+   keeps the work on the compositor — the same reason it is safe to run on
+   mobile where framer-motion is switched off.
+
+   `will-change` is deliberately NOT set: the element animates once on mount
+   and then never again, so promoting it to its own layer for the life of the
+   page would cost memory for nothing. */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.page-enter {
+  animation: pageEnter 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* Someone who has asked their OS for less motion gets the content, not the
+   movement. The content must still END visible, hence the explicit reset
+   rather than simply dropping the animation. */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Skeleton rhythm ───────────────────────────────────────────────
+   Loading placeholders share one animation-delay scale so a grid of them
+   pulses as a group rather than each tile keeping its own time — which is
+   what made loading screens read as noise. */
+.skeleton-stagger > * { animation-delay: calc(var(--i, 0) * 60ms); }
