@@ -110,6 +110,10 @@ export interface Product {
   fabric?: string;
   careInstructions?: string;
   sizeChart?: string;
+  /** Per-product override of the flat shipping rate for that method, when set. See checkout/page.tsx. */
+  standardShippingCharge?: number;
+  codShippingCharge?: number;
+  expressShippingCharge?: number;
   totalReviews: number;
   avgRating: number;
   totalSold: number;

@@ -70,9 +70,30 @@ export default function CheckoutPage() {
   const [freeShipping, setFreeShipping] = useState(false);
   const [couponLoading, setCouponLoading] = useState(false);
 
-  // Resolve shipping charge from selected method
+  // Resolve shipping charge from selected method. Mirrors order.service.ts's
+  // server-side logic exactly: a per-product shipping-charge override (set on
+  // the product, one field per method) wins over the flat SHIPPING_METHODS
+  // rate when present, taking the highest override across the cart's items.
+  // The backend was always authoritative for what actually gets charged —
+  // this fixes what was *shown* before checkout to match it, so a product
+  // with an override doesn't display one number and charge another.
   const selectedShipping = SHIPPING_METHODS.find(m => m.id === shippingMethod)!;
-  const shippingCharge   = freeShipping ? 0 : selectedShipping.charge;
+  const shippingChargeField: Partial<Record<ShippingMethodId, 'standardShippingCharge' | 'codShippingCharge' | 'expressShippingCharge'>> = {
+    STANDARD: 'standardShippingCharge',
+    COD: 'codShippingCharge',
+    EXPRESS: 'expressShippingCharge',
+  };
+  const overrideField = shippingChargeField[shippingMethod];
+  const productOverrides = overrideField
+    ? (cart?.items ?? [])
+        .map(item => Number(item.product?.[overrideField] ?? 0))
+        .filter(charge => charge > 0)
+    : [];
+  const shippingCharge = freeShipping
+    ? 0
+    : productOverrides.length > 0
+      ? Math.max(...productOverrides)
+      : selectedShipping.charge;
   const total            = subtotal - couponDiscount + shippingCharge;
 
   const applyCoupon = async () => {
