@@ -8,7 +8,7 @@ import {
 import { Add, Remove, ArrowBack } from '@mui/icons-material';
 import { useFormik, FieldArray, FormikProvider } from 'formik';
 import * as Yup from 'yup';
-import { productApi, categoryApi } from '../../../../../services/api.service';
+import { productApi, categoryApi, materialApi, styleApi, roomApi, artisanApi } from '../../../../../services/api.service';
 import { GENDERS } from '../../../../../constants';
 import { toast } from 'react-hot-toast';
 import SortableImageGrid, { type SortableImage } from '../../../../../components/admin/SortableImageGrid';
@@ -42,6 +42,13 @@ export default function AddProductPage() {
   const router = useRouter();
   const [categories, setCategories] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
+  // Phase 2 handicraft taxonomy — admin lists include inactive rows, since a
+  // product already assigned to one should still be able to keep it on
+  // screen while it's edited.
+  const [materials, setMaterials] = useState<any[]>([]);
+  const [styles, setStyles] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [artisans, setArtisans] = useState<any[]>([]);
   const [images, setImages] = useState<File[]>([]);
   /**
    * Colour tag per picked file, held as a parallel array rather than a map.
@@ -54,6 +61,10 @@ export default function AddProductPage() {
 
   useEffect(() => {
     categoryApi.getAll({ page: 1, limit: 100 }).then(({ data }) => setCategories((data as any).data || data || []));
+    materialApi.getAllAdmin().then(({ data }) => setMaterials((data as any).data || [])).catch(() => setMaterials([]));
+    styleApi.getAllAdmin().then(({ data }) => setStyles((data as any).data || [])).catch(() => setStyles([]));
+    roomApi.getAllAdmin().then(({ data }) => setRooms((data as any).data || [])).catch(() => setRooms([]));
+    artisanApi.getAllAdmin().then(({ data }) => setArtisans((data as any).data || [])).catch(() => setArtisans([]));
   }, []);
 
   const formik = useFormik({
@@ -76,6 +87,14 @@ export default function AddProductPage() {
       standardShippingCharge: '' as string | number,
       codShippingCharge: '' as string | number,
       expressShippingCharge: '' as string | number,
+      // Phase 2 handicraft domain — all optional, additive to the form above.
+      materialId: '', styleId: '', roomId: '', artisanId: '',
+      lengthCm: '' as string | number, widthCm: '' as string | number, heightCm: '' as string | number,
+      finish: '',
+      assemblyRequired: false, assemblyInstructions: '',
+      isCustomizable: false, customizationNotes: '',
+      manufacturingTimeDays: '' as string | number,
+      craftStory: '',
       // Starts empty: the admin adds only the sizes this product actually has.
       variants: [{ color: '', colorHex: '', sizes: [] as { size: string; stock: number; price: string }[] }],
     },
@@ -119,6 +138,24 @@ export default function AddProductPage() {
         if (values.standardShippingCharge !== '') fd.append('standardShippingCharge', String(values.standardShippingCharge));
         if (values.codShippingCharge !== '') fd.append('codShippingCharge', String(values.codShippingCharge));
         if (values.expressShippingCharge !== '') fd.append('expressShippingCharge', String(values.expressShippingCharge));
+        // Phase 2 handicraft domain. Relation ids are always sent (even
+        // blank, meaning "unset") — the controller treats an empty string as
+        // null for these. Dimensions/lead time are only sent when filled;
+        // the controller drops an absent key rather than zeroing it out.
+        fd.append('materialId', values.materialId);
+        fd.append('styleId', values.styleId);
+        fd.append('roomId', values.roomId);
+        fd.append('artisanId', values.artisanId);
+        if (values.lengthCm !== '') fd.append('lengthCm', String(values.lengthCm));
+        if (values.widthCm !== '') fd.append('widthCm', String(values.widthCm));
+        if (values.heightCm !== '') fd.append('heightCm', String(values.heightCm));
+        if (values.finish) fd.append('finish', values.finish);
+        fd.append('assemblyRequired', String(values.assemblyRequired));
+        if (values.assemblyInstructions) fd.append('assemblyInstructions', values.assemblyInstructions);
+        fd.append('isCustomizable', String(values.isCustomizable));
+        if (values.customizationNotes) fd.append('customizationNotes', values.customizationNotes);
+        if (values.manufacturingTimeDays !== '') fd.append('manufacturingTimeDays', String(values.manufacturingTimeDays));
+        if (values.craftStory) fd.append('craftStory', values.craftStory);
         images.forEach(img => fd.append('images', img));
         // Keyed by upload position, which is exactly how the server names them.
         fd.append(
@@ -539,6 +576,97 @@ export default function AddProductPage() {
                     <Grid item xs={6}><TextField label="Fit" size="small" fullWidth {...formik.getFieldProps('fit')} /></Grid>
                     <Grid item xs={6}><TextField label="Style" size="small" fullWidth {...formik.getFieldProps('style')} /></Grid>
                     <Grid item xs={12}><TextField label="Care Instructions" size="small" fullWidth multiline rows={2} {...formik.getFieldProps('careInstructions')} /></Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+
+              {/* Craft & Dimensions — Phase 2 handicraft domain. materialId/
+                  styleId/roomId are separate from the free-text
+                  Material/Fit/Style fields above (those map to the legacy
+                  fashion `fabric` field and are unrelated taxonomy). */}
+              <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, mb: 3 }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 0.5 }}>Craft &amp; Dimensions</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 2 }}>
+                    Handicraft taxonomy, physical dimensions and the craft story shown on the product page.
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6} sm={3}>
+                      <TextField select label="Material" size="small" fullWidth {...formik.getFieldProps('materialId')}>
+                        <MenuItem value=""><em>— None —</em></MenuItem>
+                        {materials.map((m: any) => <MenuItem key={m.id} value={m.id}>{m.name}</MenuItem>)}
+                      </TextField>
+                    </Grid>
+                    <Grid item xs={6} sm={3}>
+                      <TextField select label="Style" size="small" fullWidth {...formik.getFieldProps('styleId')}>
+                        <MenuItem value=""><em>— None —</em></MenuItem>
+                        {styles.map((s: any) => <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>)}
+                      </TextField>
+                    </Grid>
+                    <Grid item xs={6} sm={3}>
+                      <TextField select label="Room" size="small" fullWidth {...formik.getFieldProps('roomId')}>
+                        <MenuItem value=""><em>— None —</em></MenuItem>
+                        {rooms.map((r: any) => <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>)}
+                      </TextField>
+                    </Grid>
+                    <Grid item xs={6} sm={3}>
+                      <TextField select label="Artisan" size="small" fullWidth {...formik.getFieldProps('artisanId')}>
+                        <MenuItem value=""><em>— None —</em></MenuItem>
+                        {artisans.map((a: any) => <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>)}
+                      </TextField>
+                    </Grid>
+
+                    <Grid item xs={4}>
+                      <TextField label="Length (cm)" type="number" size="small" fullWidth
+                        {...formik.getFieldProps('lengthCm')} inputProps={{ min: 0, step: 0.1 }} />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField label="Width (cm)" type="number" size="small" fullWidth
+                        {...formik.getFieldProps('widthCm')} inputProps={{ min: 0, step: 0.1 }} />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField label="Height (cm)" type="number" size="small" fullWidth
+                        {...formik.getFieldProps('heightCm')} inputProps={{ min: 0, step: 0.1 }} />
+                    </Grid>
+
+                    <Grid item xs={6}>
+                      <TextField label="Finish" size="small" fullWidth placeholder="e.g. Natural wax, Matte lacquer"
+                        {...formik.getFieldProps('finish')} />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField label="Manufacturing Time (days)" type="number" size="small" fullWidth
+                        {...formik.getFieldProps('manufacturingTimeDays')} inputProps={{ min: 0 }}
+                        helperText="Shown as “Made to order — ships in N days”" />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <FormControlLabel
+                        control={<Switch size="small" checked={formik.values.assemblyRequired}
+                          onChange={e => formik.setFieldValue('assemblyRequired', e.target.checked)} />}
+                        label="Assembly Required"
+                      />
+                      {formik.values.assemblyRequired && (
+                        <TextField label="Assembly Instructions" size="small" fullWidth multiline rows={2} sx={{ mt: 1 }}
+                          {...formik.getFieldProps('assemblyInstructions')} />
+                      )}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <FormControlLabel
+                        control={<Switch size="small" checked={formik.values.isCustomizable}
+                          onChange={e => formik.setFieldValue('isCustomizable', e.target.checked)} />}
+                        label="Customizable"
+                      />
+                      {formik.values.isCustomizable && (
+                        <TextField label="Customization Notes" size="small" fullWidth multiline rows={2} sx={{ mt: 1 }}
+                          {...formik.getFieldProps('customizationNotes')} />
+                      )}
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <TextField label="Craft Story" size="small" fullWidth multiline rows={4}
+                        placeholder="How this piece is made, by whom, and why it's special — shown as a narrative section on the product page."
+                        {...formik.getFieldProps('craftStory')} />
+                    </Grid>
                   </Grid>
                 </CardContent>
               </Card>

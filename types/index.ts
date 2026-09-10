@@ -15,6 +15,52 @@ export interface Country {
   sortOrder: number;
 }
 
+// ─── Handicraft taxonomy (Phase 2) ──────────────────────────────
+// Mirror the backend `Material`/`Style`/`Room` models — shaped like
+// `Category`: id, name, slug, description, image, sortOrder, isActive. Public
+// `GET /materials` etc. return only `isActive: true` rows of this shape; the
+// admin `/admin/all` endpoints return every row.
+export interface Material {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  image?: string | null;
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export interface Style {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  image?: string | null;
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export interface Room {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  image?: string | null;
+  isActive: boolean;
+  sortOrder: number;
+}
+
+// Mirrors the backend `Artisan` model. No slug, no public list — only
+// `GET /artisans/:id` for a future bio page linked from a product.
+export interface Artisan {
+  id: string;
+  name: string;
+  bio?: string | null;
+  photo?: string | null;
+  region?: string | null;
+  isActive: boolean;
+}
+
 // ─── Common ──────────────────────────────────
 export interface PaginatedResponse<T> {
   success: boolean;
@@ -132,6 +178,34 @@ export interface Product {
   gender?: 'MEN' | 'WOMEN' | 'UNISEX';
   createdAt?: string;
   updatedAt?: string;
+
+  // ── Handicraft domain (Phase 2) — all additive/optional. A product may
+  // have none of these set; the common case today is exactly that. ──
+  materialId?: string | null;
+  material?: Material | null;
+  styleId?: string | null;
+  style?: Style | null;
+  roomId?: string | null;
+  room?: Room | null;
+  artisanId?: string | null;
+  artisan?: Artisan | null;
+
+  /** Physical dimensions in centimetres. Only meaningful together. */
+  lengthCm?: number | null;
+  widthCm?: number | null;
+  heightCm?: number | null;
+  finish?: string | null;
+  assemblyRequired?: boolean;
+  assemblyInstructions?: string | null;
+
+  isCustomizable?: boolean;
+  customizationNotes?: string | null;
+
+  /** Made-to-order lead time in days, when set. */
+  manufacturingTimeDays?: number | null;
+
+  /** Product-specific narrative — how *this* piece is made. MASTER-PROMPT §33. */
+  craftStory?: string | null;
 }
 
 // ─── Cart ─────────────────────────────────────

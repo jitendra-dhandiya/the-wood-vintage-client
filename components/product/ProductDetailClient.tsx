@@ -45,6 +45,32 @@ export default function ProductDetailClient({ product }: Props) {
   const discount = product.salePrice ? getDiscountPercent(product.basePrice, product.salePrice) : 0;
 
   /**
+   * Handicraft facts — material/style/room/finish/dimensions — as labeled
+   * key-value pairs, each shown only when actually set. Most products today
+   * carry none of these (real catalog data hasn't been assigned yet), so
+   * this list is commonly empty and the whole block renders nothing rather
+   * than an empty shell with a heading over nothing.
+   */
+  const hasDimensions = product.lengthCm != null && product.widthCm != null && product.heightCm != null;
+  const craftFacts = useMemo(() => {
+    const facts: { label: string; value: string }[] = [];
+    if (product.material?.name) facts.push({ label: 'Material', value: product.material.name });
+    if (product.style?.name) facts.push({ label: 'Style', value: product.style.name });
+    if (product.room?.name) facts.push({ label: 'Room', value: product.room.name });
+    if (product.finish) facts.push({ label: 'Finish', value: product.finish });
+    if (hasDimensions) {
+      facts.push({
+        label: 'Dimensions (L × W × H)',
+        value: `${product.lengthCm} × ${product.widthCm} × ${product.heightCm} cm`,
+      });
+    }
+    if (product.assemblyRequired) facts.push({ label: 'Assembly', value: 'Required' });
+    if (product.isCustomizable) facts.push({ label: 'Customizable', value: 'Yes' });
+    return facts;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product, hasDimensions]);
+
+  /**
    * Only sizes a customer can actually buy.
    *
    * These used to be listed and greyed out, which advertises stock that does
@@ -495,6 +521,41 @@ export default function ProductDetailClient({ product }: Props) {
                 </Typography>
               )}
 
+              {/* Craft & material facts — only the ones this product actually
+                  has set. See MASTER-PROMPT §16 (material/style/room
+                  taxonomy) and §33 (craft storytelling, expanded further down
+                  the page as its own section, not buried here). */}
+              {craftFacts.length > 0 && (
+                <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 2, bgcolor: '#fafafa' }}>
+                  <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5 }}>
+                    Craft &amp; Materials
+                  </Typography>
+                  <Grid container spacing={1.5}>
+                    {craftFacts.map((f) => (
+                      <Grid item xs={6} key={f.label}>
+                        <Typography
+                          variant="caption" color="text.secondary"
+                          sx={{ display: 'block', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '0.65rem' }}
+                        >
+                          {f.label}
+                        </Typography>
+                        <Typography variant="body2" fontWeight={600}>{f.value}</Typography>
+                      </Grid>
+                    ))}
+                  </Grid>
+                  {product.assemblyRequired && product.assemblyInstructions && (
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1.5, lineHeight: 1.6 }}>
+                      <strong>Assembly:</strong> {product.assemblyInstructions}
+                    </Typography>
+                  )}
+                  {product.isCustomizable && product.customizationNotes && (
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1, lineHeight: 1.6 }}>
+                      <strong>Customization:</strong> {product.customizationNotes}
+                    </Typography>
+                  )}
+                </Box>
+              )}
+
               {/* Colors */}
               {uniqueColors.length > 0 && (
                 <Box sx={{ mb: 2.5 }}>
@@ -572,6 +633,13 @@ export default function ProductDetailClient({ product }: Props) {
                   }}
                 >
                   Only {lowStockLeft} left{selectedSize ? ` in size ${selectedSize}` : ''}
+                </Typography>
+              )}
+
+              {/* Made-to-order lead time — only when the admin has set one. */}
+              {!!product.manufacturingTimeDays && (
+                <Typography sx={{ mb: 2, fontSize: '0.82rem', fontWeight: 700, color: '#7a6320' }}>
+                  Made to order — ships in {product.manufacturingTimeDays} day{product.manufacturingTimeDays === 1 ? '' : 's'}
                 </Typography>
               )}
 
@@ -665,6 +733,86 @@ export default function ProductDetailClient({ product }: Props) {
             </Box>
           </Grid>
         </Grid>
+
+        {/* ── Craft story & maker ──────────────────────────────────
+            MASTER-PROMPT §33: "who made it, how, why is it special." Given
+            real visual weight as its own full-width section rather than a
+            line buried in a tab — a serif pull-quote for the story, and a
+            maker card alongside it when an artisan is attached. Neither
+            piece is set on real catalogue data yet (artisans table is
+            intentionally unseeded), so this renders nothing in the common
+            case today. */}
+        {(product.craftStory || product.artisan) && (
+          <Box sx={{ mt: { xs: 8, md: 10 }, pt: { xs: 6, md: 8 }, borderTop: '1px solid', borderColor: 'divider' }}>
+            <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
+              {product.craftStory && (
+                <Grid item xs={12} md={product.artisan ? 7 : 12}>
+                  <Typography variant="overline" sx={{ color: '#c9a84c', letterSpacing: '0.14em', fontWeight: 700 }}>
+                    The Craft Story
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontFamily: 'var(--font-playfair)', fontStyle: 'italic', fontWeight: 500,
+                      lineHeight: 1.6, mt: 1.5, color: '#2c2c2c',
+                      maxWidth: product.artisan ? 'none' : 760,
+                    }}
+                  >
+                    &ldquo;{product.craftStory}&rdquo;
+                  </Typography>
+                </Grid>
+              )}
+
+              {product.artisan && (
+                <Grid item xs={12} md={product.craftStory ? 5 : 12}>
+                  <Box
+                    sx={{
+                      display: 'flex', alignItems: 'flex-start', gap: 2.5, p: 3,
+                      bgcolor: '#faf8f3', borderRadius: 2,
+                      maxWidth: product.craftStory ? 'none' : 520,
+                      mx: product.craftStory ? 0 : 'auto',
+                    }}
+                  >
+                    <Box sx={{
+                      position: 'relative', width: 84, height: 84, borderRadius: '50%',
+                      overflow: 'hidden', flexShrink: 0, bgcolor: '#e8e4da',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      {product.artisan.photo ? (
+                        <Image
+                          src={product.artisan.photo} alt={product.artisan.name}
+                          fill style={{ objectFit: 'cover' }} sizes="84px"
+                        />
+                      ) : (
+                        <Typography sx={{ fontSize: '1.8rem', fontWeight: 700, color: '#b3a377' }}>
+                          {product.artisan.name.charAt(0)}
+                        </Typography>
+                      )}
+                    </Box>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="caption" sx={{ color: '#c9a84c', letterSpacing: '0.1em', fontWeight: 700, display: 'block' }}>
+                        MEET THE MAKER
+                      </Typography>
+                      <Typography variant="subtitle1" fontWeight={700} sx={{ mt: 0.25 }}>
+                        {product.artisan.name}
+                      </Typography>
+                      {product.artisan.region && (
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.75 }}>
+                          {product.artisan.region}
+                        </Typography>
+                      )}
+                      {product.artisan.bio && (
+                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                          {product.artisan.bio}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+                </Grid>
+              )}
+            </Grid>
+          </Box>
+        )}
 
         {/* ── Keep browsing ────────────────────────────────────────
             The bottom of a product page is where a shopper either carries on

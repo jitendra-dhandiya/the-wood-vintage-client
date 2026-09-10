@@ -1,5 +1,5 @@
 import api from '../lib/axios';
-import type { Product, Category, Cart, Order, Blog, Review, Banner, HomepageSection, LoginResponse, User, Address } from '../types';
+import type { Product, Category, Cart, Order, Blog, Review, Banner, HomepageSection, LoginResponse, User, Address, Material, Style, Room, Artisan } from '../types';
 
 // ─── Auth ──────────────────────────────────────────────────────
 export const authApi = {
@@ -33,6 +33,10 @@ export const productApi = {
    * backend when a `ProductCountryPricing` override exists for it, else falls
    * back to base pricing — same call, no separate endpoint. Omitting it is
    * unchanged from before this existed.
+   *
+   * `params.materialSlug` / `styleSlug` / `roomSlug` filter by the Phase 2
+   * handicraft taxonomy (see `materialApi`/`styleApi`/`roomApi` below) — same
+   * call, no separate endpoint, same as every other filter here.
    */
   getAll: (params?: Record<string, unknown>) => api.get('/products', { params }),
   /**
@@ -92,6 +96,48 @@ export const categoryApi = {
   /** Bulk menu positions. Lower shows first in the nav. */
   updatePositions: (items: { id: string; sortOrder: number }[]) =>
     api.patch('/categories/positions', { items }),
+};
+
+// ─── Handicraft taxonomy (Phase 2) ─────────────────────────────
+// Material/Style/Room are shaped identically to Category (name, slug,
+// description, image, sortOrder, isActive) and admin CRUD takes plain JSON,
+// not multipart — the backend model has no file upload, `image` is just a
+// string URL field. See documentation/docs/architecture/phase-2-handicraft-domain-spec.md.
+export const materialApi = {
+  getAll: (params?: Record<string, unknown>) => api.get<{ data: Material[] }>('/materials', { params }),
+  getBySlug: (slug: string) => api.get<{ data: Material }>(`/materials/${slug}`),
+  getAllAdmin: () => api.get<{ data: Material[] }>('/materials/admin/all'),
+  create: (data: object) => api.post('/materials', data),
+  update: (id: string, data: object) => api.put(`/materials/${id}`, data),
+  delete: (id: string) => api.delete(`/materials/${id}`),
+};
+
+export const styleApi = {
+  getAll: (params?: Record<string, unknown>) => api.get<{ data: Style[] }>('/styles', { params }),
+  getBySlug: (slug: string) => api.get<{ data: Style }>(`/styles/${slug}`),
+  getAllAdmin: () => api.get<{ data: Style[] }>('/styles/admin/all'),
+  create: (data: object) => api.post('/styles', data),
+  update: (id: string, data: object) => api.put(`/styles/${id}`, data),
+  delete: (id: string) => api.delete(`/styles/${id}`),
+};
+
+export const roomApi = {
+  getAll: (params?: Record<string, unknown>) => api.get<{ data: Room[] }>('/rooms', { params }),
+  getBySlug: (slug: string) => api.get<{ data: Room }>(`/rooms/${slug}`),
+  getAllAdmin: () => api.get<{ data: Room[] }>('/rooms/admin/all'),
+  create: (data: object) => api.post('/rooms', data),
+  update: (id: string, data: object) => api.put(`/rooms/${id}`, data),
+  delete: (id: string) => api.delete(`/rooms/${id}`),
+};
+
+// Artisan has no slug and no public list (no real artisan data yet) — only a
+// public detail page for a known id, plus full admin CRUD.
+export const artisanApi = {
+  getById: (id: string) => api.get<{ data: Artisan }>(`/artisans/${id}`),
+  getAllAdmin: () => api.get<{ data: Artisan[] }>('/artisans/admin/all'),
+  create: (data: object) => api.post('/artisans', data),
+  update: (id: string, data: object) => api.put(`/artisans/${id}`, data),
+  delete: (id: string) => api.delete(`/artisans/${id}`),
 };
 
 // ─── Cart ─────────────────────────────────────────────────────

@@ -10,9 +10,9 @@ import {
 import { Close, TuneOutlined } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import ProductCard, { ProductCardSkeleton } from '../../../components/product/ProductCard';
-import { productApi } from '../../../services/api.service';
+import { productApi, materialApi, styleApi, roomApi } from '../../../services/api.service';
 import { PRODUCT_SIZES, PRODUCT_COLORS, SORT_OPTIONS } from '../../../constants';
-import type { Product } from '../../../types';
+import type { Product, Material, Style, Room } from '../../../types';
 import { useAppSelector } from '../../../store';
 import { useCountry } from '../../../contexts/CountryContext';
 
@@ -27,16 +27,27 @@ interface FilterPanelProps {
   priceRange: number[];          // committed value (from parent)
   selectedSizes: string[];
   selectedColors: string[];
+  materials: Material[];
+  styles: Style[];
+  rooms: Room[];
+  selectedMaterial: string;
+  selectedStyle: string;
+  selectedRoom: string;
   activeFilterCount: number;
   onPriceCommit: (v: number[]) => void;
   onToggleSize: (s: string) => void;
   onToggleColor: (c: string) => void;
+  onSelectMaterial: (slug: string) => void;
+  onSelectStyle: (slug: string) => void;
+  onSelectRoom: (slug: string) => void;
   onClear: () => void;
 }
 
 function FilterPanel({
   isMobile, priceRange, selectedSizes, selectedColors,
-  activeFilterCount, onPriceCommit, onToggleSize, onToggleColor, onClear,
+  materials, styles, rooms, selectedMaterial, selectedStyle, selectedRoom,
+  activeFilterCount, onPriceCommit, onToggleSize, onToggleColor,
+  onSelectMaterial, onSelectStyle, onSelectRoom, onClear,
 }: FilterPanelProps) {
   // Local state drives slider visuals smoothly — no API call on every drag
   const [localPrice, setLocalPrice] = useState<number[]>(priceRange);
@@ -106,6 +117,72 @@ function FilterPanel({
           />
         ))}
       </Box>
+
+      {/* Material / Style / Room — Phase 2 handicraft taxonomy. Single-select
+          per facet (a product carries one of each, not many), so these
+          render as a toggleable chip row exactly like Size/Color above but
+          with click-to-clear on the active one instead of multi-select. Each
+          section is absent entirely when the taxonomy list hasn't loaded or
+          is empty, rather than showing an empty heading. */}
+      {materials.length > 0 && (
+        <>
+          <Divider sx={{ my: 2 }} />
+          <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Material</Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 2 }}>
+            {materials.map((m) => (
+              <Chip
+                key={m.id} label={m.name} size="small"
+                onClick={() => onSelectMaterial(m.slug)}
+                variant={selectedMaterial === m.slug ? 'filled' : 'outlined'}
+                sx={{
+                  cursor: 'pointer',
+                  ...(selectedMaterial === m.slug && { bgcolor: '#1a1a1a', color: 'white', '&:hover': { bgcolor: '#333' } }),
+                }}
+              />
+            ))}
+          </Box>
+        </>
+      )}
+
+      {styles.length > 0 && (
+        <>
+          <Divider sx={{ my: 2 }} />
+          <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Style</Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 2 }}>
+            {styles.map((s) => (
+              <Chip
+                key={s.id} label={s.name} size="small"
+                onClick={() => onSelectStyle(s.slug)}
+                variant={selectedStyle === s.slug ? 'filled' : 'outlined'}
+                sx={{
+                  cursor: 'pointer',
+                  ...(selectedStyle === s.slug && { bgcolor: '#1a1a1a', color: 'white', '&:hover': { bgcolor: '#333' } }),
+                }}
+              />
+            ))}
+          </Box>
+        </>
+      )}
+
+      {rooms.length > 0 && (
+        <>
+          <Divider sx={{ my: 2 }} />
+          <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Room</Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 2 }}>
+            {rooms.map((r) => (
+              <Chip
+                key={r.id} label={r.name} size="small"
+                onClick={() => onSelectRoom(r.slug)}
+                variant={selectedRoom === r.slug ? 'filled' : 'outlined'}
+                sx={{
+                  cursor: 'pointer',
+                  ...(selectedRoom === r.slug && { bgcolor: '#1a1a1a', color: 'white', '&:hover': { bgcolor: '#333' } }),
+                }}
+              />
+            ))}
+          </Box>
+        </>
+      )}
     </Box>
   );
 }
@@ -130,7 +207,24 @@ export default function ShopPage() {
   const [priceRange, setPriceRange] = useState<number[]>(PRICE_RANGE); // committed value only
   const [sortBy, setSortBy] = useState('featured');
 
+  // Phase 2 handicraft taxonomy — single-select per facet, matching the
+  // backend's single-select Material/Style/Room relations on Product.
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [styles, setStyles] = useState<Style[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [selectedMaterial, setSelectedMaterial] = useState('');
+  const [selectedStyle, setSelectedStyle] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState('');
+
   const limit = 20;
+
+  // Loaded once — these are small, admin-managed lookup lists (11/11/8 rows
+  // today), not something that needs to track filter state.
+  useEffect(() => {
+    materialApi.getAll().then(({ data }) => setMaterials(data.data || [])).catch(() => setMaterials([]));
+    styleApi.getAll().then(({ data }) => setStyles(data.data || [])).catch(() => setStyles([]));
+    roomApi.getAll().then(({ data }) => setRooms(data.data || [])).catch(() => setRooms([]));
+  }, []);
 
   const fetchProducts = useCallback(async () => {
     setFetching(true);
@@ -152,6 +246,9 @@ export default function ShopPage() {
       if (selectedColors.length) params.colors = selectedColors.join(',');
       if (priceRange[0] > 0) params.minPrice = priceRange[0];
       if (priceRange[1] < PRICE_RANGE[1]) params.maxPrice = priceRange[1];
+      if (selectedMaterial) params.materialSlug = selectedMaterial;
+      if (selectedStyle) params.styleSlug = selectedStyle;
+      if (selectedRoom) params.roomSlug = selectedRoom;
 
       const { data } = await productApi.getAll(params);
       setProducts(data.data || []);
@@ -162,7 +259,7 @@ export default function ShopPage() {
       setFetching(false);
       setInitialLoading(false);
     }
-  }, [page, sortBy, selectedSizes, selectedColors, priceRange, searchParams, gender, country]);
+  }, [page, sortBy, selectedSizes, selectedColors, priceRange, selectedMaterial, selectedStyle, selectedRoom, searchParams, gender, country]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
@@ -176,11 +273,30 @@ export default function ShopPage() {
     setPage(1);
   };
 
+  // Single-select: clicking the already-active chip clears the facet,
+  // clicking another swaps it — there is only ever one Material/Style/Room
+  // per product to match against.
+  const selectMaterial = (slug: string) => {
+    setSelectedMaterial(prev => (prev === slug ? '' : slug));
+    setPage(1);
+  };
+  const selectStyle = (slug: string) => {
+    setSelectedStyle(prev => (prev === slug ? '' : slug));
+    setPage(1);
+  };
+  const selectRoom = (slug: string) => {
+    setSelectedRoom(prev => (prev === slug ? '' : slug));
+    setPage(1);
+  };
+
   const clearFilters = () => {
     setSelectedSizes([]);
     setSelectedColors([]);
     setPriceRange(PRICE_RANGE);
     setSortBy('newest');
+    setSelectedMaterial('');
+    setSelectedStyle('');
+    setSelectedRoom('');
     setPage(1);
   };
 
@@ -188,12 +304,16 @@ export default function ShopPage() {
   const handlePriceCommit = (v: number[]) => { setPriceRange(v); setPage(1); };
 
   const activeFilterCount = selectedSizes.length + selectedColors.length +
-    (priceRange[0] > 0 || priceRange[1] < PRICE_RANGE[1] ? 1 : 0);
+    (priceRange[0] > 0 || priceRange[1] < PRICE_RANGE[1] ? 1 : 0) +
+    (selectedMaterial ? 1 : 0) + (selectedStyle ? 1 : 0) + (selectedRoom ? 1 : 0);
 
   const filterProps: FilterPanelProps = {
     isMobile, priceRange, selectedSizes, selectedColors,
+    materials, styles, rooms, selectedMaterial, selectedStyle, selectedRoom,
     activeFilterCount, onPriceCommit: handlePriceCommit,
-    onToggleSize: toggleSize, onToggleColor: toggleColor, onClear: clearFilters,
+    onToggleSize: toggleSize, onToggleColor: toggleColor,
+    onSelectMaterial: selectMaterial, onSelectStyle: selectStyle, onSelectRoom: selectRoom,
+    onClear: clearFilters,
   };
 
   return (
@@ -253,6 +373,27 @@ export default function ShopPage() {
             {selectedColors.map(c => (
               <Chip key={c} label={c} size="small" onDelete={() => toggleColor(c)} sx={{ bgcolor: '#1a1a1a', color: 'white' }} />
             ))}
+            {selectedMaterial && (
+              <Chip
+                label={materials.find(m => m.slug === selectedMaterial)?.name || selectedMaterial}
+                size="small" onDelete={() => selectMaterial(selectedMaterial)}
+                sx={{ bgcolor: '#1a1a1a', color: 'white' }}
+              />
+            )}
+            {selectedStyle && (
+              <Chip
+                label={styles.find(s => s.slug === selectedStyle)?.name || selectedStyle}
+                size="small" onDelete={() => selectStyle(selectedStyle)}
+                sx={{ bgcolor: '#1a1a1a', color: 'white' }}
+              />
+            )}
+            {selectedRoom && (
+              <Chip
+                label={rooms.find(r => r.slug === selectedRoom)?.name || selectedRoom}
+                size="small" onDelete={() => selectRoom(selectedRoom)}
+                sx={{ bgcolor: '#1a1a1a', color: 'white' }}
+              />
+            )}
           </Box>
         )}
 
