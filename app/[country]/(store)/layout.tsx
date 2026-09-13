@@ -1,13 +1,13 @@
-import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
-import CartDrawer from '../../components/cart/CartDrawer';
-import MobileBottomNav from '../../components/layout/MobileBottomNav';
-import AuthInitializer from '../../components/common/AuthInitializer';
-import GenderInitializer from '../../components/common/GenderInitializer';
-import LoginModal from '../../components/auth/LoginModal';
-import MobileMotionConfig from '../../components/common/MobileMotionConfig';
-import { API_URL } from '../../constants';
-import { HEADER_BEFORE, HEADER_AFTER } from '../../lib/headerLinks';
+import Navbar from '../../../components/layout/Navbar';
+import Footer from '../../../components/layout/Footer';
+import CartDrawer from '../../../components/cart/CartDrawer';
+import MobileBottomNav from '../../../components/layout/MobileBottomNav';
+import AuthInitializer from '../../../components/common/AuthInitializer';
+import GenderInitializer from '../../../components/common/GenderInitializer';
+import LoginModal from '../../../components/auth/LoginModal';
+import MobileMotionConfig from '../../../components/common/MobileMotionConfig';
+import { API_URL } from '../../../constants';
+import { HEADER_BEFORE, HEADER_AFTER } from '../../../lib/headerLinks';
 
 // Strip /api/v1 to get the base server URL — works for both localhost and production
 const API_BASE = API_URL.replace(/\/api\/v1\/?$/, '');

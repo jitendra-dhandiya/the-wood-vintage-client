@@ -4,8 +4,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Box, Container, Typography, Skeleton } from '@mui/material';
 import { motion } from 'framer-motion';
-import { categoryApi } from '../../../services/api.service';
-import type { Category } from '../../../types';
+import { categoryApi } from '../../../../services/api.service';
+import type { Category } from '../../../../types';
+import { useCountry } from '../../../../contexts/CountryContext';
+import { withCountry } from '../../../../lib/withCountry';
 
 const DARK_GRADIENTS = [
   'linear-gradient(160deg, #1a0a2e 0%, #2d1b4e 100%)',
@@ -29,6 +31,7 @@ function CategorySkeleton() {
 }
 
 export default function CategoriesPage() {
+  const { country } = useCountry();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -114,7 +117,7 @@ export default function CategoriesPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: Math.min(i * 0.05, 0.5), duration: 0.45 }}
                 >
-                  <Link href={`/category/${cat.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+                  <Link href={withCountry(`/category/${cat.slug}`, country)} style={{ textDecoration: 'none', display: 'block' }}>
                     <Box
                       sx={{
                         cursor: 'pointer',
@@ -212,7 +215,7 @@ export default function CategoriesPage() {
             </Typography>
             <Box
               component={Link}
-              href="/shop"
+              href={withCountry('/shop', country)}
               sx={{
                 display: 'inline-block', px: 4, py: 1.5,
                 border: '2px solid #111', color: '#111',

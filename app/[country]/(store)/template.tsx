@@ -1,4 +1,4 @@
-import PageTransition from '../../components/common/PageTransition';
+import PageTransition from '../../../components/common/PageTransition';
 
 /**
  * A template, not a layout: Next remounts this on every navigation, which is

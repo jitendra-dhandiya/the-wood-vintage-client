@@ -13,14 +13,15 @@ import {
 } from '@mui/icons-material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { useCart } from '../../../hooks/useCart';
-import { orderApi, paymentApi, userApi, cartApi } from '../../../services/api.service';
-import { formatPrice } from '../../../utils/format';
-import { SHIPPING_METHODS, type ShippingMethodId } from '../../../constants';
-import { useAppSelector, useAppDispatch } from '../../../store';
-import { openLoginModal } from '../../../store/slices/uiSlice';
-import { useCountry } from '../../../contexts/CountryContext';
-import type { Address } from '../../../types';
+import { useCart } from '../../../../hooks/useCart';
+import { orderApi, paymentApi, userApi, cartApi } from '../../../../services/api.service';
+import { formatPrice } from '../../../../utils/format';
+import { SHIPPING_METHODS, type ShippingMethodId } from '../../../../constants';
+import { useAppSelector, useAppDispatch } from '../../../../store';
+import { openLoginModal } from '../../../../store/slices/uiSlice';
+import { useCountry } from '../../../../contexts/CountryContext';
+import { withCountry } from '../../../../lib/withCountry';
+import type { Address } from '../../../../types';
 import toast from 'react-hot-toast';
 
 const addressSchema = Yup.object({
@@ -316,7 +317,7 @@ export default function CheckoutPage() {
             try {
               await paymentApi.verifyPayment({ ...response, orderId: order.id });
               await clearCart();
-              router.push(`/order-success?orderNumber=${order.orderNumber}`);
+              router.push(withCountry(`/order-success?orderNumber=${order.orderNumber}`, country));
             } catch { toast.error('Payment verification failed'); }
           },
           modal: { ondismiss: () => toast.error('Payment cancelled') },
@@ -336,7 +337,7 @@ export default function CheckoutPage() {
 
   const closeStatusModal = () => {
     if (payStatus === 'success' && successOrder) {
-      router.push(`/order-success?orderNumber=${successOrder.orderNumber}`);
+      router.push(withCountry(`/order-success?orderNumber=${successOrder.orderNumber}`, country));
     } else {
       setPayStatus('idle');
     }

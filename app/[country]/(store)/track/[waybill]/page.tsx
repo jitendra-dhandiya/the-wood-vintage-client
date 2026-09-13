@@ -8,7 +8,7 @@ import {
 import {
   LocalShipping, CheckCircle, Inventory, LocationOn, AccessTime,
 } from '@mui/icons-material';
-import { shippingApi } from '../../../../services/api.service';
+import { shippingApi } from '../../../../../services/api.service';
 
 interface TrackingEvent {
   status: string;

@@ -1,4 +1,4 @@
-import { ListingPageSkeleton } from '../../../components/common/Skeletons';
+import { ListingPageSkeleton } from '../../../../components/common/Skeletons';
 
 /**
  * Streamed while this route's data is fetched. Its geometry mirrors the real

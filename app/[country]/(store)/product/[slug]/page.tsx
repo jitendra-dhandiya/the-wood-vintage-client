@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { cookies } from 'next/headers';
-import ProductDetailClient from '../../../../components/product/ProductDetailClient';
+import ProductDetailClient from '../../../../../components/product/ProductDetailClient';
 import { API_URL } from '@/constants';
-import { COUNTRY_COOKIE } from '../../../../lib/countryPreference';
+import { getEnabledCountries, buildCountryAlternates } from '../../../../../lib/countries';
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ country: string; slug: string }>;
 }
 
 /**
@@ -30,9 +29,11 @@ async function getProduct(slug: string, country?: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const product = await getProduct(slug);
+  const { country, slug } = await params;
+  const product = await getProduct(slug, country);
   if (!product) return { title: 'Product Not Found' };
+  const countries = await getEnabledCountries();
+  const alt = buildCountryAlternates(`/product/${slug}`, country, countries);
 
   return {
     title: product.metaTitle || product.name,
@@ -43,13 +44,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: product.metaDesc || product.shortDesc,
       images: product.images?.[0]?.url ? [{ url: product.images[0].url, alt: product.name }] : undefined,
       type: 'website',
+      url: alt.canonical,
     },
+    alternates: alt,
   };
 }
 
 export default async function ProductPage({ params }: Props) {
-  const { slug } = await params;
-  const country = (await cookies()).get(COUNTRY_COOKIE)?.value;
+  // URL-first (phase 3): the country segment is the source of truth for
+  // country-aware pricing now, not the `wv_country` cookie — middleware
+  // already guarantees it's valid+enabled by the time this page renders, so
+  // this SSR fetch and the client-side `CountryContext` are guaranteed to
+  // agree on which country's price this render shows.
+  const { country, slug } = await params;
   const product = await getProduct(slug, country);
   if (!product) notFound();
 

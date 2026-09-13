@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Box, Container, Typography, Divider } from '@mui/material';
 import { HelpOutline } from '@mui/icons-material';
+import { withCountry } from '../../../../lib/withCountry';
 
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions | Unique Dressup',
@@ -57,7 +58,8 @@ const Group = ({ title, children }: { title: string; children: React.ReactNode }
   </Box>
 );
 
-export default function FaqPage() {
+export default async function FaqPage({ params }: { params: Promise<{ country: string }> }) {
+  const { country } = await params;
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa' }}>
       {/* Hero */}
@@ -113,7 +115,7 @@ export default function FaqPage() {
             <Qa q="What are the shipping charges?">
               Standard Delivery is ₹79 (5–7 business days), Cash on Delivery is ₹149 (5–7 business days),
               and Express Delivery is ₹249 (1–2 business days, on select pin codes). Full details are in
-              our <A href="/shipping-policy">Shipping Policy</A>.
+              our <A href={withCountry('/shipping-policy', country)}>Shipping Policy</A>.
             </Qa>
             <Qa q="How does Cash on Delivery work?">
               The ₹149 delivery charge is paid online when you place the order. The product amount is
@@ -158,7 +160,7 @@ export default function FaqPage() {
               Message us on Instagram at <Ig />. Our team reviews the request and arranges a pickup where
               the service is available — up to 2 attempts. If your PIN code is not serviceable for
               pickup, you will need to self-ship the item to our warehouse. The full terms are in our{' '}
-              <A href="/return-policy">Return &amp; Exchange Policy</A>.
+              <A href={withCountry('/return-policy', country)}>Return &amp; Exchange Policy</A>.
             </Qa>
           </Group>
 
@@ -184,7 +186,7 @@ export default function FaqPage() {
               </Typography>
               <Typography variant="body2" sx={{ color: '#5a5a5a', lineHeight: 1.8 }}>
                 Message us on Instagram at <Ig /> with your order number, or use our{' '}
-                <A href="/contact">contact page</A>. We are happy to help.
+                <A href={withCountry('/contact', country)}>contact page</A>. We are happy to help.
               </Typography>
             </Box>
           </Box>

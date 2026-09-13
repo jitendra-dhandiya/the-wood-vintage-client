@@ -1,11 +1,13 @@
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import CategoryPageClient from '../../../../components/category/CategoryPageClient';
-import { API_URL, SITE_URL } from '../../../../constants';
-import { legacyCategoryTarget } from '../../../../lib/legacyCategorySlugs';
+import CategoryPageClient from '../../../../../components/category/CategoryPageClient';
+import { API_URL } from '../../../../../constants';
+import { legacyCategoryTarget } from '../../../../../lib/legacyCategorySlugs';
+import { withCountry } from '../../../../../lib/withCountry';
+import { getEnabledCountries, buildCountryAlternates } from '../../../../../lib/countries';
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ country: string; slug: string }>;
   searchParams: Promise<Record<string, string>>;
 }
 
@@ -21,9 +23,11 @@ async function fetchCategory(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { country, slug } = await params;
   const cat = await fetchCategory(slug);
   if (!cat) return { title: 'Category Not Found' };
+  const countries = await getEnabledCountries();
+  const alt = buildCountryAlternates(`/category/${cat.slug}`, country, countries);
   return {
     title: cat.seoMeta?.metaTitle || `${cat.name} — Unique Dressup`,
     description: cat.seoMeta?.metaDescription || cat.description,
@@ -31,13 +35,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: cat.name,
       description: cat.description,
       images: cat.imageUrl ? [cat.imageUrl] : [],
-      url: `${SITE_URL}/category/${cat.slug}`,
+      url: alt.canonical,
     },
+    alternates: alt,
   };
 }
 
 export default async function CategoryPage({ params, searchParams }: Props) {
-  const { slug } = await params;
+  const { country, slug } = await params;
   const sp = await searchParams;
   const cat = await fetchCategory(slug);
 
@@ -47,7 +52,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     // answers with a 308, which Google treats as a 301 for ranking — the
     // difference between them is only whether the HTTP method is preserved.
     const moved = legacyCategoryTarget(slug);
-    if (moved) permanentRedirect(`/category/${moved}`);
+    if (moved) permanentRedirect(withCountry(`/category/${moved}`, country));
     notFound();
   }
 

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import BlogListClient from '../../../../components/blog/BlogListClient';
+import BlogListClient from '../../../../../components/blog/BlogListClient';
 
 export const metadata: Metadata = {
   title: 'Fashion Blog — Unique Dressup',

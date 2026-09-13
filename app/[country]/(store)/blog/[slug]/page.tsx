@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Box, Typography, Chip, Divider, Avatar } from '@mui/material';
-import { formatDate } from '../../../../utils/format';
-import { API_URL, SITE_URL } from '../../../../constants';
+import { formatDate } from '../../../../../utils/format';
+import { API_URL, SITE_URL } from '../../../../../constants';
 
 interface Props {
   params: Promise<{ slug: string }>;

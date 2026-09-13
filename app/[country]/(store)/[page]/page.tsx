@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Box, Typography, Container } from '@mui/material';
 import { API_URL } from '@/constants';
+import { getEnabledCountries, buildCountryAlternates } from '@/lib/countries';
 
 interface Props {
-  params: Promise<{ page: string }>;
+  params: Promise<{ country: string; page: string }>;
 }
 
 async function fetchCmsPage(slug: string) {
@@ -18,12 +19,15 @@ async function fetchCmsPage(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { page: slug } = await params;
+  const { country, page: slug } = await params;
   const page = await fetchCmsPage(slug);
   if (!page) return { title: 'Page Not Found' };
+  const countries = await getEnabledCountries();
+  const alt = buildCountryAlternates(`/${slug}`, country, countries);
   return {
     title: page.seoMeta?.metaTitle || `${page.title} — Unique Dressup`,
     description: page.seoMeta?.metaDescription || page.excerpt,
+    alternates: alt,
   };
 }
 

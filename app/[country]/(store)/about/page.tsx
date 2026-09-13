@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Box, Container, Typography, Grid } from '@mui/material';
 import { Favorite, VerifiedUser, LocalShipping, SupportAgent } from '@mui/icons-material';
+import { withCountry } from '../../../../lib/withCountry';
 
 export const metadata: Metadata = {
   title: 'About Us | Unique Dressup',
@@ -30,7 +31,8 @@ const values = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage({ params }: { params: Promise<{ country: string }> }) {
+  const { country } = await params;
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa' }}>
       {/* Hero */}
@@ -135,7 +137,7 @@ export default function AboutPage() {
           </Typography>
           <Box
             component="a"
-            href="/shop"
+            href={withCountry('/shop', country)}
             sx={{
               display: 'inline-block', bgcolor: '#c9a84c', color: 'white',
               px: 4, py: 1.5, borderRadius: 1, textDecoration: 'none',

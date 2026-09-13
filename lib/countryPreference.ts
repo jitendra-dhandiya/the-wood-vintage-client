@@ -74,3 +74,17 @@ export const guessCountryFromLocale = (): string | null => {
   const region = locale.split('-')[1];
   return looksLikeCountryCode(region) ? region.toUpperCase() : null;
 };
+
+/**
+ * Same region guess as `guessCountryFromLocale`, but from the server side of
+ * an `Accept-Language` request header (middleware runs before any browser
+ * `navigator` object exists) — e.g. `"en-AE,en;q=0.9,fr;q=0.8"` → `"AE"`.
+ * Only a candidate — still has to be checked against the enabled-countries
+ * list by the caller.
+ */
+export const guessCountryFromAcceptLanguage = (header?: string | null): string | null => {
+  if (!header) return null;
+  const firstTag = header.split(',')[0]?.split(';')[0]?.trim();
+  const region = firstTag?.split('-')[1];
+  return looksLikeCountryCode(region) ? region.toUpperCase() : null;
+};

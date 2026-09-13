@@ -1,5 +1,5 @@
 'use client';
-import ErrorFallback from '../../components/common/ErrorFallback';
+import ErrorFallback from '../../../components/common/ErrorFallback';
 
 export default function StoreError({
   error,

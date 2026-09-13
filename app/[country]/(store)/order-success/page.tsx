@@ -4,10 +4,13 @@ import Link from 'next/link';
 import { Box, Container, Typography, Button, Stack } from '@mui/material';
 import { CheckCircle, LocalShipping, Replay } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { useCountry } from '../../../../contexts/CountryContext';
+import { withCountry } from '../../../../lib/withCountry';
 
 export default function OrderSuccessPage() {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get('orderNumber');
+  const { country } = useCountry();
 
   return (
     <Container maxWidth="sm" sx={{ py: 10, textAlign: 'center' }}>
@@ -48,7 +51,7 @@ export default function OrderSuccessPage() {
               Track Order
             </Button>
           )}
-          <Button component={Link} href="/shop" variant="outlined" sx={{ borderColor: '#1a1a1a', py: 1.5, px: 4 }}>
+          <Button component={Link} href={withCountry('/shop', country)} variant="outlined" sx={{ borderColor: '#1a1a1a', py: 1.5, px: 4 }}>
             Continue Shopping
           </Button>
         </Stack>

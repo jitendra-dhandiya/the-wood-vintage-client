@@ -7,7 +7,9 @@ import {
 } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
 import { motion } from 'framer-motion';
-import { collectionApi, bannerApi } from '../../../../services/api.service';
+import { collectionApi, bannerApi } from '../../../../../services/api.service';
+import { useCountry } from '../../../../../contexts/CountryContext';
+import { withCountry } from '../../../../../lib/withCountry';
 
 interface Collection {
   id: string;
@@ -33,6 +35,7 @@ function CollectionCardSkeleton() {
 }
 
 export default function CollectionsPage() {
+  const { country } = useCountry();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   /**
@@ -189,7 +192,7 @@ export default function CollectionsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.1 }}
                     >
-                      <Link href={`/collections/${col.slug}`} style={{ textDecoration: 'none' }}>
+                      <Link href={withCountry(`/collections/${col.slug}`, country)} style={{ textDecoration: 'none' }}>
                         <Card
                           elevation={0}
                           sx={{
@@ -343,7 +346,7 @@ export default function CollectionsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.06 }}
                     >
-                      <Link href={`/collections/${col.slug}`} style={{ textDecoration: 'none' }}>
+                      <Link href={withCountry(`/collections/${col.slug}`, country)} style={{ textDecoration: 'none' }}>
                         <Card
                           elevation={0}
                           sx={{
@@ -442,7 +445,7 @@ export default function CollectionsPage() {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Check back soon — new collections are on their way.
             </Typography>
-            <Button component={Link} href="/shop" variant="outlined" sx={{ borderColor: '#1a1a1a', color: '#1a1a1a' }}>
+            <Button component={Link} href={withCountry('/shop', country)} variant="outlined" sx={{ borderColor: '#1a1a1a', color: '#1a1a1a' }}>
               Browse All Products
             </Button>
           </Box>

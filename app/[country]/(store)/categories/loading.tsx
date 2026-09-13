@@ -1,4 +1,4 @@
-import { BannerPageSkeleton } from '../../../components/common/Skeletons';
+import { BannerPageSkeleton } from '../../../../components/common/Skeletons';
 
 /**
  * Streamed while this route's data is fetched. Its geometry mirrors the real

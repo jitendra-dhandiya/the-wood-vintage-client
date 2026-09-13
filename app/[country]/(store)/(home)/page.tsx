@@ -1,14 +1,25 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { Box } from '@mui/material';
-import GenderHomePage from '../../../components/home/GenderHomePage';
-import { API_URL, SITE_NAME } from '../../../constants';
-import { GENDER_COOKIE, normalizeGender, type GenderType } from '../../../lib/genderPreference';
+import GenderHomePage from '../../../../components/home/GenderHomePage';
+import { API_URL, SITE_NAME } from '../../../../constants';
+import { GENDER_COOKIE, normalizeGender, type GenderType } from '../../../../lib/genderPreference';
+import { getEnabledCountries, buildCountryAlternates } from '../../../../lib/countries';
 
-export const metadata: Metadata = {
-  title: `${SITE_NAME} — Premium Fashion & Lifestyle`,
-  description: 'Discover the latest trends in fashion. Shop premium clothing, co-ord sets, dresses, and streetwear at the best prices.',
-};
+interface Props {
+  params: Promise<{ country: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { country } = await params;
+  const countries = await getEnabledCountries();
+  const alt = buildCountryAlternates('/', country, countries);
+  return {
+    title: `${SITE_NAME} — Premium Fashion & Lifestyle`,
+    description: 'Discover the latest trends in fashion. Shop premium clothing, co-ord sets, dresses, and streetwear at the best prices.',
+    alternates: alt,
+  };
+}
 
 const API = API_URL || 'http://localhost:5000/api/v1';
 

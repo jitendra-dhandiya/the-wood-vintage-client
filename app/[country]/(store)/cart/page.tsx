@@ -7,16 +7,17 @@ import {
   TextField, Divider, Stack, Card, CardContent, Chip,
 } from '@mui/material';
 import { Add, Remove, DeleteOutline, ShoppingBag } from '@mui/icons-material';
-import { useCart } from '../../../hooks/useCart';
-import { cartApi } from '../../../services/api.service';
-import { formatPrice } from '../../../utils/format';
-import { FREE_SHIPPING_THRESHOLD, SHIPPING_CHARGE } from '../../../constants';
-import { useCountry } from '../../../contexts/CountryContext';
+import { useCart } from '../../../../hooks/useCart';
+import { cartApi } from '../../../../services/api.service';
+import { formatPrice } from '../../../../utils/format';
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_CHARGE } from '../../../../constants';
+import { useCountry } from '../../../../contexts/CountryContext';
+import { withCountry } from '../../../../lib/withCountry';
 import toast from 'react-hot-toast';
 
 export default function CartPage() {
   const { cart, subtotal, updateQuantity, removeFromCart, fetchCart } = useCart();
-  const { currencySymbol } = useCountry();
+  const { currencySymbol, country } = useCountry();
   const [couponCode, setCouponCode] = useState('');
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState('');
@@ -61,7 +62,7 @@ export default function CartPage() {
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
           Looks like you haven't added anything to your bag yet
         </Typography>
-        <Button variant="contained" component={Link} href="/shop" sx={{ bgcolor: '#1a1a1a', py: 1.5, px: 5 }}>
+        <Button variant="contained" component={Link} href={withCountry('/shop', country)} sx={{ bgcolor: '#1a1a1a', py: 1.5, px: 5 }}>
           Start Shopping
         </Button>
       </Container>
@@ -92,7 +93,7 @@ export default function CartPage() {
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <Box>
-                          <Typography component={Link} href={`/product/${item.product?.slug}`}
+                          <Typography component={Link} href={withCountry(`/product/${item.product?.slug}`, country)}
                             sx={{ fontWeight: 700, textDecoration: 'none', color: 'inherit', '&:hover': { color: '#c9a84c' } }}>
                             {item.product?.name}
                           </Typography>
@@ -195,7 +196,7 @@ export default function CartPage() {
               <Button
                 fullWidth variant="contained" size="large"
                 component={Link}
-                href={`/checkout?coupon=${encodeURIComponent(appliedCoupon || '')}&discount=${couponDiscount}`}
+                href={withCountry(`/checkout?coupon=${encodeURIComponent(appliedCoupon || '')}&discount=${couponDiscount}`, country)}
                 sx={{ bgcolor: '#1a1a1a', py: 1.75, letterSpacing: '0.1em', fontWeight: 700 }}
               >
                 Proceed to Checkout

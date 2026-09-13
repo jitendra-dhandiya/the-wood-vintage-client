@@ -7,12 +7,15 @@ import {
 } from '@mui/material';
 import { Search, Close } from '@mui/icons-material';
 import { motion } from 'framer-motion';
-import { productApi } from '../../../services/api.service';
-import ProductCard from '../../../components/product/ProductCard';
+import { productApi } from '../../../../services/api.service';
+import ProductCard from '../../../../components/product/ProductCard';
+import { useCountry } from '../../../../contexts/CountryContext';
+import { withCountry } from '../../../../lib/withCountry';
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { country } = useCountry();
   const [query, setQuery] = useState(searchParams.get('q') || '');
   const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
   const [products, setProducts] = useState<any[]>([]);
@@ -39,7 +42,7 @@ export default function SearchPage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {
-      router.push(`/search?q=${encodeURIComponent(inputValue.trim())}`);
+      router.push(withCountry(`/search?q=${encodeURIComponent(inputValue.trim())}`, country));
     }
   };
 
@@ -59,7 +62,7 @@ export default function SearchPage() {
               startAdornment: <InputAdornment position="start"><Search /></InputAdornment>,
               endAdornment: inputValue && (
                 <InputAdornment position="end">
-                  <IconButton size="small" onClick={() => { setInputValue(''); router.push('/search'); }}>
+                  <IconButton size="small" onClick={() => { setInputValue(''); router.push(withCountry('/search', country)); }}>
                     <Close fontSize="small" />
                   </IconButton>
                 </InputAdornment>
@@ -77,7 +80,7 @@ export default function SearchPage() {
             <Typography variant="body2" color="text.secondary">
               {loading ? 'Searching...' : `${total} results for`}
             </Typography>
-            {!loading && <Chip label={`"${query}"`} size="small" onDelete={() => router.push('/search')} />}
+            {!loading && <Chip label={`"${query}"`} size="small" onDelete={() => router.push(withCountry('/search', country))} />}
           </Box>
 
           {!loading && products.length === 0 && (

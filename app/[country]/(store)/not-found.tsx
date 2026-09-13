@@ -1,5 +1,8 @@
+'use client';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { Box, Container, Typography, Button, Stack } from '@mui/material';
+import { withCountry } from '../../../lib/withCountry';
 
 /**
  * The storefront's own 404, rendered inside the store layout so a shopper who
@@ -11,8 +14,17 @@ import { Box, Container, Typography, Button, Stack } from '@mui/material';
  * Adding a loading.tsx above any route that calls notFound() puts a Suspense
  * fallback on the wire first and the status is then fixed at 200, which is why
  * the product, category and collection routes deliberately have none.
+ *
+ * A Client Component specifically so it can read the `[country]` segment via
+ * `useParams()` — Next does not reliably pass `params` to a `not-found.tsx`
+ * boundary the way it does an ordinary page, and every link here needs to
+ * stay under the country the shopper was already browsing.
  */
 export default function StoreNotFound() {
+  const params = useParams();
+  const raw = (params as Record<string, string | string[] | undefined> | null)?.country;
+  const country = (Array.isArray(raw) ? raw[0] : raw) ?? null;
+
   return (
     <Container maxWidth="sm" sx={{ py: { xs: 8, md: 14 }, textAlign: 'center' }}>
       <Typography
@@ -44,7 +56,7 @@ export default function StoreNotFound() {
         sx={{ mb: 5 }}
       >
         <Button
-          component={Link} href="/shop" variant="contained" size="large"
+          component={Link} href={withCountry('/shop', country)} variant="contained" size="large"
           sx={{
             bgcolor: '#1a1a1a', px: 4, py: 1.5, fontSize: '0.78rem',
             letterSpacing: '0.12em', fontWeight: 700,
@@ -54,7 +66,7 @@ export default function StoreNotFound() {
           Shop All
         </Button>
         <Button
-          component={Link} href="/" variant="outlined" size="large"
+          component={Link} href={withCountry('/', country)} variant="outlined" size="large"
           sx={{
             borderColor: '#ddd', color: '#1a1a1a', px: 4, py: 1.5,
             fontSize: '0.78rem', letterSpacing: '0.12em', fontWeight: 700,
@@ -67,9 +79,9 @@ export default function StoreNotFound() {
 
       <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', flexWrap: 'wrap' }}>
         {[
-          { label: 'New In',      href: '/shop?isNewArrival=true' },
-          { label: 'Collections', href: '/collections' },
-          { label: 'Sale',        href: '/shop?discount=true' },
+          { label: 'New In',      href: withCountry('/shop?isNewArrival=true', country) },
+          { label: 'Collections', href: withCountry('/collections', country) },
+          { label: 'Sale',        href: withCountry('/shop?discount=true', country) },
         ].map(l => (
           <Link
             key={l.href}
