@@ -13,8 +13,11 @@ import { closeCart } from '../../store/slices/cartSlice';
 import { useCart } from '../../hooks/useCart';
 import { formatPrice } from '../../utils/format';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_CHARGE } from '../../constants';
+import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 export default function CartDrawer() {
+  const { country } = useCountry();
   const dispatch = useAppDispatch();
   const { isOpen } = useAppSelector((s) => s.cart);
   const { cart, subtotal, isLoading, updateQuantity, removeFromCart } = useCart();
@@ -60,7 +63,7 @@ export default function CartDrawer() {
             <Button
               variant="contained"
               component={Link}
-              href="/shop"
+              href={withCountry('/shop', country)}
               onClick={() => dispatch(closeCart())}
               sx={{ bgcolor: '#1a1a1a' }}
             >
@@ -156,7 +159,7 @@ export default function CartDrawer() {
             fullWidth
             variant="contained"
             component={Link}
-            href="/checkout"
+            href={withCountry('/checkout', country)}
             onClick={() => dispatch(closeCart())}
             sx={{ bgcolor: '#1a1a1a', py: 1.5, fontSize: '0.8rem', letterSpacing: '0.1em' }}
           >
@@ -166,7 +169,7 @@ export default function CartDrawer() {
             fullWidth
             variant="outlined"
             component={Link}
-            href="/cart"
+            href={withCountry('/cart', country)}
             onClick={() => dispatch(closeCart())}
             sx={{ mt: 1, py: 1.25, fontSize: '0.75rem', letterSpacing: '0.08em' }}
           >

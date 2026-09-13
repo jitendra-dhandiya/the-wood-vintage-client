@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { productApi } from '../../services/api.service';
 import ProductCard from '../product/ProductCard';
 import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 const SORT_OPTIONS = [
   { value: 'createdAt:desc', label: 'Newest' },
@@ -50,8 +51,8 @@ export default function CategoryPageClient({ category, searchParams }: Props) {
     <Box sx={{ maxWidth: 1400, mx: 'auto', px: { xs: 2, md: 4 }, py: 4 }}>
       {/* Breadcrumbs */}
       <Breadcrumbs separator={<NavigateNext fontSize="small" />} sx={{ mb: 3 }}>
-        <MuiLink component={Link} href="/" underline="hover" color="text.secondary" variant="body2">Home</MuiLink>
-        <MuiLink component={Link} href="/shop" underline="hover" color="text.secondary" variant="body2">Shop</MuiLink>
+        <MuiLink component={Link} href={withCountry('/', country)} underline="hover" color="text.secondary" variant="body2">Home</MuiLink>
+        <MuiLink component={Link} href={withCountry('/shop', country)} underline="hover" color="text.secondary" variant="body2">Shop</MuiLink>
         <Typography variant="body2" color="text.primary" fontWeight={600}>{category.name}</Typography>
       </Breadcrumbs>
 

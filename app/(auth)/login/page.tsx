@@ -7,12 +7,15 @@ import { ArrowBack } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import PasswordlessAuth from '../../../components/auth/PasswordlessAuth';
 import { useAppSelector } from '../../../store';
+import { useCountry } from '../../../contexts/CountryContext';
+import { withCountry } from '../../../lib/withCountry';
 
 function LoginInner() {
   const router = useRouter();
   const params = useSearchParams();
   const isAuth = useAppSelector((s) => s.auth.isAuthenticated);
-  const redirect = params.get('redirect') || '/';
+  const { country } = useCountry();
+  const redirect = params.get('redirect') || withCountry('/', country);
 
   useEffect(() => { if (isAuth) router.replace(redirect); }, [isAuth, router, redirect]);
 
@@ -20,7 +23,7 @@ function LoginInner() {
     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', bgcolor: '#fafafa', py: 6 }}>
       <Container maxWidth="xs">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-          <Button component={Link} href="/" startIcon={<ArrowBack />}
+          <Button component={Link} href={withCountry('/', country)} startIcon={<ArrowBack />}
             sx={{ mb: 3, color: 'text.secondary', textTransform: 'none' }}>
             Back to shop
           </Button>

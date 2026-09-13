@@ -10,6 +10,8 @@ import {
 } from '@mui/icons-material';
 import { returnApi, orderApi } from '../../../../services/api.service';
 import { formatDate, formatPrice } from '../../../../utils/format';
+import { useCountry } from '../../../../contexts/CountryContext';
+import { withCountry } from '../../../../lib/withCountry';
 
 const INSTAGRAM_HANDLE = '@uniquedressup.inn';
 const INSTAGRAM_URL = 'https://www.instagram.com/uniquedressup.inn';
@@ -43,6 +45,7 @@ function hoursLeft(deliveryDate?: string | null): number | null {
 }
 
 export default function ReturnsPage() {
+  const { country } = useCountry();
   const [returns, setReturns] = useState<ReturnRequest[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -118,7 +121,7 @@ export default function ReturnsPage() {
           >
             Message us on Instagram
           </Button>
-          <Button variant="outlined" component={Link} href="/return-policy" sx={{ borderColor: 'divider', color: 'text.primary' }}>
+          <Button variant="outlined" component={Link} href={withCountry('/return-policy', country)} sx={{ borderColor: 'divider', color: 'text.primary' }}>
             Read the full policy
           </Button>
         </Stack>

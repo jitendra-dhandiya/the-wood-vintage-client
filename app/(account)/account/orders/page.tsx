@@ -9,6 +9,8 @@ import { orderApi } from '../../../../services/api.service';
 import { formatPrice, formatDate } from '../../../../utils/format';
 import { ORDER_STATUSES } from '../../../../constants';
 import type { Order } from '../../../../types';
+import { useCountry } from '../../../../contexts/CountryContext';
+import { withCountry } from '../../../../lib/withCountry';
 
 const statusColors: Record<string, any> = {
   PENDING: 'warning', CONFIRMED: 'info', PROCESSING: 'info',
@@ -17,6 +19,7 @@ const statusColors: Record<string, any> = {
 };
 
 export default function OrdersPage() {
+  const { country } = useCountry();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -50,7 +53,7 @@ export default function OrdersPage() {
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
         When you place an order, it will appear here.
       </Typography>
-      <Button variant="contained" component={Link} href="/shop" sx={{ bgcolor: '#1a1a1a' }}>
+      <Button variant="contained" component={Link} href={withCountry('/shop', country)} sx={{ bgcolor: '#1a1a1a' }}>
         Start Shopping
       </Button>
     </Box>

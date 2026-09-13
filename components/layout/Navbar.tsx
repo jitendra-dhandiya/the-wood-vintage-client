@@ -25,6 +25,7 @@ import { productApi } from '../../services/api.service';
 import { MegaMenuDesktop, MegaMenuMobile, resolveQuickLinks, type NavCategory, type QuickLink } from './MegaMenu';
 import CountrySelector from '../common/CountrySelector';
 import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 import { visibleNavCategories } from '../../lib/navMenu';
 import { resolveNavLayout } from '../../lib/navLayout';
 import {
@@ -79,7 +80,7 @@ export default function Navbar({
   const { itemCount } = useAppSelector((s) => s.cart);
   const gender = useAppSelector((s) => s.gender.selected);
   // Multi-market chrome only shows once there is something to switch between.
-  const { countries: enabledCountries } = useCountry();
+  const { countries: enabledCountries, country } = useCountry();
   const showCountrySwitcher = enabledCountries.length >= 2;
 
   // Parents AND their children are filtered — see lib/navMenu. Previously only
@@ -169,7 +170,7 @@ export default function Navbar({
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(withCountry(`/search?q=${encodeURIComponent(searchQuery.trim())}`, country));
       setSearchOpen(false);
       setSearchQuery('');
       setSearchResults([]);
@@ -272,7 +273,7 @@ export default function Navbar({
 
             {/* Logo */}
             <Box sx={{ flexGrow: { xs: 1, md: 0 }, display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, mr: { md: 5 } }}>
-              <Link href="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+              <Link href={withCountry('/', country)} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
                 {settings.logo_url ? (
                   /**
                    * Height is set per breakpoint and the width follows from
@@ -333,7 +334,7 @@ export default function Navbar({
                   <Button
                     key={link.id || link.href}
                     component={Link}
-                    href={link.href}
+                    href={withCountry(link.href, country)}
                     sx={{
                       color: 'text.primary',
                       fontWeight: 500,
@@ -360,7 +361,7 @@ export default function Navbar({
                   <Button
                     key={link.id || link.href}
                     component={Link}
-                    href={link.href}
+                    href={withCountry(link.href, country)}
                     sx={{
                       color: 'text.primary',
                       fontWeight: 500,
@@ -510,7 +511,7 @@ export default function Navbar({
                   {searchResults.map((p: any) => (
                     <Link
                       key={p.id}
-                      href={`/product/${p.slug}`}
+                      href={withCountry(`/product/${p.slug}`, country)}
                       onClick={closeSearch}
                       style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
                     >
@@ -546,7 +547,7 @@ export default function Navbar({
                   ))}
                   {searchQuery.trim().length >= 2 && (
                     <Link
-                      href={`/search?q=${encodeURIComponent(searchQuery.trim())}`}
+                      href={withCountry(`/search?q=${encodeURIComponent(searchQuery.trim())}`, country)}
                       onClick={closeSearch}
                       style={{ textDecoration: 'none', display: 'block' }}
                     >
@@ -638,7 +639,7 @@ export default function Navbar({
           )}
           <List>
             {drawerLinks.map((link) => (
-              <ListItem key={link.id || link.href} component={Link} href={link.href} onClick={() => setMobileOpen(false)}
+              <ListItem key={link.id || link.href} component={Link} href={withCountry(link.href, country)} onClick={() => setMobileOpen(false)}
                 sx={{ color: 'inherit', textDecoration: 'none', '&:hover': { bgcolor: '#f5f5f5' } }}>
                 <ListItemText
                   primary={link.label}

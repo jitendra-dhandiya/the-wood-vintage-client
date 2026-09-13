@@ -8,6 +8,8 @@ import {
 import { ExpandMore, ExpandLess, ArrowForward, GridView } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LAYOUT_DEFAULTS, type NavLayout } from '../../lib/navLayout';
+import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 // ── Types ─────────────────────────────────────────────────────────
 export interface NavChild {
@@ -69,6 +71,7 @@ export const resolveQuickLinks = (links?: QuickLink[] | null): QuickLink[] =>
 
 // ── Desktop MegaMenu ──────────────────────────────────────────────
 export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }: MegaMenuProps) {
+  const { country } = useCountry();
   const links = quickLinks ?? [];
   const L = (layout ?? NAV_LAYOUT_DEFAULTS).desktop;
   const [open, setOpen]             = useState(false);
@@ -170,7 +173,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                     <Box
                       key={q.id || q.url}
                       component={Link}
-                      href={q.url}
+                      href={withCountry(q.url, country)}
                       onClick={() => { setOpen(false); onLinkClick?.(); }}
                       sx={{
                         display: 'flex', alignItems: 'center', gap: 1,
@@ -197,7 +200,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                       onMouseEnter={() => setHovered(cat.id)}
                       onClick={() => { setOpen(false); onLinkClick?.(); }}
                       component={Link}
-                      href={`/category/${cat.slug}`}
+                      href={withCountry(`/category/${cat.slug}`, country)}
                       sx={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                         px: 1, py: 0.85, borderRadius: 1, mb: 0.25,
@@ -221,7 +224,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                   <Divider sx={{ my: 1.5 }} />
                   <Box
                     component={Link}
-                    href="/categories"
+                    href={withCountry('/categories', country)}
                     onClick={() => { setOpen(false); onLinkClick?.(); }}
                     sx={{
                       display: 'flex', alignItems: 'center', gap: 1,
@@ -261,7 +264,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                           </Typography>
                           <Box
                             component={Link}
-                            href={`/category/${activeCategory.slug}`}
+                            href={withCountry(`/category/${activeCategory.slug}`, country)}
                             onClick={() => { setOpen(false); onLinkClick?.(); }}
                             sx={{
                               fontSize: '0.75rem', color: '#888', textDecoration: 'none',
@@ -283,7 +286,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                               <Box
                                 key={child.id}
                                 component={Link}
-                                href={`/category/${child.slug}`}
+                                href={withCountry(`/category/${child.slug}`, country)}
                                 onClick={() => { setOpen(false); onLinkClick?.(); }}
                                 sx={{
                                   display: 'block', px: 1.5, py: 0.9,
@@ -300,7 +303,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                             {/* "See all" link */}
                             <Box
                               component={Link}
-                              href={`/category/${activeCategory.slug}`}
+                              href={withCountry(`/category/${activeCategory.slug}`, country)}
                               onClick={() => { setOpen(false); onLinkClick?.(); }}
                               sx={{
                                 display: 'flex', alignItems: 'center', gap: 0.5,
@@ -320,7 +323,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                             </Typography>
                             <Box
                               component={Link}
-                              href={`/category/${activeCategory.slug}`}
+                              href={withCountry(`/category/${activeCategory.slug}`, country)}
                               onClick={() => { setOpen(false); onLinkClick?.(); }}
                               sx={{
                                 display: 'inline-flex', alignItems: 'center', gap: 1,
@@ -355,7 +358,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                       >
                         <Box
                           component={Link}
-                          href={`/category/${activeCategory.slug}`}
+                          href={withCountry(`/category/${activeCategory.slug}`, country)}
                           onClick={() => { setOpen(false); onLinkClick?.(); }}
                           sx={{ display: 'block', textDecoration: 'none' }}
                         >
@@ -417,7 +420,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                           </Typography>
                           <Box
                             component={Link}
-                            href="/shop?isNewArrival=true"
+                            href={withCountry('/shop?isNewArrival=true', country)}
                             onClick={() => { setOpen(false); onLinkClick?.(); }}
                             sx={{
                               mt: 2.5, px: 2.5, py: 0.75,
@@ -456,6 +459,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
  * scanned instead of read.
  */
 export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: MegaMenuProps) {
+  const { country } = useCountry();
   const [expanded, setExpanded] = useState<string | false>(false);
   const links = quickLinks ?? [];
   const L = (layout ?? NAV_LAYOUT_DEFAULTS).mobile;
@@ -475,7 +479,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
           <Box
             key={q.id || q.url}
             component={Link}
-            href={q.url}
+            href={withCountry(q.url, country)}
             onClick={onLinkClick}
             sx={{
               px: 1.5, py: 0.6,
@@ -503,7 +507,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
                   why it has its own hit area on the right. */}
               <Box
                 component={Link}
-                href={`/category/${cat.slug}`}
+                href={withCountry(`/category/${cat.slug}`, country)}
                 onClick={onLinkClick}
                 sx={{
                   flex: 1, minWidth: 0,
@@ -566,7 +570,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
               <Box sx={{ pl: 2, pr: 2, pb: 1.5, display: 'flex', flexWrap: 'wrap', justifyContent: rowJustify, gap: 0.75 }}>
                 <Box
                   component={Link}
-                  href={`/category/${cat.slug}`}
+                  href={withCountry(`/category/${cat.slug}`, country)}
                   onClick={onLinkClick}
                   sx={{
                     px: 1.5, py: 0.65, borderRadius: 5,
@@ -580,7 +584,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
                   <Box
                     key={child.id}
                     component={Link}
-                    href={`/category/${child.slug}`}
+                    href={withCountry(`/category/${child.slug}`, country)}
                     onClick={onLinkClick}
                     sx={{
                       px: 1.5, py: 0.65, borderRadius: 5,
@@ -601,7 +605,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
 
       <ListItemButton
         component={Link}
-        href="/categories"
+        href={withCountry('/categories', country)}
         onClick={onLinkClick}
         sx={{ py: 1.4, px: 2, justifyContent: rowJustify, color: 'inherit', textDecoration: 'none' }}
       >

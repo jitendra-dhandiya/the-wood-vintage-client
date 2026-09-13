@@ -5,6 +5,8 @@ import { Paper, BottomNavigation, BottomNavigationAction, Badge, useMediaQuery, 
 import { Home, Search, ShoppingBag, FavoriteBorder, PersonOutline } from '@mui/icons-material';
 import { useAppSelector, useAppDispatch } from '../../store';
 import { openCart } from '../../store/slices/cartSlice';
+import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 export default function MobileBottomNav() {
   const theme = useTheme();
@@ -12,14 +14,21 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { itemCount } = useAppSelector((s) => s.cart);
+  const { country } = useCountry();
 
   if (!isMobile || pathname.startsWith('/admin')) return null;
 
+  // Every storefront path now carries a leading `/<country>` segment
+  // (`/in/search`, not `/search`) — strip it before matching so the active
+  // tab still highlights correctly. `/account/*` never has one, so this is a
+  // no-op there.
+  const pathWithoutCountry = pathname.replace(/^\/[a-zA-Z]{2}(?=\/|$)/, '') || '/';
+
   const getActive = () => {
-    if (pathname === '/') return 0;
-    if (pathname.startsWith('/search')) return 1;
-    if (pathname.startsWith('/account/wishlist')) return 3;
-    if (pathname.startsWith('/account')) return 4;
+    if (pathWithoutCountry === '/') return 0;
+    if (pathWithoutCountry.startsWith('/search')) return 1;
+    if (pathWithoutCountry.startsWith('/account/wishlist')) return 3;
+    if (pathWithoutCountry.startsWith('/account')) return 4;
     return -1;
   };
 
@@ -44,8 +53,8 @@ export default function MobileBottomNav() {
         showLabels={false}
         sx={{ height: 58, touchAction: 'manipulation', '& .MuiBottomNavigationAction-root': { minWidth: 0 } }}
       >
-        <BottomNavigationAction icon={<Home />} component={Link} href="/" />
-        <BottomNavigationAction icon={<Search />} component={Link} href="/search" />
+        <BottomNavigationAction icon={<Home />} component={Link} href={withCountry('/', country)} />
+        <BottomNavigationAction icon={<Search />} component={Link} href={withCountry('/search', country)} />
         <BottomNavigationAction
           icon={
             <Badge badgeContent={itemCount} sx={{ '& .MuiBadge-badge': { bgcolor: '#1a1a1a', color: 'white', minWidth: 16, height: 16, fontSize: '0.6rem' } }}>

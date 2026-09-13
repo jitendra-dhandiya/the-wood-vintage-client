@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { Box, Typography, Container } from '@mui/material';
 import { motion } from 'framer-motion';
 import type { Category } from '../../types';
+import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 interface Props {
   categories: Category[];
@@ -14,6 +16,7 @@ interface Props {
 const GENDER_LABEL = { MEN: 'MENS', WOMEN: 'WOMENS' };
 
 export default function CollectionBanners({ categories, gender, title = 'Shop by Collection' }: Props) {
+  const { country } = useCountry();
   if (!categories.length) return null;
 
   return (
@@ -52,7 +55,7 @@ export default function CollectionBanners({ categories, gender, title = 'Shop by
             key={cat.id}
             sx={{ flexShrink: 0, scrollSnapAlign: 'start' }}
           >
-            <Link href={`/category/${cat.slug}`} style={{ textDecoration: 'none' }}>
+            <Link href={withCountry(`/category/${cat.slug}`, country)} style={{ textDecoration: 'none' }}>
               <Box
                 sx={{
                   position: 'relative',

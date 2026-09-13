@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Box, Container, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
+import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 const FALLBACK_COLORS = [
   '#0d0d1a', '#0a1a0d', '#1a0a0a', '#0d0a1a', '#1a1a0a', '#0a0d1a',
@@ -22,6 +24,7 @@ interface Props {
 }
 
 export default function CategoryShowcase({ initialCategories = [] }: Props) {
+  const { country } = useCountry();
   const categories = initialCategories;
 
   if (categories.length === 0) return null;
@@ -56,7 +59,7 @@ export default function CategoryShowcase({ initialCategories = [] }: Props) {
 
             <Typography
               component={Link}
-              href="/categories"
+              href={withCountry('/categories', country)}
               sx={{
                 fontSize: '0.72rem', fontWeight: 700, color: '#888',
                 textDecoration: 'underline', textUnderlineOffset: 4,
@@ -80,7 +83,7 @@ export default function CategoryShowcase({ initialCategories = [] }: Props) {
         >
           {categories.map((cat, i) => (
             <Box key={cat.id}>
-              <Link href={`/category/${cat.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+              <Link href={withCountry(`/category/${cat.slug}`, country)} style={{ textDecoration: 'none', display: 'block' }}>
                 <Box
                   sx={{
                     // Category photography is portrait (sources run 0.56–0.80).

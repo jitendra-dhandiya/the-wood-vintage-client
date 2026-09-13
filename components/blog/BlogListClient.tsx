@@ -9,8 +9,11 @@ import { Search } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { blogApi } from '../../services/api.service';
 import { formatDate } from '../../utils/format';
+import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 export default function BlogListClient() {
+  const { country } = useCountry();
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -60,7 +63,7 @@ export default function BlogListClient() {
           <Grid item xs={12} sm={6} md={4} key={blog.id}>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
               <Card
-                component={Link} href={`/blog/${blog.slug}`}
+                component={Link} href={withCountry(`/blog/${blog.slug}`, country)}
                 elevation={0}
                 sx={{
                   border: '1px solid', borderColor: 'divider', borderRadius: 2,

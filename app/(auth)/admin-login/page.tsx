@@ -11,6 +11,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../../../hooks/useAuth';
 import { useAppSelector } from '../../../store';
+import { useCountry } from '../../../contexts/CountryContext';
+import { withCountry } from '../../../lib/withCountry';
 
 const schema = Yup.object({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -31,6 +33,7 @@ function AdminLoginInner() {
   const router = useRouter();
   const params = useSearchParams();
   const { login } = useAuth();
+  const { country } = useCountry();
   const { isAuthenticated, user } = useAppSelector((s) => s.auth);
   const [showPwd, setShowPwd] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -61,7 +64,7 @@ function AdminLoginInner() {
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', bgcolor: '#111', py: 6 }}>
       <Container maxWidth="xs">
-        <Button component={Link} href="/" startIcon={<ArrowBack />}
+        <Button component={Link} href={withCountry('/', country)} startIcon={<ArrowBack />}
           sx={{ mb: 3, color: 'rgba(255,255,255,.55)', textTransform: 'none' }}>
           Back to shop
         </Button>

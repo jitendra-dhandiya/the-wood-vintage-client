@@ -13,6 +13,8 @@ import {
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { shippingApi } from '../../../../services/api.service';
+import { useCountry } from '../../../../contexts/CountryContext';
+import { withCountry } from '../../../../lib/withCountry';
 
 const STATUS_COLORS: Record<string, 'default' | 'warning' | 'info' | 'success' | 'error'> = {
   CREATED:           'info',
@@ -43,6 +45,12 @@ interface Shipment {
 }
 
 export default function ShippingPage() {
+  // The public tracking page (`/track/[waybill]`) carries no country-specific
+  // pricing/content, so which country prefix it opens under has no functional
+  // effect here — this admin table has no per-order country to hand it, so it
+  // uses whatever this admin session's `CountryContext` has resolved
+  // (cookie/locale/default) rather than leaving the link unprefixed.
+  const { country } = useCountry();
   const [shipments, setShipments]   = useState<Shipment[]>([]);
   const [total, setTotal]           = useState(0);
   const [page, setPage]             = useState(1);
@@ -284,7 +292,7 @@ export default function ShippingPage() {
                               <IconButton
                                 size="small"
                                 component={Link}
-                                href={`/track/${s.waybill}`}
+                                href={withCountry(`/track/${s.waybill}`, country)}
                                 target="_blank"
                               >
                                 <OpenInNew fontSize="small" />

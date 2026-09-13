@@ -12,6 +12,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import { resolveBannerLink } from '../../lib/bannerLink';
+import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 // Hero artwork is authored at 1440x560 (2.57:1) and the backend crops every
 // desktop master to exactly that ratio.
@@ -43,6 +45,7 @@ interface HeroSliderProps {
 }
 
 export default function HeroSlider({ banners }: HeroSliderProps) {
+  const { country } = useCountry();
   if (!banners.length) {
     return (
       <Box sx={{
@@ -68,7 +71,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
               Dress to<br />Impress
             </Typography>
             <Button
-              component={Link} href="/shop"
+              component={Link} href={withCountry('/shop', country)}
               variant="contained"
               sx={{
                 bgcolor: '#c9a84c', color: '#111',
@@ -208,7 +211,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
                 ) : (
                   <Box
                     component={Link}
-                    href={target.href}
+                    href={withCountry(target.href, country)}
                     aria-label={banner.title || 'View offer'}
                     sx={{ position: 'absolute', inset: 0, zIndex: 1 }}
                   />

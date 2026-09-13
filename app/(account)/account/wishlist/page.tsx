@@ -11,6 +11,8 @@ import ProductCard from '../../../../components/product/ProductCard';
 import { wishlistApi } from '../../../../services/api.service';
 import { useAppSelector } from '../../../../store';
 import type { Product } from '../../../../types';
+import { useCountry } from '../../../../contexts/CountryContext';
+import { withCountry } from '../../../../lib/withCountry';
 
 interface WishlistItem {
   id: string;
@@ -20,6 +22,7 @@ interface WishlistItem {
 
 export default function WishlistPage() {
   const router = useRouter();
+  const { country } = useCountry();
   const { isAuthenticated, isLoading: authLoading } = useAppSelector((s) => s.auth);
 
   const [items, setItems] = useState<WishlistItem[]>([]);
@@ -117,7 +120,7 @@ export default function WishlistPage() {
               Tap the heart on anything you like and it will be waiting here.
             </Typography>
             <Button
-              variant="contained" component={Link} href="/shop"
+              variant="contained" component={Link} href={withCountry('/shop', country)}
               sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, px: 4 }}
             >
               Start shopping

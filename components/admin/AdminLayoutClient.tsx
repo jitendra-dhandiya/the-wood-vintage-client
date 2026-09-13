@@ -18,6 +18,8 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
 import { useEffect } from 'react';
+import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 const DRAWER_WIDTH = 256;
 
@@ -92,6 +94,7 @@ export default function AdminLayoutClient({ children }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const { user, isAdmin, logout } = useAuth();
+  const { country } = useCountry();
   const [drawerOpen, setDrawerOpen] = useState(!isMobile);
   const [expanded, setExpanded] = useState<string>('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -304,7 +307,7 @@ export default function AdminLayoutClient({ children }: Props) {
             <Typography variant="caption" sx={{ bgcolor: '#f0f0f0', px: 1.5, py: 0.5, borderRadius: 1, fontWeight: 600 }}>
               {user?.role}
             </Typography>
-            <IconButton component={Link} href="/" target="_blank" title="View Store">
+            <IconButton component={Link} href={withCountry('/', country)} target="_blank" title="View Store">
               <Web fontSize="small" />
             </IconButton>
           </Toolbar>
