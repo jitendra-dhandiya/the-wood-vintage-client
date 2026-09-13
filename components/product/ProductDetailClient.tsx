@@ -16,8 +16,8 @@ import { motion } from 'framer-motion';
 import type { Product, ProductVariant } from '../../types';
 import { formatPrice, getDiscountPercent } from '../../utils/format';
 import { useCart } from '../../hooks/useCart';
-import { wishlistApi, productApi } from '../../services/api.service';
-import { useAppSelector } from '../../store';
+import { wishlistApi, productApi, userApi } from '../../services/api.service';
+import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import ProductSection from '../home/ProductSection';
 import OptionBox from './OptionBox';
@@ -34,7 +34,7 @@ interface Props {
 export default function ProductDetailClient({ product }: Props) {
   const { country, currencySymbol } = useCountry();
   const { addToCart, isLoading } = useCart();
-  const { isAuthenticated } = useAppSelector((s) => s.auth);
+  const { isAuthenticated } = useAuth();
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -118,18 +118,44 @@ export default function ProductDetailClient({ product }: Props) {
 
   // Read on mount, before this visit is recorded, so the current product does
   // not immediately appear in its own "recently viewed" row.
+  //
+  // Phase 4 §7: localStorage remains the mechanism for guests (no backend
+  // identity to key on) and is always written to, for every visitor — but a
+  // signed-in shopper's rail is read from the server (`GET /users/recently-
+  // viewed`) when that call succeeds, so it reflects what they viewed on any
+  // device, not just this browser. localStorage is the fallback if that call
+  // fails. No merge of the two histories on login — deferred, see
+  // tasks/TASKS.md.
   useEffect(() => {
-    setRecentlyViewed(
-      getRecentlyViewed(product.slug).map(v => ({
-        id: v.id,
-        slug: v.slug,
-        name: v.name,
-        basePrice: v.basePrice,
-        salePrice: v.salePrice,
-        images: v.image ? [{ url: v.image }] : [],
-        variants: [],
-      }))
-    );
+    const localMapped = () => getRecentlyViewed(product.slug).map(v => ({
+      id: v.id,
+      slug: v.slug,
+      name: v.name,
+      basePrice: v.basePrice,
+      salePrice: v.salePrice,
+      images: v.image ? [{ url: v.image }] : [],
+      variants: [],
+    }));
+
+    if (isAuthenticated) {
+      // A signed-in shopper's rail comes from the server so it reflects what
+      // they viewed on any device — fall back to localStorage only if the
+      // call itself fails, not merely because the server list is genuinely
+      // empty (e.g. a new account with no server history yet); showing the
+      // guest-device localStorage list in that case would effectively merge
+      // the two histories, which is explicitly deferred (see tasks/TASKS.md).
+      userApi.getRecentlyViewed()
+        .then(({ data }) => {
+          const items = ((data as any)?.data || []) as any[];
+          const mapped = items
+            .map((it) => it.product)
+            .filter((p: any) => p && p.slug !== product.slug);
+          setRecentlyViewed(mapped);
+        })
+        .catch(() => setRecentlyViewed(localMapped()));
+    } else {
+      setRecentlyViewed(localMapped());
+    }
 
     recordView({
       id: product.id,
@@ -139,7 +165,13 @@ export default function ProductDetailClient({ product }: Props) {
       basePrice: Number(product.basePrice),
       salePrice: product.salePrice != null ? Number(product.salePrice) : null,
     });
-  }, [product.id, product.slug, product.name, product.basePrice, product.salePrice, product.images]);
+
+    if (isAuthenticated) {
+      userApi.addRecentlyViewed(product.id).catch(() => {
+        // Best-effort — the localStorage write above already recorded this visit.
+      });
+    }
+  }, [product.id, product.slug, product.name, product.basePrice, product.salePrice, product.images, isAuthenticated]);
 
   // Fetched rather than server-rendered: it is below the fold and must not
   // delay the part of the page the shopper came for.
