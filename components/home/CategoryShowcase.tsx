@@ -128,23 +128,6 @@ export default function CategoryShowcase({ initialCategories = [] }: Props) {
                     background: 'linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.72) 100%)',
                   }} />
 
-                  {/* Gender badge — top left */}
-                  {cat.gender && (
-                    <Box sx={{
-                      position: 'absolute', top: { xs: 10, md: 14 }, left: { xs: 10, md: 14 },
-                      bgcolor: 'white',
-                      color: '#111',
-                      fontSize: '0.58rem',
-                      fontWeight: 800,
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      px: 1.25, py: 0.5,
-                      borderRadius: '3px',
-                    }}>
-                      {cat.gender === 'WOMEN' ? 'WOMENS' : cat.gender === 'MEN' ? 'MENS' : cat.gender}
-                    </Box>
-                  )}
-
                   {/* Centered content */}
                   <Box sx={{
                     position: 'absolute', inset: 0,

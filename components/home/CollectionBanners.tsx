@@ -9,13 +9,10 @@ import { withCountry } from '../../lib/withCountry';
 
 interface Props {
   categories: Category[];
-  gender: 'MEN' | 'WOMEN';
   title?: string;
 }
 
-const GENDER_LABEL = { MEN: 'MENS', WOMEN: 'WOMENS' };
-
-export default function CollectionBanners({ categories, gender, title = 'Shop by Collection' }: Props) {
+export default function CollectionBanners({ categories, title = 'Shop by Collection' }: Props) {
   const { country } = useCountry();
   if (!categories.length) return null;
 
@@ -93,20 +90,6 @@ export default function CollectionBanners({ categories, gender, title = 'Shop by
 
                 {/* Content */}
                 <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, p: { xs: 2, md: 2.5 } }}>
-                  {/* Gender chip */}
-                  <Box sx={{
-                    display: 'inline-flex',
-                    bgcolor: 'rgba(255,255,255,0.14)',
-                    backdropFilter: 'blur(6px)',
-                    border: '1px solid rgba(255,255,255,0.28)',
-                    px: 1.25, py: 0.3,
-                    mb: 1.25,
-                  }}>
-                    <Typography sx={{ fontSize: '0.6rem', fontWeight: 700, color: 'white', letterSpacing: '0.12em' }}>
-                      {GENDER_LABEL[gender]}
-                    </Typography>
-                  </Box>
-
                   {/* Category name */}
                   <Typography sx={{
                     fontSize: { xs: '1.05rem', md: '1.2rem' },

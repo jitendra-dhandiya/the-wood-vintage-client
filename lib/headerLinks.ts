@@ -68,9 +68,18 @@ export const fromApi = (rows?: { id?: string; label?: string; url?: string | nul
 export const resolveHeaderLinks = (links: HeaderLink[] | null | undefined, position: string): HeaderLink[] =>
   links && links.length ? links : defaultsFor(position);
 
-/** A link tagged ALL shows on both storefronts; WOMEN/MEN show only on theirs. */
-export const visibleHeaderLinks = (links: HeaderLink[], gender: string): HeaderLink[] =>
-  links.filter(link => {
+/**
+ * A link tagged ALL shows on both storefronts; WOMEN/MEN show only on theirs.
+ *
+ * Phase 4 §1: when the shopper's own browsing gender is 'ALL' (no filter —
+ * the toggle is hidden and this is the new default), there is no active
+ * gender to filter against, so every link shows regardless of its own tag.
+ */
+export const visibleHeaderLinks = (links: HeaderLink[], gender: string): HeaderLink[] => {
+  const wanted = (gender || '').trim().toUpperCase();
+  if (!wanted || wanted === 'ALL') return links;
+  return links.filter(link => {
     const g = (link.gender || 'ALL').trim().toUpperCase();
-    return g === 'ALL' || g === (gender || '').trim().toUpperCase();
+    return g === 'ALL' || g === wanted;
   });
+};

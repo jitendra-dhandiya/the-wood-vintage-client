@@ -27,8 +27,13 @@ export interface NavCategoryLike<C extends NavChildLike = NavChildLike> {
 const norm = (value?: string | null) => (value || '').trim().toUpperCase();
 
 const matches = (value: string | null | undefined, gender: string): boolean => {
+  const wanted = norm(gender);
+  // Phase 4 §1: 'ALL' (or unset) means no gender filter is active at all —
+  // the toggle is hidden and the default is "show everything" — so every
+  // category matches, tagged or not, rather than only UNISEX ones.
+  if (!wanted || wanted === 'ALL') return true;
   const g = norm(value);
-  return g === 'UNISEX' || g === norm(gender);
+  return g === 'UNISEX' || g === wanted;
 };
 
 export const visibleNavCategories = <C extends NavChildLike, T extends NavCategoryLike<C>>(

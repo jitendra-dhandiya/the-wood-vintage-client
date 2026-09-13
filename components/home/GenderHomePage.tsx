@@ -93,7 +93,13 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
 
   // Strict gender filter for homepage sections:
   // UNISEX → always visible; null/Unset → never visible; WOMEN/MEN → only when that gender is active
+  //
+  // 'ALL' (the default now the toggle is hidden — Phase 4 §1) means no gender
+  // filter is active at all, so every category shows, tagged or not — the
+  // opposite of "untagged never shows", which only applies once a shopper has
+  // actually picked a side via a re-enabled toggle.
   const genderFilteredCategories = useMemo(() => {
+    if (displayGender === 'ALL') return initialData.categories as any[];
     return (initialData.categories as any[]).filter((cat) => {
       if (cat.gender === 'UNISEX') return true;
       if (!cat.gender) return false;
@@ -169,7 +175,8 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
     return () => { controller.abort(); };
   }, [displayGender, hasMounted, genderReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const genderLabel = displayGender === 'MEN' ? ' for Men' : ' for Women';
+  // Phase 4 §1: no more "Featured Products for Women" — the gender axis is
+  // gone as a browsing concept, so section titles no longer carry a suffix.
 
   // ── Dynamic section renderer (when admin configures sections) ─
   function renderSection(section: any) {
@@ -195,7 +202,6 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
           <CollectionBanners
             key={section.id}
             categories={genderFilteredCategories}
-            gender={displayGender}
             title={title}
           />
         );
@@ -203,10 +209,10 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
         return (
           <Box key={section.id} sx={{ opacity: fetching ? 0.5 : 1, transition: 'opacity 0.25s' }}>
             <ProductSection
-              title={(title || 'Featured Products') + genderLabel}
+              title={title || 'Featured Products'}
               subtitle={subtitle || 'Curated for You'}
               products={products.featured}
-              viewAllLink={`/shop?isFeatured=true&gender=${displayGender}`}
+              viewAllLink="/shop?isFeatured=true"
             />
           </Box>
         );
@@ -214,10 +220,10 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
         return (
           <Box key={section.id} sx={{ opacity: fetching ? 0.5 : 1, transition: 'opacity 0.25s' }}>
             <ProductSection
-              title={(title || 'New Arrivals') + genderLabel}
+              title={title || 'New Arrivals'}
               subtitle={subtitle || 'Fresh Drops'}
               products={products.newArrivals}
-              viewAllLink={`/shop?isNewArrival=true&gender=${displayGender}`}
+              viewAllLink="/shop?isNewArrival=true"
             />
           </Box>
         );
@@ -225,10 +231,10 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
         return (
           <Box key={section.id} sx={{ opacity: fetching ? 0.5 : 1, transition: 'opacity 0.25s' }}>
             <ProductSection
-              title={(title || 'Trending Now') + genderLabel}
+              title={title || 'Trending Now'}
               subtitle={subtitle || "Everyone's Talking About"}
               products={products.trending}
-              viewAllLink={`/shop?isTrending=true&gender=${displayGender}`}
+              viewAllLink="/shop?isTrending=true"
             />
           </Box>
         );
@@ -236,10 +242,10 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
         return (
           <Box key={section.id} sx={{ opacity: fetching ? 0.5 : 1, transition: 'opacity 0.25s' }}>
             <ProductSection
-              title={(title || 'Best Sellers') + genderLabel}
+              title={title || 'Best Sellers'}
               subtitle={subtitle || 'Fan Favourites'}
               products={products.bestSellers}
-              viewAllLink={`/shop?isBestSeller=true&gender=${displayGender}`}
+              viewAllLink="/shop?isBestSeller=true"
               bgColor="#f8f4ef"
             />
           </Box>
@@ -287,26 +293,25 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
       {/* 4. Collection banners — horizontal scroll editorial cards */}
       <CollectionBanners
         categories={genderFilteredCategories}
-        gender={displayGender}
       />
 
       {/* 5. New Arrivals carousel */}
       <Box sx={{ opacity: fetching ? 0.5 : 1, transition: 'opacity 0.25s' }}>
         <ProductSection
-          title={`New Arrivals${genderLabel}`}
+          title="New Arrivals"
           subtitle="Fresh Drops"
           products={products.newArrivals}
-          viewAllLink={`/shop?isNewArrival=true&gender=${displayGender}`}
+          viewAllLink="/shop?isNewArrival=true"
         />
       </Box>
 
       {/* 6. Trending carousel */}
       <Box sx={{ opacity: fetching ? 0.5 : 1, transition: 'opacity 0.25s' }}>
         <ProductSection
-          title={`Trending Now${genderLabel}`}
+          title="Trending Now"
           subtitle="Everyone's Talking About"
           products={products.trending}
-          viewAllLink={`/shop?isTrending=true&gender=${displayGender}`}
+          viewAllLink="/shop?isTrending=true"
           bgColor="#fafafa"
         />
       </Box>
@@ -317,10 +322,10 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
       {/* 8. Best Sellers carousel */}
       <Box sx={{ opacity: fetching ? 0.5 : 1, transition: 'opacity 0.25s' }}>
         <ProductSection
-          title={`Best Sellers${genderLabel}`}
+          title="Best Sellers"
           subtitle="Fan Favourites"
           products={products.bestSellers}
-          viewAllLink={`/shop?isBestSeller=true&gender=${displayGender}`}
+          viewAllLink="/shop?isBestSeller=true"
           bgColor="#f5f0e8"
         />
       </Box>

@@ -5,11 +5,8 @@ import { Box, Typography, Container, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
 import ProductCard, { ProductCardSkeleton } from '../product/ProductCard';
 import { categoryApi, productApi } from '../../services/api.service';
-import { useAppDispatch } from '../../store';
-import { setGender } from '../../store/slices/genderSlice';
 import type { Product, Category } from '../../types';
-
-type GenderType = 'MEN' | 'WOMEN';
+import type { GenderType } from '../../lib/genderPreference';
 
 // Static filter chips that map to product flags
 const STATIC_CHIPS = [
@@ -37,8 +34,6 @@ export default function ShopLatestSection({
   featured = [],
   fetching = false,
 }: Props) {
-  const dispatch = useAppDispatch();
-
   const [activeChip, setActiveChip] = useState<string>('new-arrivals');
   const [categories, setCategories] = useState<Category[]>([]);
   const [catProducts, setCatProducts] = useState<Product[]>([]);
@@ -97,10 +92,10 @@ export default function ShopLatestSection({
   const total = isStaticChip ? staticTotals[activeChip as StaticKey] : catTotal;
 
   const viewAllLink = () => {
-    if (activeChip === 'new-arrivals') return `/shop?isNewArrival=true&gender=${gender}`;
-    if (activeChip === 'trending') return `/shop?isTrending=true&gender=${gender}`;
-    if (activeChip === 'best-sellers') return `/shop?isBestSeller=true&gender=${gender}`;
-    if (activeChip === 'featured') return `/shop?isFeatured=true&gender=${gender}`;
+    if (activeChip === 'new-arrivals') return '/shop?isNewArrival=true';
+    if (activeChip === 'trending') return '/shop?isTrending=true';
+    if (activeChip === 'best-sellers') return '/shop?isBestSeller=true';
+    if (activeChip === 'featured') return '/shop?isFeatured=true';
     return `/category/${activeChip}`;
   };
 
@@ -108,15 +103,8 @@ export default function ShopLatestSection({
     <Box sx={{ py: { xs: 7, md: 11 }, bgcolor: '#fff' }}>
       <Container maxWidth="xl">
 
-        {/* ── Header row: heading + gender tabs ─────────────────── */}
-        <Box sx={{
-          display: 'flex',
-          alignItems: { xs: 'flex-start', sm: 'flex-end' },
-          justifyContent: 'space-between',
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: { xs: 2, sm: 0 },
-          mb: { xs: 3, md: 4 },
-        }}>
+        {/* ── Header row ─────────────────────────────────────────── */}
+        <Box sx={{ mb: { xs: 3, md: 4 } }}>
           <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
             <Typography
               variant="h2"
@@ -131,39 +119,6 @@ export default function ShopLatestSection({
               Shop the latest
             </Typography>
           </motion.div>
-
-          {/* Woman / Man tabs */}
-          <Box sx={{ display: 'flex', borderBottom: '2px solid #e8e8e8' }}>
-            {(['WOMEN', 'MEN'] as const).map((g) => {
-              const active = gender === g;
-              return (
-                <Box
-                  key={g}
-                  component="button"
-                  onClick={() => dispatch(setGender(g))}
-                  sx={{
-                    px: { xs: 2.5, md: 3 },
-                    py: 1,
-                    bgcolor: 'transparent',
-                    border: 'none',
-                    borderBottom: active ? '2px solid #111' : '2px solid transparent',
-                    mb: '-2px',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem',
-                    fontWeight: active ? 700 : 400,
-                    color: active ? '#111' : '#aaa',
-                    letterSpacing: '0.02em',
-                    transition: 'all 0.2s',
-                    outline: 'none',
-                    whiteSpace: 'nowrap',
-                    '&:hover': { color: '#111' },
-                  }}
-                >
-                  {g === 'WOMEN' ? 'Woman' : 'Man'}
-                </Box>
-              );
-            })}
-          </Box>
         </Box>
 
         {/* ── Filter chips ───────────────────────────────────────── */}

@@ -91,9 +91,13 @@ export default function Navbar({
     [navCategories, gender]
   );
 
-  // A link tagged ALL shows on both storefronts; WOMEN/MEN show only on theirs.
+  // A link tagged ALL shows on both storefronts; WOMEN/MEN show only on
+  // theirs. When the shopper's own browsing gender is 'ALL' (no filter — the
+  // default now the toggle is hidden), there is nothing to filter against, so
+  // every quick link shows regardless of its tag.
   const filteredQuickLinks = useMemo(
     () => resolveQuickLinks(quickLinks).filter(link => {
+      if (!gender || gender === 'ALL') return true;
       const g = (link.gender || 'ALL').toUpperCase();
       return g === 'ALL' || g === gender;
     }),
