@@ -767,11 +767,16 @@ export default function ProductDetailClient({ product }: Props) {
               {product.artisan && (
                 <Grid item xs={12} md={product.craftStory ? 5 : 12}>
                   <Box
+                    component={Link}
+                    href={withCountry(`/artisans/${product.artisan.id}`, country)}
                     sx={{
                       display: 'flex', alignItems: 'flex-start', gap: 2.5, p: 3,
                       bgcolor: '#faf8f3', borderRadius: 2,
                       maxWidth: product.craftStory ? 'none' : 520,
                       mx: product.craftStory ? 0 : 'auto',
+                      textDecoration: 'none', color: 'inherit',
+                      transition: 'box-shadow 0.2s',
+                      '&:hover': { boxShadow: 2 },
                     }}
                   >
                     <Box sx={{
