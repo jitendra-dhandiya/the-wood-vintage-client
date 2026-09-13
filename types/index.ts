@@ -66,8 +66,8 @@ export interface Room {
   sortOrder: number;
 }
 
-// Mirrors the backend `Artisan` model. No slug, no public list — only
-// `GET /artisans/:id` for a future bio page linked from a product.
+// Mirrors the backend `Artisan` model. No slug. `GET /artisans` (public
+// directory) and `GET /artisans/:id` (bio page) — see phase-4-experience-spec.md §4.
 export interface Artisan {
   id: string;
   name: string;

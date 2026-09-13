@@ -130,9 +130,11 @@ export const roomApi = {
   delete: (id: string) => api.delete(`/rooms/${id}`),
 };
 
-// Artisan has no slug and no public list (no real artisan data yet) — only a
-// public detail page for a known id, plus full admin CRUD.
+// Artisan has no slug. `getAll` is the public directory (Phase 4 §4) — every
+// active artisan; `getById` is the bio page for a known id; `getAllAdmin` is
+// full admin CRUD (active or not).
 export const artisanApi = {
+  getAll: () => api.get<{ data: Artisan[] }>('/artisans'),
   getById: (id: string) => api.get<{ data: Artisan }>(`/artisans/${id}`),
   getAllAdmin: () => api.get<{ data: Artisan[] }>('/artisans/admin/all'),
   create: (data: object) => api.post('/artisans', data),

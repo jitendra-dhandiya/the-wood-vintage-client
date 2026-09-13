@@ -12,7 +12,9 @@ import PromoBanners from './PromoBanners';
 import StoreLocations from './StoreLocations';
 import MarqueeStrip from './MarqueeStrip';
 import InstagramReels from './InstagramReels';
-import { productApi, bannerApi, instagramReelsApi } from '../../services/api.service';
+import TaxonomyShowcase from './TaxonomyShowcase';
+import ArtisanSpotlight from './ArtisanSpotlight';
+import { productApi, bannerApi, instagramReelsApi, roomApi, materialApi, artisanApi } from '../../services/api.service';
 import type { GenderType } from '../../lib/genderPreference';
 
 // ── Promo strip ────────────────────────────────────────────────
@@ -131,6 +133,27 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
    * products stayed as the server had sent them.
    */
   const loadedGender = useRef<GenderType>(initialGender);
+
+  // Phase 4 §2 — SHOP_BY_ROOM / SHOP_BY_MATERIAL / ARTISAN_SPOTLIGHT homepage
+  // sections. Fetched only when the admin has actually configured one of
+  // these sections, not unconditionally on every homepage load.
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [taxonomyMaterials, setTaxonomyMaterials] = useState<any[]>([]);
+  const [artisans, setArtisans] = useState<any[]>([]);
+
+  useEffect(() => {
+    const types = new Set(sections.map((s: any) => s.type));
+    if (types.has('SHOP_BY_ROOM')) {
+      roomApi.getAll().then(({ data }) => setRooms((data as any)?.data || [])).catch(() => setRooms([]));
+    }
+    if (types.has('SHOP_BY_MATERIAL')) {
+      materialApi.getAll().then(({ data }) => setTaxonomyMaterials((data as any)?.data || [])).catch(() => setTaxonomyMaterials([]));
+    }
+    if (types.has('ARTISAN_SPOTLIGHT')) {
+      artisanApi.getAll().then(({ data }) => setArtisans((data as any)?.data || [])).catch(() => setArtisans([]));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sections]);
 
   useEffect(() => {
     if (!hasMounted || !genderReady) return;
@@ -253,6 +276,35 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
       case 'FEATURED_CATEGORIES':
       case 'CATEGORY_SHOWCASE':
         return <CategoryShowcase key={section.id} initialCategories={genderFilteredCategories} />;
+      case 'SHOP_BY_ROOM':
+        return (
+          <TaxonomyShowcase
+            key={section.id}
+            items={rooms}
+            linkParam="roomSlug"
+            title={title || 'Shop by Room'}
+            subtitle={subtitle || 'Find pieces for every space'}
+          />
+        );
+      case 'SHOP_BY_MATERIAL':
+        return (
+          <TaxonomyShowcase
+            key={section.id}
+            items={taxonomyMaterials}
+            linkParam="materialSlug"
+            title={title || 'Shop by Material'}
+            subtitle={subtitle || 'Crafted from wood, cane, and more'}
+          />
+        );
+      case 'ARTISAN_SPOTLIGHT':
+        return (
+          <ArtisanSpotlight
+            key={section.id}
+            artisans={artisans}
+            title={title || 'Meet the Makers'}
+            subtitle={subtitle || 'The artisans behind every piece'}
+          />
+        );
       case 'PROMOTIONAL_BANNERS':
       case 'CUSTOM_BANNER':
         return <PromoBanners key={section.id} banners={promoBanners} title={title} />;
