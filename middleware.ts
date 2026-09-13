@@ -1,70 +1,177 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { legacyCategoryTarget } from './lib/legacyCategorySlugs';
 import { API_URL } from './constants';
+import { COUNTRY_COOKIE, guessCountryFromAcceptLanguage } from './lib/countryPreference';
+import type { Country } from './types';
 
 /**
- * Permanent forwarding for category slugs that have been corrected.
+ * Country-prefix resolution for the phase-3 URL restructuring
+ * (`documentation/docs/architecture/phase-3-url-restructuring-spec.md`),
+ * composed with the pre-existing wishlist/category-slug redirects below —
+ * see that spec's "Middleware — CORRECTION" section for exactly why this is
+ * additive to the existing file, not a replacement of it.
  *
- * This lives in middleware rather than in the page because a redirect thrown
- * from the page does not survive. Measured on a production build of this app:
- * `permanentRedirect()` runs — the branch was instrumented and confirmed to
- * fire — and the response still comes back `200 OK` with no `Location` header,
- * because by the time the page component resolves the shell has already been
- * flushed and the status can no longer be set. Next falls back to expressing
- * the redirect inside the RSC payload, which a browser follows and a crawler
- * largely does not. `notFound()` loses its status the same way, which is why
- * every missing page on this site currently answers 200.
+ * Every storefront path now lives under `/<country>/...`. This function:
+ *   - passes a request straight through when its first path segment is
+ *     already a valid, *enabled* `Country.code`;
+ *   - otherwise resolves one (cookie → `Accept-Language` region → the
+ *     enabled list's `isDefault` row) and redirects to the same path under
+ *     that country — replacing the first segment if it merely *looked* like
+ *     a country code (invalid, or a real-but-disabled one), or inserting a
+ *     new first segment if there wasn't one at all (a flat legacy URL, or
+ *     `/`).
  *
- * A redirect whose whole purpose is to move search ranking from an old URL to a
- * new one has to be a real HTTP status, so it has to happen before rendering
- * starts. Middleware is the only place that is true.
- *
- * The API is consulted first so that this cannot strand a URL that still works.
- * A config-level redirect would fire the moment it shipped, sending the old
- * slug to a 404 for however long the deploy and the rename in the admin were
- * out of step — and those are separate acts performed at separate times, in
- * either order. Asking whether the old slug still resolves removes the
- * question: while it does, nothing is forwarded; once it stops, forwarding
- * begins on its own. That costs one request, and only on the handful of paths
- * named in the map.
+ * `/admin`, `/account`, `/login`, `/register`, `/api`, `/_next`, and static
+ * assets are excluded entirely via `matcher` below — they're session-scoped
+ * or non-page paths with no SEO value from a URL-level country signal.
  */
-export const config = {
-  // Only these paths reach this file. Nothing else on the site is touched.
-  matcher: ['/category/:slug', '/wishlist'],
-};
 
-export async function middleware(req: NextRequest) {
-  // The wishlist used to live at /wishlist while every link in the site
-  // chrome pointed at /account/wishlist, so the page existed and nothing
-  // could reach it. It now lives with the rest of the account, and the old
-  // path forwards for anyone who bookmarked it.
-  //
-  // Here rather than in a page for the same reason as the category rule
-  // below: a redirect returned from a page comes back 200 with no Location.
-  if (req.nextUrl.pathname === '/wishlist') {
-    const url = req.nextUrl.clone();
-    url.pathname = '/account/wishlist';
-    return NextResponse.redirect(url, 301);
+interface CountriesCache {
+  data: Country[];
+  expiresAt: number;
+}
+
+// Module-scope — persists across requests handled by the same middleware
+// worker instance. Cold starts/new instances just refetch; a short TTL is
+// all this dev/local-scale deployment needs (per the spec), not a durable
+// cache.
+let countriesCache: CountriesCache | null = null;
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
+async function getEnabledCountries(): Promise<Country[]> {
+  if (countriesCache && countriesCache.expiresAt > Date.now()) {
+    return countriesCache.data;
   }
+  try {
+    const res = await fetch(`${API_URL}/countries`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`countries fetch failed: ${res.status}`);
+    const json = await res.json();
+    const data: Country[] = json?.data ?? [];
+    countriesCache = { data, expiresAt: Date.now() + CACHE_TTL_MS };
+    return data;
+  } catch {
+    // Backend hiccup — prefer a stale cache over breaking every storefront
+    // request; if there's no cache at all yet, there is nothing safe to
+    // resolve, so callers get an empty list and fall back to 'IN' below.
+    return countriesCache?.data ?? [];
+  }
+}
 
-  const slug = req.nextUrl.pathname.split('/')[2] ?? '';
+/** Last-resort fallback when the backend has no enabled countries to offer at all. */
+const HARD_FALLBACK_COUNTRY = 'IN';
+
+/** Whichever enabled country is marked `isDefault`, or the first enabled one. */
+function resolveDefaultCountryCode(countries: Country[]): string {
+  const defaultCandidate = countries.find((c) => c.isEnabled && c.isDefault)?.code;
+  if (defaultCandidate) return defaultCandidate.toUpperCase();
+  return countries[0]?.code?.toUpperCase() ?? HARD_FALLBACK_COUNTRY;
+}
+
+/**
+ * Full tiered resolution — used only when the URL carries no country segment
+ * at all (a flat legacy URL, or `/`). `wv_country` cookie → `Accept-Language`
+ * region → the enabled list's default row.
+ */
+function resolveCountryCode(req: NextRequest, countries: Country[]): string {
+  const isEnabled = (code?: string | null) =>
+    !!code && countries.some((c) => c.isEnabled && c.code.toUpperCase() === code.toUpperCase());
+
+  const cookieCandidate = req.cookies.get(COUNTRY_COOKIE)?.value;
+  if (isEnabled(cookieCandidate)) return cookieCandidate!.toUpperCase();
+
+  const localeCandidate = guessCountryFromAcceptLanguage(req.headers.get('accept-language'));
+  if (isEnabled(localeCandidate)) return localeCandidate!.toUpperCase();
+
+  return resolveDefaultCountryCode(countries);
+}
+
+/**
+ * The pre-existing renamed-category-slug redirect, now firing against
+ * `/<country>/category/<slug>` instead of `/category/<slug>` — the slug is
+ * at segment index 2 of `parts` (`['in', 'category', 'slug']`), not index 1,
+ * because the country segment shifts everything one to the right. Untouched
+ * otherwise: same lookup, same "ask the API first" guard, same 301.
+ */
+async function legacyCategoryRedirect(
+  req: NextRequest,
+  parts: string[],
+): Promise<NextResponse | null> {
+  if (parts[1] !== 'category') return null;
+  const slug = parts[2] ?? '';
   const moved = legacyCategoryTarget(slug);
-  if (!moved) return NextResponse.next();
+  if (!moved) return null;
 
   try {
     const res = await fetch(`${API_URL}/categories/${encodeURIComponent(slug)}`, {
       cache: 'no-store',
     });
     // Still a real category under its old name — leave it alone.
-    if (res.ok) return NextResponse.next();
+    if (res.ok) return null;
   } catch {
-    // The API being unreachable is not evidence the slug was retired. Rendering
-    // the page is the safer failure: it shows an error rather than permanently
-    // teaching a crawler that this URL has moved.
-    return NextResponse.next();
+    // The API being unreachable is not evidence the slug was retired.
+    return null;
   }
 
   const url = req.nextUrl.clone();
-  url.pathname = `/category/${moved}`;
+  url.pathname = `/${[parts[0], 'category', moved, ...parts.slice(3)].join('/')}`;
   return NextResponse.redirect(url, 301);
+}
+
+export const config = {
+  matcher: [
+    // Everything except /admin, /account, /login, /register, /api, /_next,
+    // and anything that looks like a static asset (has a "." in its last
+    // segment — favicon.ico, robots.txt, sitemap.xml, images, fonts, ...).
+    '/((?!(?:admin|account|login|register|api|_next)(?:/|$)|.*\\..*).*)',
+  ],
+};
+
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // The wishlist used to live at /wishlist while every link in the site
+  // chrome pointed at /account/wishlist, so the page existed and nothing
+  // could reach it. It now lives with the rest of the account, and the old
+  // path forwards for anyone who bookmarked it. Bare, unprefixed — /wishlist
+  // was never a (store) route and never will be country-prefixed.
+  if (pathname === '/wishlist') {
+    const url = req.nextUrl.clone();
+    url.pathname = '/account/wishlist';
+    return NextResponse.redirect(url, 301);
+  }
+
+  const parts = pathname.split('/').filter(Boolean); // '/in/category/x' -> ['in','category','x']
+  const first = parts[0] ?? '';
+  const looksLikeCountryCode = /^[A-Za-z]{2}$/.test(first);
+
+  const countries = await getEnabledCountries();
+
+  if (looksLikeCountryCode && countries.some(
+    (c) => c.isEnabled && c.code.toUpperCase() === first.toUpperCase(),
+  )) {
+    // Valid, enabled — pass through, but still subject to the legacy
+    // category-slug forwarding below.
+    const legacy = await legacyCategoryRedirect(req, parts);
+    return legacy ?? NextResponse.next();
+  }
+
+  // Two distinct cases, resolved differently per the spec:
+  //   - No country segment at all (flat legacy URL, or `/`) → full tiered
+  //     resolution (cookie → Accept-Language → default).
+  //   - The first segment *looks* like a country code but isn't in the
+  //     enabled list. The public `/countries` endpoint only ever returns
+  //     enabled rows, so middleware has no way to tell "not a real country"
+  //     (`/xx/...`) apart from "a real, currently-disabled one"
+  //     (`/ae/...` while AE is off) — both look identical from here. Both go
+  //     straight to the resolved *default* country rather than reinterpreting
+  //     via cookie/locale, matching the spec's explicit rule for the
+  //     disabled case and extending it to the indistinguishable invalid one.
+  const resolved = (looksLikeCountryCode
+    ? resolveDefaultCountryCode(countries)
+    : resolveCountryCode(req, countries)
+  ).toLowerCase();
+  const rest = looksLikeCountryCode ? parts.slice(1) : parts;
+  const url = req.nextUrl.clone();
+  url.pathname = `/${[resolved, ...rest].join('/')}`;
+  return NextResponse.redirect(url, 307);
 }
