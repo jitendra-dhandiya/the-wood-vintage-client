@@ -15,6 +15,22 @@ export interface Country {
   sortOrder: number;
 }
 
+// Mirrors the backend `CountryShippingRule` model (Phase 3 — see
+// documentation/docs/architecture/phase-3-country-shipping-and-admin-spec.md).
+// One row per (countryId, method). `cost`/`freeShippingThreshold` are Prisma
+// `Decimal` fields, which serialise as strings over JSON.
+export interface CountryShippingRule {
+  id: string;
+  countryId: string;
+  method: 'STANDARD' | 'COD' | 'EXPRESS';
+  cost: string | number;
+  freeShippingThreshold?: string | number | null;
+  estimatedDaysMin?: number | null;
+  estimatedDaysMax?: number | null;
+  customsMessage?: string | null;
+  isActive: boolean;
+}
+
 // ─── Handicraft taxonomy (Phase 2) ──────────────────────────────
 // Mirror the backend `Material`/`Style`/`Room` models — shaped like
 // `Category`: id, name, slug, description, image, sortOrder, isActive. Public

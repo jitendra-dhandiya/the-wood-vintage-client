@@ -68,6 +68,7 @@ const NAV_ITEMS = [
     label: 'Configure',
     icon: <Tune fontSize="small" />,
     children: [
+      { label: 'Countries', href: '/admin/countries' },
       { label: 'SEO', href: '/admin/seo' },
       { label: 'Settings', href: '/admin/settings' },
     ],

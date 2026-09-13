@@ -1,5 +1,5 @@
 import api from '../lib/axios';
-import type { Product, Category, Cart, Order, Blog, Review, Banner, HomepageSection, LoginResponse, User, Address, Material, Style, Room, Artisan } from '../types';
+import type { Product, Category, Cart, Order, Blog, Review, Banner, HomepageSection, LoginResponse, User, Address, Material, Style, Room, Artisan, Country, CountryShippingRule } from '../types';
 
 // ─── Auth ──────────────────────────────────────────────────────
 export const authApi = {
@@ -138,6 +138,35 @@ export const artisanApi = {
   create: (data: object) => api.post('/artisans', data),
   update: (id: string, data: object) => api.put(`/artisans/${id}`, data),
   delete: (id: string) => api.delete(`/artisans/${id}`),
+};
+
+// ─── Countries ────────────────────────────────────────────────
+// `CountryContext` already calls `GET /countries` directly via `fetch` (it
+// needs to work the same on the server-rendered seed as the client refetch),
+// so this client is for the admin screen only: the `/admin/all` list (every
+// seeded market, not just enabled ones) plus create/update/delete. There is
+// no dedicated `getById` — the admin screen edits from the row it already has
+// from `getAllAdmin`.
+export const countryApi = {
+  getAll: () => api.get<{ data: Country[] }>('/countries'),
+  getAllAdmin: () => api.get<{ data: Country[] }>('/countries/admin/all'),
+  create: (data: object) => api.post('/countries', data),
+  update: (id: string, data: object) => api.put(`/countries/${id}`, data),
+  delete: (id: string) => api.delete(`/countries/${id}`),
+};
+
+// Nested under a country — one rule per shipping method
+// (STANDARD/COD/EXPRESS) per country, Phase 3. See
+// documentation/docs/architecture/phase-3-country-shipping-and-admin-spec.md.
+export const countryShippingRuleApi = {
+  getAll: (countryId: string) =>
+    api.get<{ data: CountryShippingRule[] }>(`/countries/${countryId}/shipping-rules`),
+  create: (countryId: string, data: object) =>
+    api.post(`/countries/${countryId}/shipping-rules`, data),
+  update: (countryId: string, id: string, data: object) =>
+    api.put(`/countries/${countryId}/shipping-rules/${id}`, data),
+  delete: (countryId: string, id: string) =>
+    api.delete(`/countries/${countryId}/shipping-rules/${id}`),
 };
 
 // ─── Cart ─────────────────────────────────────────────────────
