@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Box, Typography, Chip, Divider, Avatar } from '@mui/material';
 import { formatDate } from '../../../../../utils/format';
-import { API_URL, SITE_URL } from '../../../../../constants';
+import { API_URL, SITE_NAME } from '../../../../../constants';
+import { getEnabledCountries, buildCountryAlternates } from '../../../../../lib/countries';
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ country: string; slug: string }>;
 }
 
 async function fetchBlog(slug: string) {
@@ -17,19 +18,22 @@ async function fetchBlog(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { country, slug } = await params;
   const blog = await fetchBlog(slug);
   if (!blog) return { title: 'Article Not Found' };
+  const countries = await getEnabledCountries();
+  const alt = buildCountryAlternates(`/blog/${blog.slug}`, country, countries);
   return {
-    title: blog.seoMeta?.metaTitle || `${blog.title} — Unique Dressup Blog`,
+    title: blog.seoMeta?.metaTitle || `${blog.title} — ${SITE_NAME} Blog`,
     description: blog.seoMeta?.metaDescription || blog.excerpt,
     openGraph: {
       title: blog.title,
       description: blog.excerpt,
       images: blog.coverImage ? [blog.coverImage] : [],
       type: 'article',
-      url: `${SITE_URL}/blog/${blog.slug}`,
+      url: alt.canonical,
     },
+    alternates: alt,
   };
 }
 
@@ -38,7 +42,26 @@ export default async function BlogDetailPage({ params }: Props) {
   const blog = await fetchBlog(slug);
   if (!blog) notFound();
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: blog.title,
+    description: blog.excerpt,
+    image: blog.coverImage ? [blog.coverImage] : undefined,
+    datePublished: blog.publishedAt || blog.createdAt,
+    dateModified: blog.updatedAt || blog.publishedAt || blog.createdAt,
+    author: blog.author
+      ? { '@type': 'Person', name: `${blog.author.firstName} ${blog.author.lastName}`.trim() }
+      : { '@type': 'Organization', name: SITE_NAME },
+    publisher: { '@type': 'Organization', name: SITE_NAME },
+  };
+
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
     <Box sx={{ maxWidth: 800, mx: 'auto', px: { xs: 2, md: 4 }, py: 6 }}>
       <Box sx={{ mb: 4 }}>
         {blog.category && (
@@ -98,5 +121,6 @@ export default async function BlogDetailPage({ params }: Props) {
         }}
       />
     </Box>
+    </>
   );
 }
