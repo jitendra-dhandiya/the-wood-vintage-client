@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import { useCart } from '../../../../hooks/useCart';
 import { orderApi, paymentApi, userApi, cartApi } from '../../../../services/api.service';
 import { trackEvent } from '../../../../lib/analytics';
+import { readStoredAttribution } from '../../../../lib/attribution';
 import { formatPrice } from '../../../../utils/format';
 import { SHIPPING_METHODS, type ShippingMethodId } from '../../../../constants';
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -285,6 +286,13 @@ export default function CheckoutPage() {
       // the default country (unchanged, pre-existing behaviour).
       const validCountry = country && countries.some((c) => c.code === country) ? country : undefined;
 
+      // Phase 7 (Analytics) marketing attribution -- first-touch utm_*
+      // params captured by AttributionInitializer into the `wv_attribution`
+      // cookie, threaded through here so the resulting Order carries them
+      // (see phase-7-analytics-spec.md §4). Absent entirely when no
+      // attribution was ever captured, same as every other optional field.
+      const attribution = readStoredAttribution();
+
       const { data: orderData } = await orderApi.create({
         addressId:      selectedAddressId || undefined,
         paymentMethod,
@@ -292,6 +300,9 @@ export default function CheckoutPage() {
         couponCode,
         shippingAddress,
         country: validCountry,
+        utmSource: attribution?.utmSource,
+        utmMedium: attribution?.utmMedium,
+        utmCampaign: attribution?.utmCampaign,
         items: cart.items.map((i) => ({
           productId: i.productId,
           variantId: i.variantId,

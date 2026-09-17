@@ -8,6 +8,7 @@ import { Suspense } from 'react';
 import NavigationProgress from '../components/common/NavigationProgress';
 import WebVitalsReporter from '../components/common/WebVitalsReporter';
 import PageViewTracker from '../components/common/PageViewTracker';
+import AttributionInitializer from '../components/common/AttributionInitializer';
 import { SITE_NAME, SITE_URL, API_URL } from '../constants';
 import { CountryProvider } from '../contexts/CountryContext';
 import { COUNTRY_COOKIE } from '../lib/countryPreference';
@@ -130,6 +131,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <NavigationProgress />
                   <WebVitalsReporter />
                   <PageViewTracker />
+                  <AttributionInitializer />
                 </Suspense>
                 {children}
                 <Toaster
