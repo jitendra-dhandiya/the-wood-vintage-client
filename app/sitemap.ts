@@ -35,6 +35,46 @@ async function getBlogs() {
   } catch { return []; }
 }
 
+async function getCollections() {
+  try {
+    const res = await fetch(`${BACKEND_API_URL}/collections`, FETCH_OPTS);
+    const json = await res.json();
+    return json.data || [];
+  } catch { return []; }
+}
+
+async function getArtisans() {
+  try {
+    const res = await fetch(`${BACKEND_API_URL}/artisans`, FETCH_OPTS);
+    const json = await res.json();
+    return json.data || [];
+  } catch { return []; }
+}
+
+async function getMaterials() {
+  try {
+    const res = await fetch(`${BACKEND_API_URL}/materials`, FETCH_OPTS);
+    const json = await res.json();
+    return json.data || [];
+  } catch { return []; }
+}
+
+async function getRooms() {
+  try {
+    const res = await fetch(`${BACKEND_API_URL}/rooms`, FETCH_OPTS);
+    const json = await res.json();
+    return json.data || [];
+  } catch { return []; }
+}
+
+async function getStyles() {
+  try {
+    const res = await fetch(`${BACKEND_API_URL}/styles`, FETCH_OPTS);
+    const json = await res.json();
+    return json.data || [];
+  } catch { return []; }
+}
+
 /**
  * Every storefront page now lives at `/<country>/...`
  * (`docs/architecture/phase-3-url-restructuring-spec.md`), so the sitemap
@@ -45,8 +85,9 @@ async function getBlogs() {
  * here (`0004`'s "Consequences" already flagged this).
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, categories, blogs, countries] = await Promise.all([
-    getProducts(), getCategories(), getBlogs(), getEnabledCountries(),
+  const [products, categories, blogs, collections, artisans, materials, rooms, styles, countries] = await Promise.all([
+    getProducts(), getCategories(), getBlogs(), getCollections(), getArtisans(),
+    getMaterials(), getRooms(), getStyles(), getEnabledCountries(),
   ]);
 
   // Falls back to a bare, unprefixed sitemap (today's pre-restructuring shape)
@@ -62,6 +103,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     sitemap.push(
       { url: base || SITE_URL, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
       { url: `${base}/shop`, lastModified: new Date(), changeFrequency: 'hourly', priority: 0.9 },
+      { url: `${base}/collections`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
+      { url: `${base}/artisans`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.5 },
       { url: `${base}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
       { url: `${base}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
       { url: `${base}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
@@ -83,6 +126,51 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(c.updatedAt),
         changeFrequency: 'daily',
         priority: 0.7,
+      });
+    }
+
+    for (const col of collections) {
+      sitemap.push({
+        url: `${base}/collections/${col.slug}`,
+        lastModified: new Date(col.updatedAt || Date.now()),
+        changeFrequency: 'daily',
+        priority: 0.7,
+      });
+    }
+
+    for (const a of artisans) {
+      sitemap.push({
+        url: `${base}/artisans/${a.id}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly',
+        priority: 0.5,
+      });
+    }
+
+    for (const m of materials) {
+      sitemap.push({
+        url: `${base}/material/${m.slug}`,
+        lastModified: new Date(m.updatedAt || Date.now()),
+        changeFrequency: 'weekly',
+        priority: 0.6,
+      });
+    }
+
+    for (const r of rooms) {
+      sitemap.push({
+        url: `${base}/room/${r.slug}`,
+        lastModified: new Date(r.updatedAt || Date.now()),
+        changeFrequency: 'weekly',
+        priority: 0.6,
+      });
+    }
+
+    for (const s of styles) {
+      sitemap.push({
+        url: `${base}/style/${s.slug}`,
+        lastModified: new Date(s.updatedAt || Date.now()),
+        changeFrequency: 'weekly',
+        priority: 0.6,
       });
     }
 
