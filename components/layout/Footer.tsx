@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Box, Container, Grid, Typography, Divider, IconButton, TextField, Button, Stack } from '@mui/material';
 import { Instagram, Facebook, Twitter, YouTube, Pinterest } from '@mui/icons-material';
+import { useCountry } from '../../contexts/CountryContext';
+import { withCountry } from '../../lib/withCountry';
 
 /** Intrinsic ratio of the brand lockup — keep in step with Navbar's copy. */
 const LOGO_ASPECT = '1092 / 240';
@@ -35,6 +37,7 @@ interface FooterProps {
 }
 
 export default function Footer({ settings = {} }: FooterProps) {
+  const { country } = useCountry();
   const siteName = settings.site_name || 'Unique Dressup';
   const siteDesc = settings.site_description || 'Trendy & affordable fashion for every occasion.';
   const email = settings.site_email || '';
@@ -173,7 +176,7 @@ export default function Footer({ settings = {} }: FooterProps) {
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 {links.map((link) => (
-                  <Link key={link.href} href={link.href} style={{ textDecoration: 'none' }}>
+                  <Link key={link.href} href={withCountry(link.href, country)} style={{ textDecoration: 'none' }}>
                     <Typography
                       variant="body2"
                       sx={{
@@ -231,7 +234,7 @@ export default function Footer({ settings = {} }: FooterProps) {
               { label: 'Return & Exchange', href: '/return-policy' },
               { label: 'Shipping Policy', href: '/shipping-policy' },
             ].map((l) => (
-              <Link key={l.href} href={l.href} style={{ textDecoration: 'none' }}>
+              <Link key={l.href} href={withCountry(l.href, country)} style={{ textDecoration: 'none' }}>
                 <Typography variant="caption" sx={{ color: '#555', '&:hover': { color: '#c9a84c' }, transition: 'color 0.2s' }}>
                   {l.label}
                 </Typography>
