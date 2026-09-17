@@ -26,6 +26,7 @@ import { sortSizes } from '../../lib/sizeSort';
 import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
 import { getRecentlyViewed, recordView } from '../../lib/recentlyViewed';
+import { trackEvent } from '../../lib/analytics';
 
 interface Props {
   product: Product;
@@ -165,6 +166,10 @@ export default function ProductDetailClient({ product }: Props) {
       basePrice: Number(product.basePrice),
       salePrice: product.salePrice != null ? Number(product.salePrice) : null,
     });
+
+    // Phase 7 (Analytics) PRODUCT_VIEW -- alongside the view-tracking work
+    // this effect already does, not a second effect for the same trigger.
+    trackEvent('PRODUCT_VIEW', { productId: product.id });
 
     if (isAuthenticated) {
       userApi.addRecentlyViewed(product.id).catch(() => {

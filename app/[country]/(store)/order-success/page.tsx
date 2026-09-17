@@ -1,4 +1,5 @@
 'use client';
+import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Box, Container, Typography, Button, Stack } from '@mui/material';
@@ -6,11 +7,24 @@ import { CheckCircle, LocalShipping, Replay } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useCountry } from '../../../../contexts/CountryContext';
 import { withCountry } from '../../../../lib/withCountry';
+import { trackEvent } from '../../../../lib/analytics';
 
 export default function OrderSuccessPage() {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get('orderNumber');
   const { country } = useCountry();
+
+  // Phase 7 (Analytics) ORDER_PLACED -- where the checkout flow actually
+  // lands after a successful order (COD/Cashfree `router.push` here on
+  // confirmed payment; Razorpay's handler pushes here too). Only fires when
+  // a real order number is present, and only once, guarding against a
+  // dev-mode double-invoke or a re-render re-running the effect.
+  const tracked = useRef(false);
+  useEffect(() => {
+    if (!orderNumber || tracked.current) return;
+    tracked.current = true;
+    trackEvent('ORDER_PLACED');
+  }, [orderNumber]);
 
   return (
     <Container maxWidth="sm" sx={{ py: 10, textAlign: 'center' }}>

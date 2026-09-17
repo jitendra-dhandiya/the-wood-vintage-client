@@ -15,6 +15,7 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useCart } from '../../../../hooks/useCart';
 import { orderApi, paymentApi, userApi, cartApi } from '../../../../services/api.service';
+import { trackEvent } from '../../../../lib/analytics';
 import { formatPrice } from '../../../../utils/format';
 import { SHIPPING_METHODS, type ShippingMethodId } from '../../../../constants';
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -167,6 +168,13 @@ export default function CheckoutPage() {
       if (def) setSelectedAddressId(def.id);
     });
   }, [isAuthenticated, router]);
+
+  // Phase 7 (Analytics) CHECKOUT_STARTED -- once on mount, the standard
+  // fire-once pattern used elsewhere in this codebase (empty dependency array).
+  useEffect(() => {
+    trackEvent('CHECKOUT_STARTED');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── Razorpay loader ────────────────────────────────────────────
   const loadRazorpay = () => new Promise<boolean>((resolve) => {

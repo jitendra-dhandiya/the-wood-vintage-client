@@ -7,6 +7,7 @@ import QueryProvider from '../providers/QueryProvider';
 import { Suspense } from 'react';
 import NavigationProgress from '../components/common/NavigationProgress';
 import WebVitalsReporter from '../components/common/WebVitalsReporter';
+import PageViewTracker from '../components/common/PageViewTracker';
 import { SITE_NAME, SITE_URL, API_URL } from '../constants';
 import { CountryProvider } from '../contexts/CountryContext';
 import { COUNTRY_COOKIE } from '../lib/countryPreference';
@@ -128,6 +129,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Suspense fallback={null}>
                   <NavigationProgress />
                   <WebVitalsReporter />
+                  <PageViewTracker />
                 </Suspense>
                 {children}
                 <Toaster

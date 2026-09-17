@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../store';
 import { setCart, setLoading, openCart } from '../store/slices/cartSlice';
 import { cartApi } from '../services/api.service';
 import toast from 'react-hot-toast';
+import { trackEvent } from '../lib/analytics';
 
 export const useCart = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,9 @@ export const useCart = () => {
       await fetchCart();
       dispatch(openCart());
       toast.success('Added to cart!');
+      // Phase 7 (Analytics) ADD_TO_CART -- only after the call above actually
+      // succeeded (the catch block below is what "failed" means in this hook).
+      trackEvent('ADD_TO_CART', { productId });
     } catch (e: any) {
       toast.error(e?.response?.data?.message || 'Failed to add to cart');
     } finally {
