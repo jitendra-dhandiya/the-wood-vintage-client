@@ -1,4 +1,10 @@
 import type { NextConfig } from 'next';
+import withBundleAnalyzerInit from '@next/bundle-analyzer';
+
+// Real bundle numbers on demand: `ANALYZE=true npm run build`. There was no
+// way to measure "does admin code leak into the storefront bundle" other
+// than inference before this -- see phase-5-performance-spec.md.
+const withBundleAnalyzer = withBundleAnalyzerInit({ enabled: process.env.ANALYZE === 'true' });
 
 const nextConfig: NextConfig = {
   output: process.env.NEXT_OUTPUT === 'standalone' ? 'standalone' : undefined,
@@ -44,4 +50,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

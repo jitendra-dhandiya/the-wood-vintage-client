@@ -6,6 +6,7 @@ import ReduxProvider from '../providers/ReduxProvider';
 import QueryProvider from '../providers/QueryProvider';
 import { Suspense } from 'react';
 import NavigationProgress from '../components/common/NavigationProgress';
+import WebVitalsReporter from '../components/common/WebVitalsReporter';
 import { SITE_NAME, SITE_URL, API_URL } from '../constants';
 import { CountryProvider } from '../contexts/CountryContext';
 import { COUNTRY_COOKIE } from '../lib/countryPreference';
@@ -102,6 +103,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     would deopt every static page in the app. */}
                 <Suspense fallback={null}>
                   <NavigationProgress />
+                  <WebVitalsReporter />
                 </Suspense>
                 {children}
                 <Toaster
