@@ -28,11 +28,11 @@ import './globals.css';
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Premium Fashion Store`,
+    default: `${SITE_NAME} — Handcrafted Wooden Furniture & Home Décor`,
     template: `%s | ${SITE_NAME}`,
   },
-  description: 'Discover premium fashion, trending styles, and exclusive collections. Shop the latest in streetwear, co-ord sets, dresses, and more.',
-  keywords: ['fashion', 'clothing', 'streetwear', 'dresses', 'online shopping', 'premium fashion', 'trending'],
+  description: 'Shop handcrafted wooden furniture, décor, and artisan-made pieces for every room. Solid wood dining tables, chairs, storage, and home accents, made to last.',
+  keywords: ['handcrafted furniture', 'wooden furniture', 'solid wood furniture', 'home décor', 'artisan furniture', 'furniture online', 'handmade furniture'],
   authors: [{ name: SITE_NAME }],
   openGraph: {
     type: 'website',
