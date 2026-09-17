@@ -71,9 +71,33 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // provider's file comment).
   const initialCountry = (await cookies()).get(COUNTRY_COOKIE)?.value ?? null;
 
+  // Sitewide identity — emitted once here rather than per-page, since it
+  // describes the site as a whole (Knowledge Panel / sitelinks-search-box
+  // eligibility), not any one page's content.
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: SITE_URL,
+  };
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+  };
+
   return (
     <html lang="en">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
         {/* Every product image is served from the API origin, not this one, so
             without this the browser must complete DNS + TCP + TLS to that host
             before the first image byte arrives — typically 100-300ms of dead

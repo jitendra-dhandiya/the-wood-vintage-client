@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ProductDetailClient from '../../../../../components/product/ProductDetailClient';
-import { API_URL } from '@/constants';
+import { API_URL, SITE_NAME, SITE_URL } from '@/constants';
 import { getEnabledCountries, buildCountryAlternates } from '../../../../../lib/countries';
+import { withCountry } from '../../../../../lib/withCountry';
 
 interface Props {
   params: Promise<{ country: string; slug: string }>;
@@ -60,18 +61,25 @@ export default async function ProductPage({ params }: Props) {
   const product = await getProduct(slug, country);
   if (!product) notFound();
 
+  // Same resolution `generateMetadata` above uses for hreflang — the
+  // country's own ISO 4217 code (`Country.currency`, types/index.ts), not a
+  // hardcoded 'INR' that becomes factually wrong on any non-India market.
+  const countries = await getEnabledCountries();
+  const currentCountry = countries.find((c) => c.code.toUpperCase() === country?.toUpperCase());
+  const priceCurrency = currentCountry?.currency || 'INR';
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
     description: product.description,
     sku: product.sku,
-    brand: { '@type': 'Brand', name: product.brand || 'LUXÉ' },
+    brand: { '@type': 'Brand', name: product.brand || SITE_NAME },
     image: product.images?.map((i: any) => i.url),
     offers: {
       '@type': 'Offer',
       price: product.salePrice || product.basePrice,
-      priceCurrency: 'INR',
+      priceCurrency,
       availability: product.stockQuantity > 0 ? 'InStock' : 'OutOfStock',
     },
     ...(product.totalReviews > 0 && {
@@ -83,11 +91,36 @@ export default async function ProductPage({ params }: Props) {
     }),
   };
 
+  // Mirrors the breadcrumb trail `ProductDetailClient` actually renders:
+  // Home > Shop > [category, if present] > product name.
+  const breadcrumbItems = [
+    { name: 'Home', url: withCountry('/', country) },
+    { name: 'Shop', url: withCountry('/shop', country) },
+    ...(product.category?.name
+      ? [{ name: product.category.name, url: withCountry(`/category/${product.category.slug}`, country) }]
+      : []),
+    { name: product.name, url: withCountry(`/product/${product.slug}`, country) },
+  ];
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.url}`,
+    })),
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <ProductDetailClient product={product} />
     </>

@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import CollectionPageClient from '../../../../../components/category/CollectionPageClient';
-import { API_URL } from '../../../../../constants';
+import { API_URL, SITE_URL } from '../../../../../constants';
 import { getEnabledCountries, buildCountryAlternates } from '../../../../../lib/countries';
+import { withCountry } from '../../../../../lib/withCountry';
 
 interface Props {
   params: Promise<{ country: string; slug: string }>;
@@ -33,8 +34,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CollectionPage({ params }: Props) {
-  const { slug } = await params;
+  const { country, slug } = await params;
   const col = await fetchCollection(slug);
   if (!col) notFound();
-  return <CollectionPageClient collection={col} />;
+
+  // Mirrors the breadcrumb trail `CollectionPageClient` actually renders:
+  // Home > collection name.
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { name: 'Home', url: withCountry('/', country) },
+      { name: col.name, url: withCountry(`/collections/${col.slug}`, country) },
+    ].map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.url}`,
+    })),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <CollectionPageClient collection={col} />
+    </>
+  );
 }

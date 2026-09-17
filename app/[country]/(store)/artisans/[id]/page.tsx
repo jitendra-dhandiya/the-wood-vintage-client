@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Box, Container, Typography, Breadcrumbs } from '@mui/material';
-import { API_URL, SITE_NAME } from '../../../../../constants';
+import { API_URL, SITE_NAME, SITE_URL } from '../../../../../constants';
 import { getEnabledCountries, buildCountryAlternates } from '../../../../../lib/countries';
 import { withCountry } from '../../../../../lib/withCountry';
 import type { Artisan } from '../../../../../types';
@@ -45,8 +45,28 @@ export default async function ArtisanDetailPage({ params }: Props) {
   const artisan = await fetchArtisan(id);
   if (!artisan) notFound();
 
+  // Mirrors the breadcrumb trail rendered just below: Home > Artisans > artisan name.
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { name: 'Home', url: withCountry('/', country) },
+      { name: 'Artisans', url: withCountry('/artisans', country) },
+      { name: artisan.name, url: withCountry(`/artisans/${id}`, country) },
+    ].map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.url}`,
+    })),
+  };
+
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', px: { xs: 2, md: 4 }, py: 6 }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Breadcrumbs sx={{ mb: 4, fontSize: '0.85rem' }}>
         <Link href={withCountry('/', country)} style={{ color: 'inherit', textDecoration: 'none' }}>Home</Link>
         <Link href={withCountry('/artisans', country)} style={{ color: 'inherit', textDecoration: 'none' }}>Artisans</Link>

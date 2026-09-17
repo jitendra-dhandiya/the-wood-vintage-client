@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import CategoryPageClient from '../../../../../components/category/CategoryPageClient';
-import { API_URL } from '../../../../../constants';
+import { API_URL, SITE_URL } from '../../../../../constants';
 import { legacyCategoryTarget } from '../../../../../lib/legacyCategorySlugs';
 import { withCountry } from '../../../../../lib/withCountry';
 import { getEnabledCountries, buildCountryAlternates } from '../../../../../lib/countries';
@@ -56,5 +56,30 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     notFound();
   }
 
-  return <CategoryPageClient category={cat} searchParams={sp} />;
+  // Mirrors the breadcrumb trail `CategoryPageClient` actually renders:
+  // Home > Shop > category name.
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { name: 'Home', url: withCountry('/', country) },
+      { name: 'Shop', url: withCountry('/shop', country) },
+      { name: cat.name, url: withCountry(`/category/${cat.slug}`, country) },
+    ].map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.url}`,
+    })),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <CategoryPageClient category={cat} searchParams={sp} />
+    </>
+  );
 }
