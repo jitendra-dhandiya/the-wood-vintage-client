@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const countries = await getEnabledCountries();
   const alt = buildCountryAlternates(`/${slug}`, country, countries);
   return {
-    title: page.seoMeta?.metaTitle || `${page.title} — The Wood Vintage`,
+    title: page.seoMeta?.metaTitle || `${page.title}`,
     description: page.seoMeta?.metaDescription || page.excerpt,
     alternates: alt,
   };

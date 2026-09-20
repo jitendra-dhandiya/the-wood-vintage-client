@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const countries = await getEnabledCountries();
   const alt = buildCountryAlternates(`/category/${cat.slug}`, country, countries);
   return {
-    title: cat.seoMeta?.metaTitle || `${cat.name} — The Wood Vintage`,
+    title: cat.seoMeta?.metaTitle || `${cat.name}`,
     description: cat.seoMeta?.metaDescription || cat.description,
     openGraph: {
       title: cat.name,
