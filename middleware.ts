@@ -21,7 +21,7 @@ import type { Country } from './types';
  *     new first segment if there wasn't one at all (a flat legacy URL, or
  *     `/`).
  *
- * `/admin`, `/account`, `/login`, `/register`, `/api`, `/_next`, and static
+ * `/admin`, `/admin-login`, `/account`, `/login`, `/register`, `/api`, `/_next`, and static
  * assets are excluded entirely via `matcher` below — they're session-scoped
  * or non-page paths with no SEO value from a URL-level country signal.
  */
@@ -122,7 +122,7 @@ export const config = {
     // Everything except /admin, /account, /login, /register, /api, /_next,
     // and anything that looks like a static asset (has a "." in its last
     // segment — favicon.ico, robots.txt, sitemap.xml, images, fonts, ...).
-    '/((?!(?:admin|account|login|register|api|_next)(?:/|$)|.*\\..*).*)',
+    '/((?!(?:admin|admin-login|account|login|register|api|_next)(?:/|$)|.*\\..*).*)',
   ],
 };
 

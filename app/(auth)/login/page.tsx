@@ -28,6 +28,10 @@ function LoginInner() {
             Back to shop
           </Button>
 
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <Box component="img" src="/logo-horizontal.png" alt="The Wood Vintage" sx={{ height: 48, width: 'auto', maxWidth: '100%' }} />
+          </Box>
+
           <Box sx={{ bgcolor: '#fff', border: '1px solid', borderColor: 'divider', borderRadius: 2, p: { xs: 3, sm: 4 } }}>
             <Typography variant="h4" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 800, mb: 0.5 }}>
               Sign in

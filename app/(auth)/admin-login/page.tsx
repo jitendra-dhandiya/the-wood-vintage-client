@@ -62,12 +62,16 @@ function AdminLoginInner() {
   });
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', bgcolor: '#111', py: 6 }}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', bgcolor: '#24140A', py: 6 }}>
       <Container maxWidth="xs">
         <Button component={Link} href={withCountry('/', country)} startIcon={<ArrowBack />}
           sx={{ mb: 3, color: 'rgba(255,255,255,.55)', textTransform: 'none' }}>
           Back to shop
         </Button>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <Box component="img" src="/logo-horizontal-light.png" alt="The Wood Vintage" sx={{ height: 52, width: 'auto', maxWidth: '100%' }} />
+        </Box>
 
         <Box sx={{ bgcolor: '#fff', borderRadius: 2, p: { xs: 3, sm: 4 } }}>
           <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mb: 0.5 }}>
