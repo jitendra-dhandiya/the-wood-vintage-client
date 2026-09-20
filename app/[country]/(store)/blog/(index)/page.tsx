@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import BlogListClient from '../../../../../components/blog/BlogListClient';
 import { API_URL, SITE_NAME } from '../../../../../constants';
+import { normalizeBlog } from '../../../../../lib/blog';
 
 export const metadata: Metadata = {
-  title: 'Journal — The Wood Vintage',
+  title: 'The Journal',
   description: 'Craft stories, furniture care guides, styling ideas and behind-the-scenes looks at the artisans of The Wood Vintage.',
 };
 
@@ -18,7 +19,7 @@ async function getBlogsForSchema() {
     const res = await fetch(`${API_URL}/blogs?limit=20`, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const json = await res.json();
-    return json.data || [];
+    return (json.data || []).map(normalizeBlog);
   } catch { return []; }
 }
 

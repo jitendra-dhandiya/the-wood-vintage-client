@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Box, Typography, Chip, Divider, Avatar } from '@mui/material';
 import { formatDate } from '../../../../../utils/format';
 import { API_URL, SITE_NAME } from '../../../../../constants';
+import { normalizeBlog } from '../../../../../lib/blog';
 import { getEnabledCountries, buildCountryAlternates } from '../../../../../lib/countries';
 
 interface Props {
@@ -11,9 +12,9 @@ interface Props {
 
 async function fetchBlog(slug: string) {
   try {
-    const res = await fetch(`${API_URL}/blog/${slug}`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API_URL}/blogs/${slug}`, { next: { revalidate: 3600 } });
     if (!res.ok) return null;
-    return (await res.json()).data;
+    return normalizeBlog((await res.json()).data);
   } catch { return null; }
 }
 
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const countries = await getEnabledCountries();
   const alt = buildCountryAlternates(`/blog/${blog.slug}`, country, countries);
   return {
-    title: blog.seoMeta?.metaTitle || `${blog.title} — ${SITE_NAME} Blog`,
+    title: (blog.seoMeta?.metaTitle || blog.title).replace(/\s*[|—–-]\s*(The )?Wood Vintage\s*$/i, ''),
     description: blog.seoMeta?.metaDescription || blog.excerpt,
     openGraph: {
       title: blog.title,

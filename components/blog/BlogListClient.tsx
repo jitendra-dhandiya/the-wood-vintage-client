@@ -7,6 +7,7 @@ import {
 import Link from 'next/link';
 import { Search } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { normalizeBlog } from '../../lib/blog';
 import { blogApi } from '../../services/api.service';
 import { formatDate } from '../../utils/format';
 import { useCountry } from '../../contexts/CountryContext';
@@ -24,7 +25,7 @@ export default function BlogListClient() {
   const fetchBlogs = useCallback(() => {
     setLoading(true);
     blogApi.getAll({ page, limit, search })
-      .then(({ data }) => { setBlogs(data.data || []); setTotal(data.meta?.total || 0); })
+      .then(({ data }) => { setBlogs((data.data || []).map(normalizeBlog)); setTotal(data.meta?.total || 0); })
       .finally(() => setLoading(false));
   }, [page, search]);
 
@@ -37,7 +38,7 @@ export default function BlogListClient() {
     <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 2, md: 4 }, py: 6 }}>
       <Box sx={{ textAlign: 'center', mb: 6 }}>
         <Typography variant="h2" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 800, mb: 1 }}>
-          Style Journal
+          The Journal
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 500, mx: 'auto' }}>
           Craft stories, care guides and styling ideas from our workshops.
