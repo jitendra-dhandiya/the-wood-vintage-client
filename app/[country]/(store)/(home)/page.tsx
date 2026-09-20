@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const countries = await getEnabledCountries();
   const alt = buildCountryAlternates('/', country, countries);
   return {
-    title: `${SITE_NAME} — Handcrafted Wooden Furniture & Décor`,
+    title: { absolute: `${SITE_NAME} — Handcrafted Wooden Furniture & Décor` },
     description: 'Shop artisan-made solid wood furniture and home décor. Sheesham, mango and teak pieces, hand-finished and delivered across India.',
     alternates: alt,
   };

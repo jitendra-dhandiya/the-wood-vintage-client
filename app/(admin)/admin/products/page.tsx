@@ -363,14 +363,7 @@ export default function AdminProductsPage() {
                 ))}
               </Select>
             </FormControl>
-            <FormControl size="small" sx={{ minWidth: 130 }}>
-              <Select value={genderFilter} onChange={(e) => setGenderFilter(e.target.value as any)}>
-                <MenuItem value="all">All genders</MenuItem>
-                <MenuItem value="WOMEN">Women</MenuItem>
-                <MenuItem value="MEN">Men</MenuItem>
-                <MenuItem value="UNISEX">Unisex</MenuItem>
-              </Select>
-            </FormControl>
+            {/* Gender filter removed: the handicraft catalogue is not gendered (genderFilter stays 'all'). */}
             <FormControl size="small" sx={{ minWidth: 150 }}>
               <Select
                 value={statusFilter}

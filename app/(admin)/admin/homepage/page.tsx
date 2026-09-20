@@ -99,7 +99,7 @@ interface MarqueeEditorProps {
 
 function MarqueeEditor({ config, onChange }: MarqueeEditorProps) {
   const items: MarqueeItem[] = config.items || [
-    { text: 'Free Shipping on Orders Above ₹999', icon: '🚚', link: '' },
+    { text: 'Free Shipping on Orders Above ₹4,999', icon: '🚚', link: '' },
     { text: 'Easy Size Exchange', icon: '↩', link: '' },
     { text: 'New Arrivals Every Week', icon: '✨', link: '' },
   ];

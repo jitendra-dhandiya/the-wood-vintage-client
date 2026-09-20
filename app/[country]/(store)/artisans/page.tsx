@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const countries = await getEnabledCountries();
   const alt = buildCountryAlternates('/artisans', country, countries);
   return {
-    title: `Our Artisans — ${SITE_NAME}`,
+    title: `Our Artisans`,
     description: 'Meet the craftspeople behind every handcrafted piece — their story, their region, their trade.',
     alternates: alt,
   };

@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const alt = buildCountryAlternates(`/product/${slug}`, country, countries);
 
   return {
-    title: product.metaTitle || product.name,
+    title: (product.metaTitle || product.name).replace(/\s*[|—–-]\s*(The )?Wood Vintage\s*$/i, ''),
     description: product.metaDesc || product.shortDesc || product.description?.substring(0, 160),
     keywords: product.tags?.map((t: any) => t.tag).join(', '),
     openGraph: {

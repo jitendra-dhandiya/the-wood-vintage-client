@@ -3,7 +3,7 @@ import { Box, Container, Typography, Divider, Grid } from '@mui/material';
 import { Timer, Videocam, CardGiftcard, SwapHoriz, Instagram } from '@mui/icons-material';
 
 export const metadata: Metadata = {
-  title: 'Return & Replacement Policy | The Wood Vintage',
+  title: 'Return & Replacement Policy',
   description:
     'Return requests within 36 hours of delivery for wrong or damaged products, store credit refunds, and replacements — how it works at The Wood Vintage.',
 };

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Box, Container, Typography, Divider } from '@mui/material';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | The Wood Vintage',
+  title: 'Privacy Policy',
   description: 'Learn how The Wood Vintage collects, uses, and protects your personal information.',
 };
 
@@ -181,7 +181,7 @@ export default function PrivacyPolicyPage() {
             </P>
             <Box sx={{ bgcolor: '#f9f9f9', borderRadius: 1.5, p: 2.5, mt: 1 }}>
               <Typography variant="body2" sx={{ color: '#444', fontWeight: 700, mb: 0.5 }}>The Wood Vintage</Typography>
-              <Typography variant="body2" sx={{ color: '#444' }}>Email: support@thewoodvintage.com</Typography>
+              <Typography variant="body2" sx={{ color: '#444' }}>Email: hello@thewoodvintage.com</Typography>
               <Typography variant="body2" sx={{ color: '#444' }}>Website: www.thewoodvintage.com</Typography>
             </Box>
           </Section>

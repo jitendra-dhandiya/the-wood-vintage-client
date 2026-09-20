@@ -193,7 +193,7 @@ export default function AdminLayoutClient({ children }: Props) {
         </Avatar>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography variant="caption" sx={{ color: 'white', fontWeight: 700, display: 'block' }} noWrap>
-            Unique Dreessup
+            {[user?.firstName, user?.lastName].filter(Boolean).join(" ") || "The Wood Vintage"}
           </Typography>
           <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.65rem', textTransform: 'uppercase' }}>
             {user?.role}

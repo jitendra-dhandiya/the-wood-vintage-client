@@ -4,7 +4,7 @@ import { Favorite, VerifiedUser, LocalShipping, SupportAgent } from '@mui/icons-
 import { withCountry } from '../../../../lib/withCountry';
 
 export const metadata: Metadata = {
-  title: 'About Us | The Wood Vintage',
+  title: 'About Us',
   description: 'Discover the story behind The Wood Vintage — handcrafted wooden furniture and home décor, made by skilled artisans from responsibly sourced wood.',
 };
 

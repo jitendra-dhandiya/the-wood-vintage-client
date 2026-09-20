@@ -3,7 +3,7 @@ import { Box, Container, Typography, Divider, Grid, Chip } from '@mui/material';
 import { LocalShipping, FlashOn, AttachMoney } from '@mui/icons-material';
 
 export const metadata: Metadata = {
-  title: 'Shipping Policy | The Wood Vintage',
+  title: 'Shipping Policy',
   description: 'Learn about our shipping methods, delivery timelines, and charges at The Wood Vintage.',
 };
 
@@ -181,7 +181,7 @@ export default function ShippingPolicyPage() {
             <P>
               We are not responsible for delays or failed deliveries caused by incorrect or incomplete
               addresses provided at checkout. Please double-check your shipping address before placing
-              an order. Contact us immediately at <strong>support@thewoodvintage.com</strong> if you
+              an order. Contact us immediately at <strong>hello@thewoodvintage.com</strong> if you
               need to update your address after placing an order (before dispatch).
             </P>
           </Section>
@@ -203,7 +203,7 @@ export default function ShippingPolicyPage() {
             <P>For shipping-related queries, please contact us:</P>
             <Box sx={{ bgcolor: '#f9f9f9', borderRadius: 1.5, p: 2.5, mt: 1 }}>
               <Typography variant="body2" sx={{ color: '#444', fontWeight: 700, mb: 0.5 }}>The Wood Vintage — Customer Support</Typography>
-              <Typography variant="body2" sx={{ color: '#444' }}>Email: support@thewoodvintage.com</Typography>
+              <Typography variant="body2" sx={{ color: '#444' }}>Email: hello@thewoodvintage.com</Typography>
               <Typography variant="body2" sx={{ color: '#444' }}>Support Hours: Monday–Saturday, 10 AM – 6 PM IST</Typography>
             </Box>
           </Section>

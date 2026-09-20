@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const countries = await getEnabledCountries();
   const alt = buildCountryAlternates(`/artisans/${id}`, country, countries);
   return {
-    title: `${artisan.name} — Our Artisans — ${SITE_NAME}`,
+    title: `${artisan.name} — Our Artisans`,
     description: artisan.bio || `Meet ${artisan.name}, a craftsperson behind our handcrafted collection.`,
     openGraph: {
       title: artisan.name,

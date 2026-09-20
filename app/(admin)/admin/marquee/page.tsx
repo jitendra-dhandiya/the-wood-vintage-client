@@ -53,7 +53,7 @@ const FONT_SIZE_OPTIONS = [
 
 const DEFAULT_CONFIG: MarqueeConfig = {
   items: [
-    { text: 'Free Shipping on Orders Above ₹999', icon: '🚚', link: '' },
+    { text: 'Free Shipping on Orders Above ₹4,999', icon: '🚚', link: '' },
     { text: 'Easy Size Exchange', icon: '↩', link: '' },
     { text: 'New Arrivals Every Week', icon: '✨', link: '' },
     { text: 'Exclusive Offers for Members', icon: '🎁', link: '' },
@@ -366,7 +366,7 @@ export default function MarqueeAdminPage() {
                           onChange={e => updateItem(i, { text: e.target.value })}
                           size="small"
                           label="Message *"
-                          placeholder="Free shipping on orders above ₹999"
+                          placeholder="Free shipping on orders above ₹4,999"
                           fullWidth
                         />
                       </Box>

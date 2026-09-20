@@ -45,7 +45,7 @@ export default function BlogsPage() {
 
   const formik = useFormik({
     initialValues: {
-      title: '', excerpt: '', content: '', category: 'Fashion',
+      title: '', excerpt: '', content: '', category: 'Craft & Care',
       isPublished: false, metaTitle: '', metaDescription: '',
     },
     validationSchema: schema,
@@ -75,7 +75,7 @@ export default function BlogsPage() {
   const openEdit = (b: any) => {
     setEditBlog(b);
     setImagePreview(b.coverImage || '');
-    formik.setValues({ title: b.title, excerpt: b.excerpt || '', content: b.content, category: b.category || 'Fashion', isPublished: b.isPublished, metaTitle: b.seoMeta?.metaTitle || '', metaDescription: b.seoMeta?.metaDescription || '' });
+    formik.setValues({ title: b.title, excerpt: b.excerpt || '', content: b.content, category: b.category || 'Craft & Care', isPublished: b.isPublished, metaTitle: b.seoMeta?.metaTitle || '', metaDescription: b.seoMeta?.metaDescription || '' });
     setDialogOpen(true);
   };
   const closeDialog = () => { setDialogOpen(false); setEditBlog(null); formik.resetForm(); };

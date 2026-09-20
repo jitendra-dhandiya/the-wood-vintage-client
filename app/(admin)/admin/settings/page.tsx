@@ -355,7 +355,7 @@ function NavDrawerPreview({ layout }: { layout: NavLayout }) {
         </Box>
         <Divider />
         {/* category rows */}
-        {['DENIM', 'Pants and Trousers'].map(c => (
+        {['BEDS', 'Tables'].map(c => (
           <Box key={c} sx={{
             display: 'flex', alignItems: 'center', justifyContent: justify, gap: 1.5,
             px: 2, py: m.rowPadding, borderBottom: '1px solid #f4f4f4',

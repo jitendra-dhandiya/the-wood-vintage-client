@@ -5,7 +5,7 @@ import { HelpOutline } from '@mui/icons-material';
 import { withCountry } from '../../../../lib/withCountry';
 
 export const metadata: Metadata = {
-  title: 'Frequently Asked Questions | The Wood Vintage',
+  title: 'Frequently Asked Questions',
   description:
     'Answers to common questions about orders, shipping charges and timelines, payments, returns, care and damage claims at The Wood Vintage.',
 };

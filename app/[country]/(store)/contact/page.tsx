@@ -10,25 +10,25 @@ const contactInfo = [
   {
     icon: <Email sx={{ fontSize: 24, color: '#A0693A' }} />,
     label: 'Email',
-    value: 'support@thewoodvintage.com',
-    href: 'mailto:support@thewoodvintage.com',
+    value: 'hello@thewoodvintage.com',
+    href: 'mailto:hello@thewoodvintage.com',
   },
   {
     icon: <Phone sx={{ fontSize: 24, color: '#A0693A' }} />,
     label: 'Phone',
-    value: '+91 XXXXX XXXXX',
-    href: 'tel:+91XXXXXXXXXX',
+    value: '+91 98765 43210',
+    href: 'tel:+919876543210',
   },
   {
     icon: <AccessTime sx={{ fontSize: 24, color: '#A0693A' }} />,
     label: 'Support Hours',
-    value: 'Mon–Sat, 10 AM – 6 PM IST',
+    value: 'Mon–Sat, 10 AM – 7 PM IST',
     href: null,
   },
   {
     icon: <LocationOn sx={{ fontSize: 24, color: '#A0693A' }} />,
     label: 'Location',
-    value: 'India',
+    value: 'Jodhpur, Rajasthan, India',
     href: null,
   },
 ];
