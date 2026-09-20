@@ -99,6 +99,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
   // Swiper gives every slide one shared height, so this is a per-slider
   // decision rather than a per-banner one.
   const hasMobileArt = banners.some((b) => b.mobileImage);
+  const hasOverlay = banners.some((b) => b.title);
 
   return (
     <Box
@@ -106,7 +107,10 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
         width: '100%',
         aspectRatio: HERO_ASPECT,
         height: 'auto',
-        ...(hasMobileArt && { [MOBILE_BP]: { aspectRatio: HERO_ASPECT_MOBILE_ART } }),
+        ...(hasMobileArt
+          ? { [MOBILE_BP]: { aspectRatio: HERO_ASPECT_MOBILE_ART } }
+          // Slides carry a text overlay: give a phone a taller box so it fits.
+          : hasOverlay ? { [MOBILE_BP]: { aspectRatio: '4 / 3' } } : {}),
         [DESKTOP_BP]: { aspectRatio: 'auto', height: HERO_H_DESKTOP },
         position: 'relative', overflow: 'hidden',
         '& .swiper, & .swiper-wrapper, & .swiper-slide': { height: '100%' },
@@ -135,7 +139,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
       <Swiper
         modules={[Autoplay, Navigation, Pagination, EffectFade]}
         effect="fade"
-        fadeEffect={{ crossFade: true }}
+        fadeEffect={{ crossFade: false }}
         autoplay={{ delay: 5500, disableOnInteraction: false }}
         navigation
         pagination={{ clickable: true }}
@@ -218,15 +222,67 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
                 );
               })()}
 
-              {/* No overlay, by design.
-                  The artwork carries the message, and a button drawn on top of
-                  someone's photograph competes with it — so the scrim that
-                  existed only to keep that button readable is gone too. The
-                  whole image is the link instead, which is what a shopper
-                  reaches for anyway.
-
-                  `title` is still the alt text and the banner's label in admin;
-                  `ctaText` still drives the button on PROMOTIONAL banners. */}
+              {/* Editorial overlay: left-aligned headline, sub-line and CTA over a
+                  walnut scrim so the copy stays readable on any photograph.
+                  The whole slide remains the link (zIndex 1 above); only the
+                  button re-enables pointer events. */}
+              {banner.title && (
+                <>
+                  <Box sx={{
+                    position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+                    background: {
+                      xs: 'linear-gradient(to top, rgba(36,20,10,0.85) 0%, rgba(36,20,10,0.35) 55%, rgba(36,20,10,0.1) 100%)',
+                      md: 'linear-gradient(90deg, rgba(36,20,10,0.82) 0%, rgba(36,20,10,0.55) 38%, rgba(36,20,10,0) 72%)',
+                    },
+                  }} />
+                  <Container maxWidth="xl" sx={{
+                    position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+                    display: 'flex', alignItems: { xs: 'flex-end', md: 'center' },
+                    pb: { xs: 6, md: 0 },
+                  }}>
+                    <Box sx={{ maxWidth: { xs: '100%', md: 560 } }}>
+                      <Typography sx={{ color: '#D9A66E', letterSpacing: '0.3em', fontSize: { xs: '0.6rem', md: '0.72rem' }, fontWeight: 700, mb: { xs: 1, md: 2 }, textTransform: 'uppercase' }}>
+                        The Wood Vintage
+                      </Typography>
+                      <Typography component="h2" sx={{
+                        fontFamily: 'var(--font-playfair)', color: '#fff', fontWeight: 600,
+                        fontSize: { xs: '1.5rem', sm: '2.2rem', md: '2.8rem', lg: '3.6rem' }, lineHeight: 1.08,
+                        letterSpacing: '-0.01em', mb: { xs: 1, md: 2 }, textShadow: '0 2px 18px rgba(0,0,0,0.35)',
+                      }}>
+                        {banner.title}
+                      </Typography>
+                      {banner.subtitle && (
+                        <Typography sx={{
+                          color: 'rgba(255,252,245,0.9)', fontSize: { xs: '0.8rem', md: '1.05rem' }, lineHeight: 1.6,
+                          mb: { xs: 0, md: 3.5 }, maxWidth: 480, display: { xs: 'none', md: 'block' },
+                          WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                        }}>
+                          {banner.subtitle}
+                        </Typography>
+                      )}
+                      {banner.ctaText && (() => {
+                        const t = resolveBannerLink(banner.link);
+                        if (!t || t.external) return null;
+                        return (
+                          <Button
+                            component={Link}
+                            href={withCountry(t.href, country)}
+                            variant="contained"
+                            sx={{
+                              pointerEvents: 'auto', display: { xs: 'none', md: 'inline-flex' },
+                              bgcolor: '#A0693A', color: '#fff', borderRadius: 0,
+                              fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.14em', py: 1.5, px: 4.5,
+                              '&:hover': { bgcolor: '#7E5029' },
+                            }}
+                          >
+                            {banner.ctaText}
+                          </Button>
+                        );
+                      })()}
+                    </Box>
+                  </Container>
+                </>
+              )}
             </Box>
           </SwiperSlide>
         ))}

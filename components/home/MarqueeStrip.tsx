@@ -45,7 +45,7 @@ const FONT_SIZES: Record<string, string> = {
 };
 
 const DEFAULT_ITEMS: MarqueeItem[] = [
-  { text: 'Free Shipping on Orders Above ₹999', icon: '🚚' },
+  { text: 'Free Shipping on Orders Above ₹4,999', icon: '🚚' },
   { text: 'Hand-Finished by Artisans', icon: '🪵' },
   { text: 'New Pieces Added Regularly', icon: '✨' },
   { text: 'Sustainably Sourced Wood', icon: '🎁' },

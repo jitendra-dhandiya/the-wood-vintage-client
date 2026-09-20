@@ -107,7 +107,7 @@ export default function Footer({ settings = {} }: FooterProps) {
       <Container maxWidth="xl" sx={{ py: 6 }}>
         <Grid container spacing={4}>
           {/* Brand */}
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={3}>
             {BRAND_LOGO_LIGHT ? (
               /**
                * The footer sits on #2A190E, so it needs the light colourway —
@@ -225,7 +225,7 @@ export default function Footer({ settings = {} }: FooterProps) {
           py: 2.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'space-between', alignItems: 'center', gap: 2,
         }}>
-          <Typography variant="caption" sx={{ color: '#555' }}>
+          <Typography variant="caption" sx={{ color: 'rgba(255,252,245,0.6)' }}>
             © {new Date().getFullYear()} {siteName}. All rights reserved.
           </Typography>
           <Box sx={{ display: 'flex', gap: 2.5, flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -236,7 +236,7 @@ export default function Footer({ settings = {} }: FooterProps) {
               { label: 'Shipping Policy', href: '/shipping-policy' },
             ].map((l) => (
               <Link key={l.href} href={withCountry(l.href, country)} style={{ textDecoration: 'none' }}>
-                <Typography variant="caption" sx={{ color: '#555', '&:hover': { color: '#D9A66E' }, transition: 'color 0.2s' }}>
+                <Typography variant="caption" sx={{ color: 'rgba(255,252,245,0.6)', '&:hover': { color: '#D9A66E' }, transition: 'color 0.2s' }}>
                   {l.label}
                 </Typography>
               </Link>

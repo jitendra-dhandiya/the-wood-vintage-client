@@ -20,7 +20,7 @@ import type { GenderType } from '../../lib/genderPreference';
 // ── Promo strip ────────────────────────────────────────────────
 function PromoStrip() {
   const ITEMS = [
-    { label: 'Free Shipping', desc: 'On orders above ₹999' },
+    { label: 'Free Shipping', desc: 'On orders above ₹4,999' },
     { label: 'Artisan Made', desc: 'Solid wood, hand-finished' },
     { label: 'Secure Payments', desc: 'Razorpay · UPI · COD' },
   ];

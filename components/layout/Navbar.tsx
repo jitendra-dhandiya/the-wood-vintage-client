@@ -196,7 +196,7 @@ export default function Navbar({
           fontWeight: 500,
         }}
       >
-        {settings.announcement_text || 'FREE SHIPPING ON ORDERS ABOVE ₹999'}
+        {settings.announcement_text || 'FREE SHIPPING ON ORDERS ABOVE ₹4,999'}
       </Box>
 
       {/* Gender Toggle Bar */}

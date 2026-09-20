@@ -37,6 +37,9 @@ export default function TaxonomyShowcase({ items, linkParam, title, subtitle }: 
   const { country } = useCountry();
   if (!items.length) return null;
 
+  const count = Math.min(items.length, 10);
+  const desktopCols = count <= 5 ? Math.max(count, 1) : count % 4 === 0 ? 4 : 5;
+
   return (
     <Box sx={{ py: { xs: 7, md: 11 }, bgcolor: '#fff' }}>
       <Container maxWidth="xl">
@@ -57,13 +60,17 @@ export default function TaxonomyShowcase({ items, linkParam, title, subtitle }: 
           </Box>
         </motion.div>
 
-        <Box sx={{
-          display: 'grid',
-          gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: `repeat(${Math.min(items.length, 5)}, 1fr)` },
-          gap: { xs: 1.5, md: 2 },
-        }}>
+        {/* Flex + centred last row: 8 rooms sit as 4+4, 9 materials as 5+4,
+            instead of a left-aligned ragged grid. */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: { xs: '12px', md: '16px' } }}>
           {items.slice(0, 10).map((item, i) => (
-            <Box key={item.id}>
+            <Box key={item.id} sx={{
+              width: {
+                xs: 'calc((100% - 12px) / 2)',
+                sm: 'calc((100% - 24px) / 3)',
+                md: `calc((100% - ${(desktopCols - 1) * 16}px) / ${desktopCols})`,
+              },
+            }}>
               <Link href={withCountry(`/shop?${linkParam}=${item.slug}`, country)} style={{ textDecoration: 'none', display: 'block' }}>
                 <Box sx={{
                   aspectRatio: '4 / 5',
