@@ -12,7 +12,8 @@ export const GENDERS = [
 
 // Furniture is not sold in apparel sizes; dimensions are product attributes.
 export const PRODUCT_SIZES: string[] = [];
-export const PRODUCT_COLORS = ['Natural', 'Honey', 'Walnut', 'Mahogany', 'Espresso', 'Whitewash', 'Black'];
+// Finishes that exist in the catalogue's variant data (Natural / Walnut / Honey); keep in sync with the seed.
+export const PRODUCT_COLORS = ['Natural', 'Walnut', 'Honey'];
 
 export const SORT_OPTIONS = [
   // Curated order: the admin's per-product display priority, highest first,
@@ -77,7 +78,7 @@ export const SHIPPING_METHODS = [
 export type ShippingMethodId = typeof SHIPPING_METHODS[number]['id'];
 
 // Legacy — kept so any other references don't break
-export const FREE_SHIPPING_THRESHOLD = 999;
+export const FREE_SHIPPING_THRESHOLD = 4999; // keep in sync with the `free_shipping_threshold` setting
 export const SHIPPING_CHARGE = 79;
 
 export const ITEMS_PER_PAGE = 20;

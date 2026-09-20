@@ -89,7 +89,7 @@ export function FilterPanel({
             variant={selectedSizes.includes(size) ? 'filled' : 'outlined'}
             sx={{
               cursor: 'pointer',
-              ...(selectedSizes.includes(size) && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
+              ...(selectedSizes.includes(size) && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#5A3D2B' } }),
             }}
           />
         ))}
@@ -108,7 +108,7 @@ export function FilterPanel({
             variant={selectedColors.includes(color) ? 'filled' : 'outlined'}
             sx={{
               cursor: 'pointer',
-              ...(selectedColors.includes(color) && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
+              ...(selectedColors.includes(color) && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#5A3D2B' } }),
             }}
           />
         ))}
@@ -132,7 +132,7 @@ export function FilterPanel({
                 variant={selectedMaterial === m.slug ? 'filled' : 'outlined'}
                 sx={{
                   cursor: 'pointer',
-                  ...(selectedMaterial === m.slug && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
+                  ...(selectedMaterial === m.slug && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#5A3D2B' } }),
                 }}
               />
             ))}
@@ -152,7 +152,7 @@ export function FilterPanel({
                 variant={selectedStyle === s.slug ? 'filled' : 'outlined'}
                 sx={{
                   cursor: 'pointer',
-                  ...(selectedStyle === s.slug && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
+                  ...(selectedStyle === s.slug && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#5A3D2B' } }),
                 }}
               />
             ))}
@@ -172,7 +172,7 @@ export function FilterPanel({
                 variant={selectedRoom === r.slug ? 'filled' : 'outlined'}
                 sx={{
                   cursor: 'pointer',
-                  ...(selectedRoom === r.slug && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
+                  ...(selectedRoom === r.slug && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#5A3D2B' } }),
                 }}
               />
             ))}

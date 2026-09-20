@@ -136,7 +136,7 @@ export default function CategoryShowcase({ initialCategories = [] }: Props) {
                   }}>
                     {/* Category name */}
                     <Typography sx={{
-                      color: '#FFE500',
+                      color: '#fff',
                       fontWeight: 900,
                       fontSize: { xs: '0.95rem', sm: '1.2rem', md: '1.5rem' },
                       textTransform: 'uppercase',
@@ -158,7 +158,7 @@ export default function CategoryShowcase({ initialCategories = [] }: Props) {
                     <Box
                       className="cat-btn"
                       sx={{
-                        bgcolor: '#E53935',
+                        bgcolor: '#A0693A',
                         color: 'white',
                         fontSize: { xs: '0.58rem', md: '0.62rem' },
                         fontWeight: 800,

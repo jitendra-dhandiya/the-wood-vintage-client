@@ -125,9 +125,9 @@ export default function ProductCard({
           <Box sx={{
             position: 'absolute', top: 10, left: 10,
             width: 42, height: 42, borderRadius: '50%',
-            bgcolor: '#d93025', display: 'flex', alignItems: 'center',
+            bgcolor: '#7E5029', display: 'flex', alignItems: 'center',
             justifyContent: 'center', flexDirection: 'column',
-            boxShadow: '0 2px 8px rgba(217,48,37,0.4)',
+            boxShadow: '0 2px 8px rgba(59,35,20,0.35)',
           }}>
             <Typography sx={{ fontSize: '0.55rem', fontWeight: 700, color: 'white', lineHeight: 1 }}>Sale</Typography>
           </Box>
@@ -280,7 +280,7 @@ export default function ProductCard({
               <Typography sx={{ textDecoration: 'line-through', color: '#aaa', fontSize: '0.8rem' }}>
                 {formatPrice(product.basePrice, currencySymbol)}
               </Typography>
-              <Typography sx={{ color: '#d93025', fontWeight: 700, fontSize: '0.72rem' }}>
+              <Typography sx={{ color: '#7E5029', fontWeight: 700, fontSize: '0.72rem' }}>
                 {discount}% OFF
               </Typography>
             </>

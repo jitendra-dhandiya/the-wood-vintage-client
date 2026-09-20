@@ -393,7 +393,7 @@ export default function ProductDetailClient({ product }: Props) {
                   <Chip
                     label={`${discount}% OFF`}
                     size="small"
-                    sx={{ position: 'absolute', top: 12, left: 12, bgcolor: '#d32f2f', color: 'white', fontWeight: 700 }}
+                    sx={{ position: 'absolute', top: 12, left: 12, bgcolor: '#7E5029', color: 'white', fontWeight: 700 }}
                   />
                 )}
 
@@ -547,7 +547,7 @@ export default function ProductDetailClient({ product }: Props) {
                     <Typography variant="h6" sx={{ textDecoration: 'line-through', color: 'text.secondary', fontWeight: 400 }}>
                       {formatPrice(product.basePrice, currencySymbol)}
                     </Typography>
-                    <Chip label={`Save ${discount}%`} size="small" sx={{ bgcolor: '#d32f2f', color: 'white', fontWeight: 700 }} />
+                    <Chip label={`Save ${discount}%`} size="small" sx={{ bgcolor: '#7E5029', color: 'white', fontWeight: 700 }} />
                   </>
                 )}
               </Box>
@@ -598,7 +598,7 @@ export default function ProductDetailClient({ product }: Props) {
               {uniqueColors.length > 0 && (
                 <Box sx={{ mb: 2.5 }}>
                   <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5 }}>
-                    Color: <span style={{ fontWeight: 400, color: '#666' }}>{selectedColor || 'Select'}</span>
+                    Finish: <span style={{ fontWeight: 400, color: '#666' }}>{selectedColor || 'Select'}</span>
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                     {uniqueColors.map((color) => {
@@ -705,7 +705,7 @@ export default function ProductDetailClient({ product }: Props) {
                     '&:hover': { borderColor: '#3B2314' },
                   }}
                 >
-                  {inWishlist ? <Favorite sx={{ color: '#d32f2f' }} /> : <FavoriteBorder />}
+                  {inWishlist ? <Favorite sx={{ color: '#7E5029' }} /> : <FavoriteBorder />}
                 </IconButton>
                 <IconButton
                   onClick={handleShare}
