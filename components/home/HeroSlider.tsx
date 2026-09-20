@@ -56,7 +56,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
       }}>
         <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
           <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.85 }}>
-            <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.32em', display: 'block', mb: 2, fontSize: '0.7rem', fontWeight: 600 }}>
+            <Typography variant="overline" sx={{ color: '#D9A66E', letterSpacing: '0.32em', display: 'block', mb: 2, fontSize: '0.7rem', fontWeight: 600 }}>
               HANDCRAFTED IN INDIA
             </Typography>
             <Typography
@@ -74,7 +74,7 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
               component={Link} href={withCountry('/shop', country)}
               variant="contained"
               sx={{
-                bgcolor: '#A0693A', color: '#fff',
+                bgcolor: '#D9A66E', color: '#fff',
                 fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.14em',
                 py: 1.6, px: 5,
                 borderRadius: 0,

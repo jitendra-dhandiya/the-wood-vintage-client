@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LAYOUT_DEFAULTS, type NavLayout } from '../../lib/navLayout';
 import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
+import { productApi } from '../../services/api.service';
+import { formatPrice } from '../../utils/format';
 
 // ── Types ─────────────────────────────────────────────────────────
 export interface NavChild {
@@ -103,6 +105,20 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
   }, [open]);
 
   const activeCategory = categories.find(c => c.id === hovered) ?? categories[0] ?? null;
+
+  // Featured pieces for the hovered category, fetched lazily and cached so a
+  // second hover is instant. Failure just means the panel shows no products.
+  const [featuredBySlug, setFeaturedBySlug] = useState<Record<string, any[]>>({});
+  const activeSlug = activeCategory?.slug;
+  useEffect(() => {
+    if (!open || !activeSlug || featuredBySlug[activeSlug]) return;
+    let cancelled = false;
+    productApi.getAll({ categorySlug: activeSlug, limit: 4, sortBy: 'featured', country: country || undefined })
+      .then(({ data }) => { if (!cancelled) setFeaturedBySlug(m => ({ ...m, [activeSlug]: data.data || [] })); })
+      .catch(() => { if (!cancelled) setFeaturedBySlug(m => ({ ...m, [activeSlug]: [] })); });
+    return () => { cancelled = true; };
+  }, [open, activeSlug, country, featuredBySlug]);
+  const featured = (activeSlug && featuredBySlug[activeSlug]) || [];
 
   return (
     <Box
@@ -239,7 +255,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                   </Box>
                 </Box>
 
-                {/* ── Center: subcategories grid ────────────── */}
+                {/* ── Center: subcategories + featured pieces ───── */}
                 <Box sx={{ py: 3, px: 4, overflowY: 'auto' }}>
                   <AnimatePresence mode="wait">
                     {activeCategory && (
@@ -250,38 +266,22 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                         exit={{ opacity: 0, x: -8 }}
                         transition={{ duration: 0.15 }}
                       >
-                        <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 2, mb: 2.5 }}>
-                          <Typography
-                            sx={{
-                              fontFamily: 'var(--font-playfair)',
-                              fontSize: '1.35rem',
-                              fontWeight: 800,
-                              letterSpacing: '0.02em',
-                              color: '#3B2314',
-                            }}
-                          >
+                        <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 2, mb: 2 }}>
+                          <Typography sx={{ fontFamily: 'var(--font-playfair)', fontSize: '1.8rem', fontWeight: 700, color: 'text.primary', lineHeight: 1.1 }}>
                             {activeCategory.name}
                           </Typography>
                           <Box
                             component={Link}
                             href={withCountry(`/category/${activeCategory.slug}`, country)}
                             onClick={() => { setOpen(false); onLinkClick?.(); }}
-                            sx={{
-                              fontSize: '0.75rem', color: '#888', textDecoration: 'none',
-                              fontWeight: 500, letterSpacing: '0.06em',
-                              '&:hover': { color: '#3B2314' },
-                            }}
+                            sx={{ fontSize: '0.75rem', color: 'secondary.main', textDecoration: 'none', fontWeight: 700, letterSpacing: '0.06em', '&:hover': { textDecoration: 'underline' } }}
                           >
                             Shop all →
                           </Box>
                         </Box>
 
-                        {activeCategory.children.length > 0 ? (
-                          <Box sx={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-                            gap: 0.5,
-                          }}>
+                        {activeCategory.children.length > 0 && (
+                          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 0.5, mb: 2.5 }}>
                             {activeCategory.children.map(child => (
                               <Box
                                 key={child.id}
@@ -289,154 +289,113 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                                 href={withCountry(`/category/${child.slug}`, country)}
                                 onClick={() => { setOpen(false); onLinkClick?.(); }}
                                 sx={{
-                                  display: 'block', px: 1.5, py: 0.9,
-                                  borderRadius: 1, textDecoration: 'none',
-                                  color: '#444', fontSize: '0.82rem', fontWeight: 400,
-                                  '&:hover': { bgcolor: '#f5f5f5', color: '#3B2314', fontWeight: 600 },
+                                  display: 'block', px: 1.5, py: 0.9, borderRadius: 1, textDecoration: 'none',
+                                  color: 'text.primary', fontSize: '0.85rem',
+                                  '&:hover': { bgcolor: '#F6EEDF', fontWeight: 600 },
                                   transition: 'all 0.12s',
                                 }}
                               >
                                 {child.name}
                               </Box>
                             ))}
+                          </Box>
+                        )}
 
-                            {/* "See all" link */}
-                            <Box
-                              component={Link}
-                              href={withCountry(`/category/${activeCategory.slug}`, country)}
-                              onClick={() => { setOpen(false); onLinkClick?.(); }}
-                              sx={{
-                                display: 'flex', alignItems: 'center', gap: 0.5,
-                                px: 1.5, py: 0.9, borderRadius: 1, textDecoration: 'none',
-                                color: '#b0a090', fontSize: '0.78rem', fontWeight: 600,
-                                letterSpacing: '0.04em',
-                                '&:hover': { color: '#3B2314' },
-                              }}
-                            >
-                              See all {activeCategory.name} →
+                        {featured.length > 0 ? (
+                          <Box>
+                            <Typography variant="overline" sx={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: 'text.secondary', display: 'block', mb: 1 }}>
+                              Featured pieces
+                            </Typography>
+                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 2 }}>
+                              {featured.map((p: any) => {
+                                const img = p.images?.find((i: any) => i.isPrimary)?.url || p.images?.[0]?.url;
+                                const price = p.salePrice ?? p.basePrice;
+                                return (
+                                  <Box
+                                    key={p.id}
+                                    component={Link}
+                                    href={withCountry(`/product/${p.slug}`, country)}
+                                    onClick={() => { setOpen(false); onLinkClick?.(); }}
+                                    sx={{ textDecoration: 'none', color: 'inherit', '&:hover .mm-name': { color: 'secondary.main' } }}
+                                  >
+                                    <Box sx={{ aspectRatio: '4 / 3', bgcolor: '#F6EEDF', borderRadius: 1, overflow: 'hidden', mb: 0.75 }}>
+                                      {img && <Box component="img" src={img} alt={p.name} loading="lazy" sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />}
+                                    </Box>
+                                    <Typography className="mm-name" noWrap sx={{ fontSize: '0.8rem', fontWeight: 600, transition: 'color .15s' }}>{p.name}</Typography>
+                                    <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>{formatPrice(price)}</Typography>
+                                  </Box>
+                                );
+                              })}
                             </Box>
                           </Box>
-                        ) : (
-                          <Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
-                              Browse our complete {activeCategory.name} collection.
+                        ) : activeCategory.children.length === 0 ? (
+                          <Box sx={{ maxWidth: 420 }}>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5, lineHeight: 1.8 }}>
+                              Handcrafted {activeCategory.name.toLowerCase()}, shaped and finished by hand from solid wood.
                             </Typography>
                             <Box
                               component={Link}
                               href={withCountry(`/category/${activeCategory.slug}`, country)}
                               onClick={() => { setOpen(false); onLinkClick?.(); }}
                               sx={{
-                                display: 'inline-flex', alignItems: 'center', gap: 1,
-                                px: 2.5, py: 1, bgcolor: '#3B2314', color: 'white',
-                                textDecoration: 'none', fontSize: '0.78rem',
-                                fontWeight: 600, letterSpacing: '0.08em',
-                                borderRadius: 0.5,
-                                '&:hover': { bgcolor: '#333' },
-                                transition: 'bg 0.15s',
+                                display: 'inline-flex', alignItems: 'center', gap: 1, px: 2.5, py: 1,
+                                bgcolor: 'primary.main', color: 'white', textDecoration: 'none',
+                                fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', borderRadius: 0.5,
+                                '&:hover': { bgcolor: 'primary.light' },
                               }}
                             >
-                              Shop All {activeCategory.name}
+                              Explore {activeCategory.name}
                               <ArrowForward sx={{ fontSize: 13 }} />
                             </Box>
                           </Box>
-                        )}
+                        ) : null}
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </Box>
 
-                {/* ── Right: category image panel ───────────── */}
-                <Box sx={{ width: 240, py: 3, pl: 2, borderLeft: '1px solid #f0f0f0', display: { xs: 'none', lg: 'block' } }}>
-                  <AnimatePresence mode="wait">
-                    {activeCategory?.image && (
-                      <motion.div
-                        key={activeCategory.id + '-img'}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
+                {/* ── Right: category image / artisan promo ─────── */}
+                <Box sx={{ width: 260, py: 3, pl: 2, borderLeft: '1px solid', borderColor: 'divider', display: { xs: 'none', lg: 'block' } }}>
+                  {activeCategory?.image ? (
+                    <Box
+                      component={Link}
+                      href={withCountry(`/category/${activeCategory.slug}`, country)}
+                      onClick={() => { setOpen(false); onLinkClick?.(); }}
+                      sx={{ display: 'block', textDecoration: 'none' }}
+                    >
+                      <Box component="img" src={activeCategory.image} alt={activeCategory.name}
+                        sx={{ width: '100%', height: 280, objectFit: 'cover', borderRadius: 1.5, display: 'block', mb: 1.5 }} />
+                      <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'text.primary' }}>
+                        Shop {activeCategory.name}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Box sx={{
+                      height: 320, borderRadius: 1.5, bgcolor: '#3B2314',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 3, textAlign: 'center',
+                    }}>
+                      <Box component="img" src="/logo-mark-light.png" alt="" sx={{ height: 54, width: 'auto', mb: 2, opacity: 0.95 }} />
+                      <Typography sx={{ color: '#D9A66E', fontSize: '0.65rem', letterSpacing: '0.2em', mb: 1 }}>THE ARTISAN PROMISE</Typography>
+                      <Typography sx={{ fontFamily: 'var(--font-playfair)', color: '#FFFCF5', fontSize: '1.6rem', fontWeight: 700, lineHeight: 1.15 }}>
+                        Handcrafted by artisans
+                      </Typography>
+                      <Typography sx={{ color: 'rgba(255,252,245,0.8)', fontSize: '0.78rem', lineHeight: 1.6, mt: 1 }}>
+                        Solid wood, shaped and finished by hand.
+                      </Typography>
+                      <Box
+                        component={Link}
+                        href={withCountry('/artisans', country)}
+                        onClick={() => { setOpen(false); onLinkClick?.(); }}
+                        sx={{
+                          mt: 2.5, px: 2.5, py: 0.8, border: '1px solid #D9A66E', color: '#D9A66E',
+                          textDecoration: 'none', fontSize: '0.72rem', letterSpacing: '0.1em', fontWeight: 600, borderRadius: 0.5,
+                          '&:hover': { bgcolor: '#D9A66E', color: '#3B2314' }, transition: 'all 0.2s',
+                        }}
                       >
-                        <Box
-                          component={Link}
-                          href={withCountry(`/category/${activeCategory.slug}`, country)}
-                          onClick={() => { setOpen(false); onLinkClick?.(); }}
-                          sx={{ display: 'block', textDecoration: 'none' }}
-                        >
-                          <Box
-                            component="img"
-                            src={activeCategory.image}
-                            alt={activeCategory.name}
-                            sx={{
-                              width: '100%',
-                              height: 280,
-                              objectFit: 'cover',
-                              borderRadius: 1.5,
-                              display: 'block',
-                              mb: 1.5,
-                            }}
-                          />
-                          <Typography
-                            sx={{
-                              fontSize: '0.78rem', fontWeight: 600,
-                              letterSpacing: '0.08em', textTransform: 'uppercase',
-                              color: '#3B2314',
-                            }}
-                          >
-                            Shop {activeCategory.name}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            View Collection →
-                          </Typography>
-                        </Box>
-                      </motion.div>
-                    )}
-                    {(!activeCategory?.image) && (
-                      <motion.div
-                        key="editorial"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        <Box sx={{
-                          height: 280, borderRadius: 1.5,
-                          background: 'linear-gradient(135deg, #3B2314 0%, #3a3a3a 100%)',
-                          display: 'flex', flexDirection: 'column',
-                          alignItems: 'center', justifyContent: 'center', p: 3, mb: 1.5,
-                        }}>
-                          <Typography sx={{ color: '#A0693A', fontSize: '0.65rem', letterSpacing: '0.2em', mb: 1 }}>
-                            DISCOVER
-                          </Typography>
-                          <Typography sx={{
-                            fontFamily: 'var(--font-playfair)', color: 'white',
-                            fontSize: '1.3rem', fontWeight: 700, textAlign: 'center', lineHeight: 1.3,
-                          }}>
-                            New Season
-                          </Typography>
-                          <Typography sx={{
-                            fontFamily: 'var(--font-playfair)', color: 'white',
-                            fontSize: '1.3rem', fontWeight: 700, textAlign: 'center', lineHeight: 1.3,
-                          }}>
-                            Styles
-                          </Typography>
-                          <Box
-                            component={Link}
-                            href={withCountry('/shop?isNewArrival=true', country)}
-                            onClick={() => { setOpen(false); onLinkClick?.(); }}
-                            sx={{
-                              mt: 2.5, px: 2.5, py: 0.75,
-                              border: '1px solid #A0693A', color: '#A0693A',
-                              textDecoration: 'none', fontSize: '0.72rem',
-                              letterSpacing: '0.1em', fontWeight: 600, borderRadius: 0.5,
-                              '&:hover': { bgcolor: '#A0693A', color: '#3B2314' },
-                              transition: 'all 0.2s',
-                            }}
-                          >
-                            SHOP NOW
-                          </Box>
-                        </Box>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        MEET THE MAKERS
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
 
               </Box>

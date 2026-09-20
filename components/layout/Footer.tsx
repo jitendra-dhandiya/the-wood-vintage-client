@@ -61,7 +61,7 @@ export default function Footer({ settings = {} }: FooterProps) {
           <Box sx={{ textAlign: 'center' }}>
             <Typography
               variant="overline"
-              sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
+              sx={{ color: '#D9A66E', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
             >
               Newsletter
             </Typography>
@@ -71,7 +71,7 @@ export default function Footer({ settings = {} }: FooterProps) {
             >
               Stay in the Loop
             </Typography>
-            <Typography variant="body2" sx={{ color: '#aaa', mb: 3 }}>
+            <Typography variant="body2" sx={{ color: 'rgba(255,252,245,0.8)', mb: 3 }}>
               Subscribe for exclusive offers, new arrivals, and styling ideas from our artisans.
             </Typography>
             {/* The Subscribe button is nowrap with 24px of side padding, so it
@@ -89,12 +89,12 @@ export default function Footer({ settings = {} }: FooterProps) {
                     '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
                     color: 'white',
                   },
-                  '& input::placeholder': { color: '#888' },
+                  '& input::placeholder': { color: 'rgba(255,252,245,0.72)' },
                 }}
               />
               <Button
                 variant="contained"
-                sx={{ bgcolor: '#A0693A', '&:hover': { bgcolor: '#7E5029' }, whiteSpace: 'nowrap', px: 3 }}
+                sx={{ bgcolor: '#D9A66E', '&:hover': { bgcolor: '#7E5029' }, whiteSpace: 'nowrap', px: 3 }}
               >
                 Subscribe
               </Button>
@@ -141,7 +141,7 @@ export default function Footer({ settings = {} }: FooterProps) {
                 {siteName}
               </Typography>
             )}
-            <Typography variant="body2" sx={{ color: '#888', lineHeight: 1.8, mb: 3, maxWidth: 300 }}>
+            <Typography variant="body2" sx={{ color: 'rgba(255,252,245,0.72)', lineHeight: 1.8, mb: 3, maxWidth: 300 }}>
               {siteDesc}
             </Typography>
             <Stack direction="row" spacing={1}>
@@ -154,9 +154,9 @@ export default function Footer({ settings = {} }: FooterProps) {
                   rel="noopener noreferrer"
                   size="small"
                   sx={{
-                    color: '#888',
+                    color: 'rgba(255,252,245,0.72)',
                     border: '1px solid rgba(255,255,255,0.1)',
-                    '&:hover': { color: '#A0693A', borderColor: '#A0693A', bgcolor: 'rgba(201,168,76,0.1)' },
+                    '&:hover': { color: '#D9A66E', borderColor: '#A0693A', bgcolor: 'rgba(201,168,76,0.1)' },
                     transition: 'all 0.2s',
                   }}
                 >
@@ -181,9 +181,9 @@ export default function Footer({ settings = {} }: FooterProps) {
                     <Typography
                       variant="body2"
                       sx={{
-                        color: '#888',
+                        color: 'rgba(255,252,245,0.72)',
                         transition: 'color 0.2s',
-                        '&:hover': { color: '#A0693A' },
+                        '&:hover': { color: '#D9A66E' },
                         fontSize: '0.82rem',
                       }}
                     >
@@ -205,13 +205,13 @@ export default function Footer({ settings = {} }: FooterProps) {
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
               {email && (
-                <Typography variant="body2" sx={{ color: '#888', fontSize: '0.82rem' }}>{email}</Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255,252,245,0.72)', fontSize: '0.82rem' }}>{email}</Typography>
               )}
               {phone && (
-                <Typography variant="body2" sx={{ color: '#888', fontSize: '0.82rem' }}>{phone}</Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255,252,245,0.72)', fontSize: '0.82rem' }}>{phone}</Typography>
               )}
               {hours && (
-                <Typography variant="body2" sx={{ color: '#888', fontSize: '0.82rem', lineHeight: 1.6 }}>{hours}</Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255,252,245,0.72)', fontSize: '0.82rem', lineHeight: 1.6 }}>{hours}</Typography>
               )}
             </Box>
           </Grid>
@@ -236,7 +236,7 @@ export default function Footer({ settings = {} }: FooterProps) {
               { label: 'Shipping Policy', href: '/shipping-policy' },
             ].map((l) => (
               <Link key={l.href} href={withCountry(l.href, country)} style={{ textDecoration: 'none' }}>
-                <Typography variant="caption" sx={{ color: '#555', '&:hover': { color: '#A0693A' }, transition: 'color 0.2s' }}>
+                <Typography variant="caption" sx={{ color: '#555', '&:hover': { color: '#D9A66E' }, transition: 'color 0.2s' }}>
                   {l.label}
                 </Typography>
               </Link>

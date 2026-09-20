@@ -276,7 +276,7 @@ export default function Navbar({
                     sx={{
                       position: 'relative',
                       // Widths that follow: 143px / 171px / 209px.
-                      height: { xs: 30, sm: 36, md: 44 },
+                      height: { xs: 32, sm: 40, md: 54 },
                       aspectRatio: LOGO_ASPECT,
                       flexShrink: 0,
                       // Never let the lockup crowd out the nav actions on a

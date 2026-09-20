@@ -29,7 +29,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
       <Container maxWidth="xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
-            <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}>
+            <Typography variant="overline" sx={{ color: '#D9A66E', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}>
               Testimonials
             </Typography>
             <Typography variant="h3" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, color: 'white' }}>
@@ -55,13 +55,13 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
             <SwiperSlide key={t.id}>
               <Card elevation={0} sx={{ bgcolor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 2, height: '100%' }}>
                 <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <FormatQuote sx={{ color: '#A0693A', fontSize: 32, transform: 'scaleX(-1)', mb: 1 }} />
+                  <FormatQuote sx={{ color: '#D9A66E', fontSize: 32, transform: 'scaleX(-1)', mb: 1 }} />
                   <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.8, flexGrow: 1, mb: 3, fontStyle: 'italic' }}>
                     "{t.review}"
                   </Typography>
-                  <Rating value={t.rating} readOnly size="small" sx={{ mb: 2, '& .MuiRating-iconFilled': { color: '#A0693A' } }} />
+                  <Rating value={t.rating} readOnly size="small" sx={{ mb: 2, '& .MuiRating-iconFilled': { color: '#D9A66E' } }} />
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Avatar src={t.avatar} sx={{ width: 40, height: 40, bgcolor: '#A0693A', fontSize: '0.85rem', fontWeight: 700 }}>
+                    <Avatar src={t.avatar} sx={{ width: 40, height: 40, bgcolor: '#D9A66E', fontSize: '0.85rem', fontWeight: 700 }}>
                       {t.name.charAt(0)}
                     </Avatar>
                     <Box>
