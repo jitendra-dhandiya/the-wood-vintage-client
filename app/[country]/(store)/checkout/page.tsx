@@ -18,7 +18,7 @@ import { orderApi, paymentApi, userApi, cartApi } from '../../../../services/api
 import { trackEvent } from '../../../../lib/analytics';
 import { readStoredAttribution } from '../../../../lib/attribution';
 import { formatPrice } from '../../../../utils/format';
-import { SHIPPING_METHODS, type ShippingMethodId } from '../../../../constants';
+import { SHIPPING_METHODS, FREE_SHIPPING_THRESHOLD, type ShippingMethodId } from '../../../../constants';
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { openLoginModal } from '../../../../store/slices/uiSlice';
 import { useCountry } from '../../../../contexts/CountryContext';
@@ -92,7 +92,10 @@ export default function CheckoutPage() {
         .map(item => Number(item.product?.[overrideField] ?? 0))
         .filter(charge => charge > 0)
     : [];
-  const shippingCharge = freeShipping
+  // Storewide threshold: Standard delivery is free above it (mirrors order.service.ts).
+  const qualifiesForFreeStandard =
+    shippingMethod === 'STANDARD' && subtotal - couponDiscount >= FREE_SHIPPING_THRESHOLD;
+  const shippingCharge = freeShipping || qualifiesForFreeStandard
     ? 0
     : productOverrides.length > 0
       ? Math.max(...productOverrides)
