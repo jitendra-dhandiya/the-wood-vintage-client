@@ -44,7 +44,7 @@ export default function CategoryShowcase({ initialCategories = [] }: Props) {
             <Box>
               <Typography sx={{
                 fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.28em',
-                textTransform: 'uppercase', color: '#c9a84c', display: 'block', mb: 1,
+                textTransform: 'uppercase', color: '#A0693A', display: 'block', mb: 1,
               }}>
                 Explore
               </Typography>
@@ -64,7 +64,7 @@ export default function CategoryShowcase({ initialCategories = [] }: Props) {
                 fontSize: '0.72rem', fontWeight: 700, color: '#888',
                 textDecoration: 'underline', textUnderlineOffset: 4,
                 whiteSpace: 'nowrap', mb: 0.5, ml: 2,
-                '&:hover': { color: '#c9a84c' }, transition: 'color 0.22s',
+                '&:hover': { color: '#A0693A' }, transition: 'color 0.22s',
               }}
             >
               View all
@@ -99,7 +99,7 @@ export default function CategoryShowcase({ initialCategories = [] }: Props) {
                     borderRadius: { xs: '10px', md: '14px' },
                     bgcolor: FALLBACK_COLORS[i % FALLBACK_COLORS.length],
                     '&:hover .cat-img': { transform: 'scale(1.06)' },
-                    '&:hover .cat-btn': { bgcolor: '#cc0000' },
+                    '&:hover .cat-btn': { bgcolor: '#7E5029' },
                   }}
                 >
                   {/* Background image */}
@@ -111,10 +111,8 @@ export default function CategoryShowcase({ initialCategories = [] }: Props) {
                       className="cat-img"
                       style={{
                         objectFit: 'cover',
-                        // Bias the crop upward: in a full-length fashion shot the
-                        // face sits near the top, so a centred crop is exactly the
-                        // one that removes it. Whatever has to go comes off the
-                        // feet instead.
+                        // Bias the crop upward: keeps the top of tall pieces
+                        // (headboards, cabinets) in frame.
                         objectPosition: 'center 30%',
                         transition: 'transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                       }}

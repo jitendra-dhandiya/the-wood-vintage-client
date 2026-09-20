@@ -40,7 +40,7 @@ export default function BlogListClient() {
           Style Journal
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 500, mx: 'auto' }}>
-          Fashion insights, trend reports, and style guides curated for you.
+          Craft stories, care guides and styling ideas from our workshops.
         </Typography>
       </Box>
 
@@ -80,7 +80,7 @@ export default function BlogListClient() {
                   <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
                     {blog.category && (
                       <Chip label={blog.category} size="small"
-                        sx={{ fontSize: '0.65rem', bgcolor: '#f8f4ef', color: '#c9a84c', fontWeight: 700, height: 20 }} />
+                        sx={{ fontSize: '0.65rem', bgcolor: '#F6EEDF', color: '#A0693A', fontWeight: 700, height: 20 }} />
                     )}
                   </Box>
                   <Typography variant="body1" fontWeight={700} sx={{ mb: 0.75, fontFamily: 'var(--font-playfair)', lineHeight: 1.4 }}>

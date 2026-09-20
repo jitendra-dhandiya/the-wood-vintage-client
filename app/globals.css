@@ -6,12 +6,12 @@
 
 :root {
   --font-inter: 'Inter', sans-serif;
-  --font-playfair: 'Playfair Display', serif;
-  --gold: #c9a84c;
-  --dark-gold: #a07c20;
-  --cream: #f8f4ef;
-  --charcoal: #2c2c2c;
-  --midnight: #0d0d0d;
+  --font-playfair: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --gold: #A0693A;
+  --dark-gold: #7E5029;
+  --cream: #F6EEDF;
+  --charcoal: #4A2F1D;
+  --midnight: #2A190E;
 }
 
 html {
@@ -39,7 +39,7 @@ body {
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
+  background-color: #FFFCF5;
   touch-action: pan-y pinch-zoom;
   overscroll-behavior-y: none;
 }
@@ -115,18 +115,18 @@ a, button, [role="button"] {
 img { max-width: 100%; height: auto; }
 
 /* Selection */
-::selection { background: #1a1a1a; color: white; }
+::selection { background: #3B2314; color: white; }
 
 /* Focus */
-:focus-visible { outline: 2px solid #c9a84c; outline-offset: 2px; }
+:focus-visible { outline: 2px solid #A0693A; outline-offset: 2px; }
 
 /* Swiper overrides */
-.swiper-pagination-bullet-active { background: #1a1a1a !important; }
-.swiper-button-next, .swiper-button-prev { color: #1a1a1a !important; }
+.swiper-pagination-bullet-active { background: #3B2314 !important; }
+.swiper-button-next, .swiper-button-prev { color: #3B2314 !important; }
 
 /* MUI overrides */
-.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline { border-color: #1a1a1a !important; }
-.MuiFormLabel-root.Mui-focused { color: #1a1a1a !important; }
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline { border-color: #3B2314 !important; }
+.MuiFormLabel-root.Mui-focused { color: #3B2314 !important; }
 
 /* ── Skeleton shimmer ──────────────────────────────────────────── */
 @keyframes shimmer {

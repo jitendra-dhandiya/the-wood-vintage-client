@@ -175,7 +175,7 @@ export default function BannersPage() {
           Banners
         </Typography>
         <Button variant="contained" startIcon={<Add />} onClick={openCreate}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
           Add Banner
         </Button>
       </Box>
@@ -211,7 +211,7 @@ export default function BannersPage() {
                     )}
                     <Box sx={{ position: 'absolute', top: 8, left: 8, display: 'flex', gap: 0.5 }}>
                       <Chip label={banner.type} size="small"
-                        sx={{ bgcolor: '#1a1a1a', color: '#fff', fontSize: '0.65rem' }} />
+                        sx={{ bgcolor: '#3B2314', color: '#fff', fontSize: '0.65rem' }} />
                       {banner.gender && banner.gender !== 'ALL' && (
                         <Chip
                           label={banner.gender}
@@ -378,7 +378,7 @@ export default function BannersPage() {
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={closeDialog}>Cancel</Button>
             <Button type="submit" variant="contained" disabled={formik.isSubmitting}
-              sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+              sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
               {editBanner ? 'Save Changes' : 'Create Banner'}
             </Button>
           </DialogActions>

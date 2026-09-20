@@ -5,19 +5,19 @@ import { HelpOutline } from '@mui/icons-material';
 import { withCountry } from '../../../../lib/withCountry';
 
 export const metadata: Metadata = {
-  title: 'Frequently Asked Questions | Unique Dressup',
+  title: 'Frequently Asked Questions | The Wood Vintage',
   description:
-    'Answers to common questions about orders, shipping charges and timelines, payments, returns, and size exchanges at The Unique Dressup.',
+    'Answers to common questions about orders, shipping charges and timelines, payments, returns, care and damage claims at The Wood Vintage.',
 };
 
 const LAST_UPDATED = 'September 1, 2026';
-const INSTAGRAM_URL = 'https://www.instagram.com/uniquedressup.inn';
+const INSTAGRAM_URL = 'https://www.instagram.com/thewoodvintage';
 
 const A = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <Box
     component={Link}
     href={href}
-    sx={{ color: '#c9a84c', fontWeight: 600, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+    sx={{ color: '#A0693A', fontWeight: 600, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
   >
     {children}
   </Box>
@@ -29,15 +29,15 @@ const Ig = () => (
     href={INSTAGRAM_URL}
     target="_blank"
     rel="noopener noreferrer"
-    sx={{ color: '#c9a84c', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+    sx={{ color: '#A0693A', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
   >
-    @uniquedressup.inn
+    @thewoodvintage
   </Box>
 );
 
 const Qa = ({ q, children }: { q: string; children: React.ReactNode }) => (
   <Box sx={{ mb: 3.5 }}>
-    <Typography variant="body1" fontWeight={700} sx={{ color: '#1a1a1a', mb: 0.75 }}>
+    <Typography variant="body1" fontWeight={700} sx={{ color: '#3B2314', mb: 0.75 }}>
       {q}
     </Typography>
     <Typography variant="body2" component="div" sx={{ color: '#444', lineHeight: 1.9 }}>
@@ -50,7 +50,7 @@ const Group = ({ title, children }: { title: string; children: React.ReactNode }
   <Box sx={{ mb: 5 }}>
     <Typography
       variant="overline"
-      sx={{ color: '#c9a84c', letterSpacing: '0.18em', fontWeight: 700, display: 'block', mb: 2.5 }}
+      sx={{ color: '#A0693A', letterSpacing: '0.18em', fontWeight: 700, display: 'block', mb: 2.5 }}
     >
       {title}
     </Typography>
@@ -61,13 +61,13 @@ const Group = ({ title, children }: { title: string; children: React.ReactNode }
 export default async function FaqPage({ params }: { params: Promise<{ country: string }> }) {
   const { country } = await params;
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#FFFCF5' }}>
       {/* Hero */}
-      <Box sx={{ bgcolor: '#1a1a1a', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
+      <Box sx={{ bgcolor: '#3B2314', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
         <Container maxWidth="md">
           <Typography
             variant="overline"
-            sx={{ color: '#c9a84c', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
+            sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
           >
             Customer Support
           </Typography>
@@ -134,11 +134,11 @@ export default async function FaqPage({ params }: { params: Promise<{ country: s
 
           <Divider sx={{ mb: 5 }} />
 
-          <Group title="Returns & Exchanges">
+          <Group title="Returns & Care">
             <Qa q="Can I return something I simply did not like?">
               No. Returns are accepted only where a <strong>wrong or damaged product</strong> was
               received, and the request must be raised within <strong>36 hours of delivery</strong>. If
-              the size is the problem, see the exchange questions below.
+              you would like advice on fit or finish, contact us before ordering and we will gladly help.
             </Qa>
             <Qa q="Why is an unboxing video required?">
               A clear, continuous unboxing video is the only way we can verify a claim for a missing,
@@ -150,17 +150,21 @@ export default async function FaqPage({ params }: { params: Promise<{ country: s
               Eligible returns are settled in <strong>store credit</strong>. We do not offer direct bank
               refunds.
             </Qa>
-            <Qa q="I ordered the wrong size. What can I do?">
-              Size exchanges are available. DM us on Instagram at <Ig /> with your order details. A ₹200
-              charge covers round-trip courier handling for up to 2 products, plus ₹50 for each
-              additional product in the same request. Nothing is charged when the exchange is due to a
-              wrong or damaged product sent by us.
+            <Qa q="Is variation in grain and colour normal?">
+              Yes. Every piece is made from solid wood and finished by hand, so grain, tone and small
+              markings differ from piece to piece and from the product photographs. This is a mark of
+              natural, handcrafted furniture and not a defect.
             </Qa>
-            <Qa q="How do I raise a return or exchange?">
+            <Qa q="How should I care for my furniture?">
+              Dust with a soft dry cloth, wipe spills immediately, and keep pieces away from direct sun,
+              radiators and damp walls. Use coasters and heat pads, and avoid harsh chemical cleaners.
+              An occasional light coat of furniture wax or oil keeps the finish nourished.
+            </Qa>
+            <Qa q="How do I raise a return or damage claim?">
               Message us on Instagram at <Ig />. Our team reviews the request and arranges a pickup where
               the service is available — up to 2 attempts. If your PIN code is not serviceable for
               pickup, you will need to self-ship the item to our warehouse. The full terms are in our{' '}
-              <A href={withCountry('/return-policy', country)}>Return &amp; Exchange Policy</A>.
+              <A href={withCountry('/return-policy', country)}>Return &amp; Replacement Policy</A>.
             </Qa>
           </Group>
 
@@ -179,9 +183,9 @@ export default async function FaqPage({ params }: { params: Promise<{ country: s
               alignItems: 'flex-start',
             }}
           >
-            <HelpOutline sx={{ fontSize: 22, color: '#c9a84c', mt: '2px', flexShrink: 0 }} />
+            <HelpOutline sx={{ fontSize: 22, color: '#A0693A', mt: '2px', flexShrink: 0 }} />
             <Box>
-              <Typography variant="body2" fontWeight={700} sx={{ color: '#1a1a1a', mb: 0.5 }}>
+              <Typography variant="body2" fontWeight={700} sx={{ color: '#3B2314', mb: 0.5 }}>
                 Still need help?
               </Typography>
               <Typography variant="body2" sx={{ color: '#5a5a5a', lineHeight: 1.8 }}>

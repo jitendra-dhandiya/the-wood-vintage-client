@@ -285,7 +285,7 @@ export default function AdminOrdersPage() {
                 {loading ? (
                   <tr>
                     <td colSpan={columns.length} style={{ padding: 48, textAlign: 'center' }}>
-                      <CircularProgress size={28} sx={{ color: '#1a1a1a' }} />
+                      <CircularProgress size={28} sx={{ color: '#3B2314' }} />
                     </td>
                   </tr>
                 ) : orders.length === 0 ? (
@@ -297,7 +297,7 @@ export default function AdminOrdersPage() {
                 ) : table.getRowModel().rows.map((row) => (
                   <tr key={row.id} style={{ borderBottom: '1px solid #f5f5f5', cursor: 'pointer' }}
                     onClick={() => router.push(`/admin/orders/${row.original.id}`)}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fafafa')}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#FFFCF5')}
                     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -345,7 +345,7 @@ export default function AdminOrdersPage() {
         <DialogActions sx={{ p: 2.5 }}>
           <Button onClick={() => setUpdateOrder(null)} variant="outlined">Cancel</Button>
           <Button onClick={handleUpdateStatus} variant="contained"
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
             disabled={updating || !newStatus}>
             {updating ? 'Updating...' : 'Update Status'}
           </Button>

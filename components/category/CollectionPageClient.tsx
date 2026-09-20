@@ -59,7 +59,7 @@ export default function CollectionPageClient({ collection }: { collection: any }
           collection showed the black block. */}
       <Box sx={{
         position: 'relative', height: { xs: 220, md: 320 }, borderRadius: 3, overflow: 'hidden', mb: 4,
-        bgcolor: heroImage ? 'transparent' : '#1a1a1a',
+        bgcolor: heroImage ? 'transparent' : '#3B2314',
       }}>
         {heroImage && (
           <Box component="img" src={heroImage} alt={collection.name}
@@ -74,7 +74,7 @@ export default function CollectionPageClient({ collection }: { collection: any }
             : 'linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 100%)',
           display: 'flex', flexDirection: 'column', justifyContent: 'center', pl: { xs: 3, md: 6 },
         }}>
-          <Typography variant="overline" sx={{ color: '#c9a84c', letterSpacing: '0.15em', fontWeight: 700 }}>
+          <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.15em', fontWeight: 700 }}>
             Collection
           </Typography>
           <Typography variant="h2" sx={{ color: '#fff', fontFamily: 'var(--font-playfair)', fontWeight: 800, mb: 1 }}>

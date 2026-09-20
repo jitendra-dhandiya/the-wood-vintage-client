@@ -404,7 +404,7 @@ export default function AddProductPage() {
                   </Box>
 
                   {formik.values.variants.map((variant, vi) => (
-                    <Box key={vi} sx={{ mb: 3, p: 2, bgcolor: '#fafafa', borderRadius: 1 }}>
+                    <Box key={vi} sx={{ mb: 3, p: 2, bgcolor: '#FFFCF5', borderRadius: 1 }}>
                       <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
                         {/* Colour is a NAME, not a spectrum pick. Nobody
                             merchandises "#8B4513" — they merchandise "Tan", and
@@ -444,7 +444,7 @@ export default function AddProductPage() {
                             })))}
                             sx={{
                               fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer',
-                              bgcolor: '#1a1a1a', color: '#fff',
+                              bgcolor: '#3B2314', color: '#fff',
                               '&:hover': { bgcolor: '#333' },
                             }}
                           />
@@ -755,7 +755,7 @@ export default function AddProductPage() {
               </Card>
 
               <Button type="submit" variant="contained" fullWidth size="large" disabled={formik.isSubmitting}
-                sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, py: 1.5, borderRadius: 2 }}>
+                sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, py: 1.5, borderRadius: 2 }}>
                 {formik.isSubmitting ? 'Creating...' : 'Create Product'}
               </Button>
             </Grid>

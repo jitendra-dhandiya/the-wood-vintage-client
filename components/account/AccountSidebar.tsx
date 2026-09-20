@@ -35,7 +35,7 @@ export default function AccountSidebar() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
           <Avatar
             src={user?.avatar}
-            sx={{ width: 48, height: 48, bgcolor: '#1a1a1a', fontWeight: 700 }}
+            sx={{ width: 48, height: 48, bgcolor: '#3B2314', fontWeight: 700 }}
           >
             {user ? getInitials(user.firstName, user.lastName) : '?'}
           </Avatar>
@@ -59,9 +59,9 @@ export default function AccountSidebar() {
               href={item.href}
               sx={{
                 px: 1.5, py: 1, borderRadius: 1, mb: 0.25,
-                bgcolor: pathname === item.href ? '#1a1a1a' : 'transparent',
+                bgcolor: pathname === item.href ? '#3B2314' : 'transparent',
                 color: pathname === item.href ? 'white' : 'inherit',
-                '&:hover': { bgcolor: pathname === item.href ? '#1a1a1a' : '#f5f5f5' },
+                '&:hover': { bgcolor: pathname === item.href ? '#3B2314' : '#f5f5f5' },
                 textDecoration: 'none',
               }}
             >

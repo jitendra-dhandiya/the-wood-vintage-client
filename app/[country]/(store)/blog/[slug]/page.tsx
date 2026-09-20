@@ -66,7 +66,7 @@ export default async function BlogDetailPage({ params }: Props) {
       <Box sx={{ mb: 4 }}>
         {blog.category && (
           <Chip label={blog.category} size="small"
-            sx={{ mb: 2, bgcolor: '#f8f4ef', color: '#c9a84c', fontWeight: 700 }} />
+            sx={{ mb: 2, bgcolor: '#F6EEDF', color: '#A0693A', fontWeight: 700 }} />
         )}
         <Typography variant="h2" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 800, mb: 2, lineHeight: 1.25 }}>
           {blog.title}
@@ -114,10 +114,10 @@ export default async function BlogDetailPage({ params }: Props) {
           '& li': { mb: 0.5, lineHeight: 1.7 },
           '& img': { width: '100%', borderRadius: 2, my: 3 },
           '& blockquote': {
-            borderLeft: '4px solid #c9a84c', pl: 2, py: 0.5, my: 3,
-            bgcolor: '#f8f4ef', borderRadius: '0 8px 8px 0',
+            borderLeft: '4px solid #A0693A', pl: 2, py: 0.5, my: 3,
+            bgcolor: '#F6EEDF', borderRadius: '0 8px 8px 0',
           },
-          '& a': { color: '#c9a84c', textDecoration: 'underline' },
+          '& a': { color: '#A0693A', textDecoration: 'underline' },
         }}
       />
     </Box>

@@ -145,7 +145,7 @@ function ManageProductsDialog({
                     variant="contained"
                     disabled={addingId === p.id}
                     onClick={() => handleAdd(p)}
-                    sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, flexShrink: 0, minWidth: 56 }}
+                    sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, flexShrink: 0, minWidth: 56 }}
                   >
                     {addingId === p.id ? <CircularProgress size={14} sx={{ color: 'white' }} /> : 'Add'}
                   </Button>
@@ -190,7 +190,7 @@ function ManageProductsDialog({
                     display: 'flex', alignItems: 'center', gap: 1.5,
                     px: 1.5, py: 1, borderRadius: 1,
                     border: '1px solid', borderColor: 'divider',
-                    bgcolor: '#fafafa',
+                    bgcolor: '#FFFCF5',
                   }}
                 >
                   <Avatar
@@ -327,7 +327,7 @@ export default function CollectionsPage() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700 }}>Collections</Typography>
         <Button variant="contained" startIcon={<Add />} onClick={openCreate}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>Add Collection</Button>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>Add Collection</Button>
       </Box>
 
       <Box sx={{ mb: 2.5 }}>
@@ -361,7 +361,7 @@ export default function CollectionsPage() {
                         variant="outlined"
                         startIcon={<Inventory2 fontSize="small" />}
                         onClick={() => setManageCol(c)}
-                        sx={{ borderColor: '#1a1a1a', color: '#1a1a1a', fontSize: '0.7rem', px: 1.5 }}
+                        sx={{ borderColor: '#3B2314', color: '#3B2314', fontSize: '0.7rem', px: 1.5 }}
                       >
                         Products ({c._count?.products ?? 0})
                       </Button>
@@ -463,7 +463,7 @@ export default function CollectionsPage() {
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={closeDialog}>Cancel</Button>
             <Button type="submit" variant="contained" disabled={formik.isSubmitting}
-              sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+              sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
               {editCol ? 'Save' : 'Create'}
             </Button>
           </DialogActions>

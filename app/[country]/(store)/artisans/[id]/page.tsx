@@ -88,7 +88,7 @@ export default async function ArtisanDetailPage({ params }: Props) {
           )}
         </Box>
         <Box>
-          <Typography variant="overline" sx={{ color: '#c9a84c', letterSpacing: '0.14em', fontWeight: 700 }}>
+          <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.14em', fontWeight: 700 }}>
             Meet the Maker
           </Typography>
           <Typography variant="h3" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, mt: 0.5 }}>
@@ -114,7 +114,7 @@ export default async function ArtisanDetailPage({ params }: Props) {
 
       <Box sx={{ mt: 6 }}>
         <Link href={withCountry('/artisans', country)} style={{ textDecoration: 'none' }}>
-          <Typography sx={{ color: '#c9a84c', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 4 }}>
+          <Typography sx={{ color: '#A0693A', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 4 }}>
             ← Back to all artisans
           </Typography>
         </Link>

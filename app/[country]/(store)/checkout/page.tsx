@@ -41,7 +41,7 @@ declare global { interface Window { Razorpay: any } }
 type PayStatus = 'idle' | 'processing' | 'success' | 'failed' | 'pending';
 
 const SHIPPING_ICONS: Record<string, React.ReactNode> = {
-  STANDARD: <LocalShipping sx={{ fontSize: 20, color: '#c9a84c' }} />,
+  STANDARD: <LocalShipping sx={{ fontSize: 20, color: '#A0693A' }} />,
   COD:      <Payments     sx={{ fontSize: 20, color: '#ed6c02' }} />,
   EXPRESS:  <FlashOn      sx={{ fontSize: 20, color: '#1976d2' }} />,
 };
@@ -328,10 +328,10 @@ export default function CheckoutPage() {
           amount:      (rpData as any).data.amount,
           currency:    (rpData as any).data.currency,
           order_id:    (rpData as any).data.razorpayOrderId,
-          name:        'Unique Dressup',
+          name:        'The Wood Vintage',
           description: `Order ${order.orderNumber}`,
           prefill:     { name: `${user?.firstName} ${user?.lastName}`, email: user?.email, contact: user?.phone },
-          theme:       { color: '#1a1a1a' },
+          theme:       { color: '#3B2314' },
           handler: async (response: any) => {
             try {
               await paymentApi.verifyPayment({ ...response, orderId: order.id });
@@ -393,7 +393,7 @@ export default function CheckoutPage() {
                             <FormControlLabel
                               key={addr.id}
                               value={addr.id}
-                              control={<Radio sx={{ '&.Mui-checked': { color: '#1a1a1a' } }} />}
+                              control={<Radio sx={{ '&.Mui-checked': { color: '#3B2314' } }} />}
                               label={
                                 <Box>
                                   <Typography variant="body2" fontWeight={600}>
@@ -409,7 +409,7 @@ export default function CheckoutPage() {
                           ))}
                           <FormControlLabel
                             value=""
-                            control={<Radio sx={{ '&.Mui-checked': { color: '#1a1a1a' } }} />}
+                            control={<Radio sx={{ '&.Mui-checked': { color: '#3B2314' } }} />}
                             label="Use a new address"
                           />
                         </RadioGroup>
@@ -478,8 +478,8 @@ export default function CheckoutPage() {
                                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                 p: 2, borderRadius: 1.5, cursor: 'pointer',
                                 border: '1.5px solid',
-                                borderColor: selected ? '#1a1a1a' : '#e0e0e0',
-                                bgcolor: selected ? '#fafafa' : 'white',
+                                borderColor: selected ? '#3B2314' : '#e0e0e0',
+                                bgcolor: selected ? '#FFFCF5' : 'white',
                                 transition: 'all 0.15s',
                                 '&:hover': { borderColor: '#999' },
                               }}
@@ -488,7 +488,7 @@ export default function CheckoutPage() {
                                 <Radio
                                   checked={selected}
                                   onChange={() => setShippingMethod(method.id as ShippingMethodId)}
-                                  sx={{ p: 0, '&.Mui-checked': { color: '#1a1a1a' } }}
+                                  sx={{ p: 0, '&.Mui-checked': { color: '#3B2314' } }}
                                 />
                                 {SHIPPING_ICONS[method.id]}
                                 <Box>
@@ -542,15 +542,15 @@ export default function CheckoutPage() {
                               flexWrap: 'wrap', gap: 1,
                               p: 2, mb: 1.5, borderRadius: 1.5, cursor: 'pointer',
                               border: '1.5px solid',
-                              borderColor: paymentMethod === 'RAZORPAY' ? '#1a1a1a' : '#e0e0e0',
-                              bgcolor: paymentMethod === 'RAZORPAY' ? '#fafafa' : 'white',
+                              borderColor: paymentMethod === 'RAZORPAY' ? '#3B2314' : '#e0e0e0',
+                              bgcolor: paymentMethod === 'RAZORPAY' ? '#FFFCF5' : 'white',
                               transition: 'all 0.15s',
                             }}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0, flex: '1 1 200px' }}>
                               <Radio checked={paymentMethod === 'RAZORPAY'} onChange={() => setPaymentMethod('RAZORPAY')}
-                                sx={{ p: 0, '&.Mui-checked': { color: '#1a1a1a' } }} />
-                              <CreditCard sx={{ color: '#1a1a1a', fontSize: 20, flexShrink: 0 }} />
+                                sx={{ p: 0, '&.Mui-checked': { color: '#3B2314' } }} />
+                              <CreditCard sx={{ color: '#3B2314', fontSize: 20, flexShrink: 0 }} />
                               <Box sx={{ minWidth: 0 }}>
                                 <Typography variant="body2" fontWeight={600}>
                                   Razorpay Secure (UPI, Cards, Int'l Cards, Wallets)
@@ -578,16 +578,16 @@ export default function CheckoutPage() {
                             sx={{
                               p: 2, borderRadius: 1.5, cursor: 'pointer',
                               border: '1.5px solid',
-                              borderColor: paymentMethod === 'CASHFREE' ? '#1a1a1a' : '#e0e0e0',
-                              bgcolor: paymentMethod === 'CASHFREE' ? '#fafafa' : 'white',
+                              borderColor: paymentMethod === 'CASHFREE' ? '#3B2314' : '#e0e0e0',
+                              bgcolor: paymentMethod === 'CASHFREE' ? '#FFFCF5' : 'white',
                               transition: 'all 0.15s',
                             }}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0, flex: '1 1 200px' }}>
                                 <Radio checked={paymentMethod === 'CASHFREE'} onChange={() => setPaymentMethod('CASHFREE')}
-                                  sx={{ p: 0, '&.Mui-checked': { color: '#1a1a1a' } }} />
-                                <CreditCard sx={{ color: '#1a1a1a', fontSize: 20 }} />
+                                  sx={{ p: 0, '&.Mui-checked': { color: '#3B2314' } }} />
+                                <CreditCard sx={{ color: '#3B2314', fontSize: 20 }} />
                                 <Box sx={{ minWidth: 0 }}>
                                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                                     <Typography variant="body2" fontWeight={700}>
@@ -651,7 +651,7 @@ export default function CheckoutPage() {
                     type="submit" fullWidth variant="contained" size="large"
                     disabled={loading}
                     sx={{
-                      bgcolor: '#1a1a1a', py: 2, fontSize: '0.85rem',
+                      bgcolor: '#3B2314', py: 2, fontSize: '0.85rem',
                       letterSpacing: '0.12em', fontWeight: 700,
                       '&:hover': { bgcolor: '#333' },
                     }}
@@ -679,7 +679,7 @@ export default function CheckoutPage() {
                     <Box key={item.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Typography variant="caption" sx={{
-                          bgcolor: '#1a1a1a', color: 'white', borderRadius: '50%',
+                          bgcolor: '#3B2314', color: 'white', borderRadius: '50%',
                           width: 18, height: 18, display: 'flex', alignItems: 'center',
                           justifyContent: 'center', fontSize: '0.6rem', flexShrink: 0,
                         }}>
@@ -723,7 +723,7 @@ export default function CheckoutPage() {
                       <Button
                         variant="outlined" onClick={applyCoupon}
                         disabled={couponLoading || !couponInput.trim()}
-                        sx={{ borderColor: '#1a1a1a', color: '#1a1a1a', px: 2, whiteSpace: 'nowrap' }}
+                        sx={{ borderColor: '#3B2314', color: '#3B2314', px: 2, whiteSpace: 'nowrap' }}
                       >
                         {couponLoading ? '…' : 'Apply'}
                       </Button>
@@ -791,7 +791,7 @@ export default function CheckoutPage() {
         <DialogContent sx={{ p: 0 }}>
           {payStatus === 'processing' && (
             <Box sx={{ textAlign: 'center', py: 6, px: 4 }}>
-              <CircularProgress size={52} sx={{ color: '#1a1a1a', mb: 2.5 }} />
+              <CircularProgress size={52} sx={{ color: '#3B2314', mb: 2.5 }} />
               <Typography variant="h6" fontWeight={700} sx={{ mb: 1 }}>Verifying Payment</Typography>
               <Typography variant="body2" color="text.secondary">
                 Please wait while we confirm your payment…
@@ -808,7 +808,7 @@ export default function CheckoutPage() {
               <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                 Your order <strong>#{successOrder?.orderNumber}</strong> has been confirmed.
               </Typography>
-              <Button variant="contained" fullWidth onClick={closeStatusModal} sx={{ bgcolor: '#1a1a1a', py: 1.5, fontWeight: 700 }}>
+              <Button variant="contained" fullWidth onClick={closeStatusModal} sx={{ bgcolor: '#3B2314', py: 1.5, fontWeight: 700 }}>
                 View Order
               </Button>
             </Box>
@@ -823,7 +823,7 @@ export default function CheckoutPage() {
               <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                 Your payment was not completed. No amount has been deducted.
               </Typography>
-              <Button variant="contained" fullWidth onClick={closeStatusModal} sx={{ bgcolor: '#1a1a1a', py: 1.5, fontWeight: 700 }}>
+              <Button variant="contained" fullWidth onClick={closeStatusModal} sx={{ bgcolor: '#3B2314', py: 1.5, fontWeight: 700 }}>
                 Try Again
               </Button>
             </Box>
@@ -839,7 +839,7 @@ export default function CheckoutPage() {
                 We're still waiting for your bank to confirm. Check your orders in a few minutes — your order has been saved.
               </Typography>
               <Stack spacing={1.5}>
-                <Button variant="contained" fullWidth onClick={() => router.push('/account/orders')} sx={{ bgcolor: '#1a1a1a', py: 1.5, fontWeight: 700 }}>
+                <Button variant="contained" fullWidth onClick={() => router.push('/account/orders')} sx={{ bgcolor: '#3B2314', py: 1.5, fontWeight: 700 }}>
                   Go to My Orders
                 </Button>
                 <Button variant="outlined" fullWidth onClick={closeStatusModal} sx={{ py: 1.5 }}>

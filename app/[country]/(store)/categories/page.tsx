@@ -62,15 +62,15 @@ export default function CategoriesPage() {
         }} />
         {/* Gold circle accent */}
         <Box sx={{ position: 'absolute', right: { xs: -80, md: 80 }, top: '50%', transform: 'translateY(-50%)', opacity: 0.05 }}>
-          <Box sx={{ width: 360, height: 360, border: '1px solid #c9a84c', borderRadius: '50%' }} />
-          <Box sx={{ position: 'absolute', top: 36, left: 36, width: 288, height: 288, border: '1px solid #c9a84c', borderRadius: '50%' }} />
+          <Box sx={{ width: 360, height: 360, border: '1px solid #A0693A', borderRadius: '50%' }} />
+          <Box sx={{ position: 'absolute', top: 36, left: 36, width: 288, height: 288, border: '1px solid #A0693A', borderRadius: '50%' }} />
         </Box>
 
         <Container maxWidth="md" sx={{ position: 'relative' }}>
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <Typography sx={{
               fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.3em',
-              textTransform: 'uppercase', color: '#c9a84c', display: 'block', mb: 1.5,
+              textTransform: 'uppercase', color: '#A0693A', display: 'block', mb: 1.5,
             }}>
               Explore
             </Typography>
@@ -122,7 +122,7 @@ export default function CategoriesPage() {
                       sx={{
                         cursor: 'pointer',
                         '&:hover .cat-img': { transform: 'scale(1.07)' },
-                        '&:hover .cat-name': { color: '#c9a84c' },
+                        '&:hover .cat-name': { color: '#A0693A' },
                       }}
                     >
                       {/* Image box */}

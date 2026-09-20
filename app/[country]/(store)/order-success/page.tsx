@@ -40,17 +40,17 @@ export default function OrderSuccessPage() {
           Thank you for shopping with us.
         </Typography>
         {orderNumber && (
-          <Typography variant="h6" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 4 }}>
-            Order Number: <span style={{ color: '#c9a84c' }}>{orderNumber}</span>
+          <Typography variant="h6" sx={{ fontWeight: 700, color: '#3B2314', mb: 4 }}>
+            Order Number: <span style={{ color: '#A0693A' }}>{orderNumber}</span>
           </Typography>
         )}
 
-        <Box sx={{ bgcolor: '#f8f4ef', borderRadius: 2, p: 3, mb: 4, textAlign: 'left' }}>
+        <Box sx={{ bgcolor: '#F6EEDF', borderRadius: 2, p: 3, mb: 4, textAlign: 'left' }}>
           <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 2 }}>What happens next?</Typography>
           {[
             { icon: <CheckCircle sx={{ color: '#2e7d32', fontSize: 20 }} />, text: 'Order confirmed & being processed' },
             { icon: <LocalShipping sx={{ color: '#1976d2', fontSize: 20 }} />, text: 'Shipped within 1-3 business days' },
-            { icon: <Replay sx={{ color: '#c9a84c', fontSize: 20 }} />, text: 'Track your order in My Account' },
+            { icon: <Replay sx={{ color: '#A0693A', fontSize: 20 }} />, text: 'Track your order in My Account' },
           ].map((item, i) => (
             <Box key={i} sx={{ display: 'flex', gap: 1.5, mb: 1.5, alignItems: 'center' }}>
               {item.icon}
@@ -61,11 +61,11 @@ export default function OrderSuccessPage() {
 
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
           {orderNumber && (
-            <Button component={Link} href="/account/orders" variant="contained" sx={{ bgcolor: '#1a1a1a', py: 1.5, px: 4 }}>
+            <Button component={Link} href="/account/orders" variant="contained" sx={{ bgcolor: '#3B2314', py: 1.5, px: 4 }}>
               Track Order
             </Button>
           )}
-          <Button component={Link} href={withCountry('/shop', country)} variant="outlined" sx={{ borderColor: '#1a1a1a', py: 1.5, px: 4 }}>
+          <Button component={Link} href={withCountry('/shop', country)} variant="outlined" sx={{ borderColor: '#3B2314', py: 1.5, px: 4 }}>
             Continue Shopping
           </Button>
         </Stack>

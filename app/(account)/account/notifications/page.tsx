@@ -82,7 +82,7 @@ export default function NotificationsPage() {
         Notifications
       </Typography>
       {unread > 0 && (
-        <Chip size="small" label={`${unread} unread`} sx={{ fontWeight: 700, bgcolor: '#1a1a1a', color: '#fff' }} />
+        <Chip size="small" label={`${unread} unread`} sx={{ fontWeight: 700, bgcolor: '#3B2314', color: '#fff' }} />
       )}
       <Box sx={{ flexGrow: 1 }} />
       {unread > 0 && (
@@ -136,7 +136,7 @@ export default function NotificationsPage() {
             </Typography>
             <Button
               variant="contained" component={Link} href="/account/orders"
-              sx={{ mt: 3, bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, px: 4 }}
+              sx={{ mt: 3, bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, px: 4 }}
             >
               View my orders
             </Button>
@@ -159,13 +159,13 @@ export default function NotificationsPage() {
                 // Unread rows carry a left rule and a tint; read rows go quiet.
                 bgcolor: n.isRead ? 'transparent' : 'rgba(201,168,76,0.06)',
                 borderLeft: '3px solid',
-                borderLeftColor: n.isRead ? 'transparent' : '#c9a84c',
+                borderLeftColor: n.isRead ? 'transparent' : '#A0693A',
               }}
             >
               <Box sx={{
                 width: 36, height: 36, flexShrink: 0, borderRadius: '50%',
                 display: 'grid', placeItems: 'center',
-                bgcolor: n.isRead ? '#f2f2f2' : '#1a1a1a',
+                bgcolor: n.isRead ? '#f2f2f2' : '#3B2314',
                 color: n.isRead ? 'text.secondary' : '#fff',
               }}>
                 {ICONS[n.type] ?? <Campaign fontSize="small" />}

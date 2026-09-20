@@ -8,25 +8,25 @@ import { Email, Phone, AccessTime, LocationOn } from '@mui/icons-material';
 
 const contactInfo = [
   {
-    icon: <Email sx={{ fontSize: 24, color: '#c9a84c' }} />,
+    icon: <Email sx={{ fontSize: 24, color: '#A0693A' }} />,
     label: 'Email',
-    value: 'support@theuniquedressup.com',
-    href: 'mailto:support@theuniquedressup.com',
+    value: 'support@thewoodvintage.com',
+    href: 'mailto:support@thewoodvintage.com',
   },
   {
-    icon: <Phone sx={{ fontSize: 24, color: '#c9a84c' }} />,
+    icon: <Phone sx={{ fontSize: 24, color: '#A0693A' }} />,
     label: 'Phone',
     value: '+91 XXXXX XXXXX',
     href: 'tel:+91XXXXXXXXXX',
   },
   {
-    icon: <AccessTime sx={{ fontSize: 24, color: '#c9a84c' }} />,
+    icon: <AccessTime sx={{ fontSize: 24, color: '#A0693A' }} />,
     label: 'Support Hours',
     value: 'Mon–Sat, 10 AM – 6 PM IST',
     href: null,
   },
   {
-    icon: <LocationOn sx={{ fontSize: 24, color: '#c9a84c' }} />,
+    icon: <LocationOn sx={{ fontSize: 24, color: '#A0693A' }} />,
     label: 'Location',
     value: 'India',
     href: null,
@@ -52,13 +52,13 @@ export default function ContactPage() {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#FFFCF5' }}>
       {/* Hero */}
-      <Box sx={{ bgcolor: '#1a1a1a', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
+      <Box sx={{ bgcolor: '#3B2314', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
         <Container maxWidth="md">
           <Typography
             variant="overline"
-            sx={{ color: '#c9a84c', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
+            sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
           >
             Get in Touch
           </Typography>
@@ -79,7 +79,7 @@ export default function ContactPage() {
 
           {/* Contact info */}
           <Grid item xs={12} md={4}>
-            <Typography variant="h6" fontWeight={700} sx={{ color: '#1a1a1a', mb: 3 }}>
+            <Typography variant="h6" fontWeight={700} sx={{ color: '#3B2314', mb: 3 }}>
               Reach Us
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -100,12 +100,12 @@ export default function ContactPage() {
                           component="a"
                           href={item.href}
                           variant="body2"
-                          sx={{ color: '#1a1a1a', textDecoration: 'none', display: 'block', mt: 0.25, '&:hover': { color: '#c9a84c' } }}
+                          sx={{ color: '#3B2314', textDecoration: 'none', display: 'block', mt: 0.25, '&:hover': { color: '#A0693A' } }}
                         >
                           {item.value}
                         </Typography>
                       ) : (
-                        <Typography variant="body2" sx={{ color: '#1a1a1a', mt: 0.25 }}>
+                        <Typography variant="body2" sx={{ color: '#3B2314', mt: 0.25 }}>
                           {item.value}
                         </Typography>
                       )}
@@ -134,7 +134,7 @@ export default function ContactPage() {
                 border: '1px solid', borderColor: 'divider', p: { xs: 3, md: 4 },
               }}
             >
-              <Typography variant="h6" fontWeight={700} sx={{ color: '#1a1a1a', mb: 3 }}>
+              <Typography variant="h6" fontWeight={700} sx={{ color: '#3B2314', mb: 3 }}>
                 Send a Message
               </Typography>
 
@@ -200,7 +200,7 @@ export default function ContactPage() {
                       variant="contained"
                       disabled={status === 'loading'}
                       sx={{
-                        bgcolor: '#1a1a1a', color: 'white', px: 4, py: 1.25,
+                        bgcolor: '#3B2314', color: 'white', px: 4, py: 1.25,
                         fontWeight: 700, letterSpacing: '0.08em',
                         '&:hover': { bgcolor: '#333' },
                       }}

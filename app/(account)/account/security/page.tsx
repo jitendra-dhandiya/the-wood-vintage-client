@@ -145,7 +145,7 @@ export default function SecurityPage() {
               <Button
                 type="submit" variant="contained" size="large"
                 disabled={submitting || !formik.isValid || !formik.dirty}
-                sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, py: 1.25 }}
+                sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, py: 1.25 }}
               >
                 {submitting ? 'Saving…' : 'Change password'}
               </Button>

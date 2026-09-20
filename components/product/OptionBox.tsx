@@ -54,12 +54,12 @@ export default function OptionBox({ label, selected = false, disabled = false, o
         alignItems: 'center',
         justifyContent: 'center',
         border: '1.5px solid',
-        borderColor: selected ? '#1a1a1a' : '#e0e0e0',
+        borderColor: selected ? '#3B2314' : '#e0e0e0',
         borderRadius: 1,
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.4 : 1,
-        bgcolor: selected ? '#1a1a1a' : 'transparent',
-        color: selected ? '#fff' : '#1a1a1a',
+        bgcolor: selected ? '#3B2314' : 'transparent',
+        color: selected ? '#fff' : '#3B2314',
         fontWeight: 600,
         fontSize: '0.8rem',
         letterSpacing: '0.02em',
@@ -68,8 +68,8 @@ export default function OptionBox({ label, selected = false, disabled = false, o
         textTransform: wide ? 'capitalize' : 'none',
         transition: 'border-color 0.2s, background-color 0.2s, color 0.2s',
         userSelect: 'none',
-        '&:hover': disabled ? {} : { borderColor: '#1a1a1a' },
-        '&:focus-visible': { outline: '2px solid #c9a84c', outlineOffset: 2 },
+        '&:hover': disabled ? {} : { borderColor: '#3B2314' },
+        '&:focus-visible': { outline: '2px solid #A0693A', outlineOffset: 2 },
       }}
     >
       <Box component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>

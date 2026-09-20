@@ -4,7 +4,7 @@ import { SITE_URL } from '../constants';
  * Work out where a banner should send the shopper, and how.
  *
  * Admins have been pasting absolute URLs pointing at this very site —
- * "https://theuniquedressup.com/category/…" — because the admin form used to
+ * "https://thewoodvintage.com/category/…" — because the admin form used to
  * reject "/category/…" outright. Treating those as external would open the
  * shop's own pages in a new tab and drop out of the SPA router, so a
  * same-origin absolute URL is folded back to a path.

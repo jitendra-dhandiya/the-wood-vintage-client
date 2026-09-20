@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, Button, Slider, Divider, Chip } from '@mui/material';
 import { PRODUCT_SIZES, PRODUCT_COLORS } from '../../constants';
+
+
 import type { Material, Style, Room } from '../../types';
 
 /**
@@ -52,7 +54,7 @@ export function FilterPanel({
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h6" fontWeight={700}>Filters</Typography>
         {activeFilterCount > 0 && (
-          <Button size="small" onClick={onClear} sx={{ color: '#c9a84c' }}>Clear All</Button>
+          <Button size="small" onClick={onClear} sx={{ color: '#A0693A' }}>Clear All</Button>
         )}
       </Box>
 
@@ -63,20 +65,21 @@ export function FilterPanel({
           value={localPrice}
           onChange={(_, v) => setLocalPrice(v as number[])}
           onChangeCommitted={(_, v) => onPriceCommit(v as number[])}
-          min={0} max={5000} step={100}
+          min={PRICE_RANGE[0]} max={PRICE_RANGE[1]} step={PRICE_STEP}
           valueLabelDisplay="auto"
-          valueLabelFormat={(v) => `₹${v}`}
-          sx={{ color: '#1a1a1a' }}
+          valueLabelFormat={(v) => `₹${v.toLocaleString('en-IN')}`}
+          sx={{ color: '#3B2314' }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="caption">₹{localPrice[0]}</Typography>
-          <Typography variant="caption">₹{localPrice[1]}</Typography>
+          <Typography variant="caption">₹{localPrice[0].toLocaleString('en-IN')}</Typography>
+          <Typography variant="caption">₹{localPrice[1].toLocaleString('en-IN')}</Typography>
         </Box>
       </Box>
 
       <Divider sx={{ my: 2 }} />
 
-      {/* Sizes */}
+      {/* Sizes — furniture rarely has apparel sizes; the section only renders if a list is configured. */}
+      {PRODUCT_SIZES.length > 0 && (<>
       <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Size</Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 2 }}>
         {PRODUCT_SIZES.map((size) => (
@@ -86,16 +89,17 @@ export function FilterPanel({
             variant={selectedSizes.includes(size) ? 'filled' : 'outlined'}
             sx={{
               cursor: 'pointer',
-              ...(selectedSizes.includes(size) && { bgcolor: '#1a1a1a', color: 'white', '&:hover': { bgcolor: '#333' } }),
+              ...(selectedSizes.includes(size) && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
             }}
           />
         ))}
       </Box>
 
       <Divider sx={{ my: 2 }} />
+      </>)}
 
-      {/* Colors */}
-      <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Color</Typography>
+      {/* Wood finishes */}
+      <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Finish</Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 2 }}>
         {PRODUCT_COLORS.map((color) => (
           <Chip
@@ -104,7 +108,7 @@ export function FilterPanel({
             variant={selectedColors.includes(color) ? 'filled' : 'outlined'}
             sx={{
               cursor: 'pointer',
-              ...(selectedColors.includes(color) && { bgcolor: '#1a1a1a', color: 'white', '&:hover': { bgcolor: '#333' } }),
+              ...(selectedColors.includes(color) && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
             }}
           />
         ))}
@@ -128,7 +132,7 @@ export function FilterPanel({
                 variant={selectedMaterial === m.slug ? 'filled' : 'outlined'}
                 sx={{
                   cursor: 'pointer',
-                  ...(selectedMaterial === m.slug && { bgcolor: '#1a1a1a', color: 'white', '&:hover': { bgcolor: '#333' } }),
+                  ...(selectedMaterial === m.slug && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
                 }}
               />
             ))}
@@ -148,7 +152,7 @@ export function FilterPanel({
                 variant={selectedStyle === s.slug ? 'filled' : 'outlined'}
                 sx={{
                   cursor: 'pointer',
-                  ...(selectedStyle === s.slug && { bgcolor: '#1a1a1a', color: 'white', '&:hover': { bgcolor: '#333' } }),
+                  ...(selectedStyle === s.slug && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
                 }}
               />
             ))}
@@ -168,7 +172,7 @@ export function FilterPanel({
                 variant={selectedRoom === r.slug ? 'filled' : 'outlined'}
                 sx={{
                   cursor: 'pointer',
-                  ...(selectedRoom === r.slug && { bgcolor: '#1a1a1a', color: 'white', '&:hover': { bgcolor: '#333' } }),
+                  ...(selectedRoom === r.slug && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#333' } }),
                 }}
               />
             ))}
@@ -180,4 +184,5 @@ export function FilterPanel({
 }
 
 /** Shop's price slider bounds — shared so `/search` matches exactly. */
-export const PRICE_RANGE = [0, 5000];
+export const PRICE_RANGE = [0, 100000];
+const PRICE_STEP = 1000;

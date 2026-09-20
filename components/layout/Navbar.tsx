@@ -23,6 +23,7 @@ import { openLoginModal } from '../../store/slices/uiSlice';
 import { useAuth } from '../../hooks/useAuth';
 import { productApi } from '../../services/api.service';
 import { MegaMenuDesktop, MegaMenuMobile, resolveQuickLinks, type NavCategory, type QuickLink } from './MegaMenu';
+import { BRAND_LOGO, BRAND_LOGO_ASPECT, SITE_NAME } from '../../constants';
 import CountrySelector from '../common/CountrySelector';
 import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
@@ -33,23 +34,9 @@ import {
 } from '../../lib/headerLinks';
 
 /**
- * Intrinsic aspect ratio of the brand lockup (public/logo-mark.png, 1092x240).
- *
- * Two problems are fixed by this asset + ratio pair:
- *
- *   1. The original /logo.jpg was 4500x4500 — a perfect square with ~60% white
- *      padding. `width: auto` against a fixed height can only ever render a
- *      square from a square source, which is why the logo looked 1:1 no matter
- *      what width/height props were passed.
- *
- *   2. The artwork is a STACKED lockup (monogram above wordmark). Constraining
- *      a stacked mark by height crushes the type: at a 72px navbar height the
- *      wordmark rendered ~10px tall and was unreadable. It is now recomposed
- *      horizontally — monogram left, wordmark right — legible down to 30px.
- *
- * Keep this value in step with the shipped asset.
+ * Brand lockup aspect ratio (public/logo-horizontal.png) — see constants.
  */
-const LOGO_ASPECT = '1092 / 240';
+const LOGO_ASPECT = BRAND_LOGO_ASPECT;
 
 /** Rows as the nav-menus endpoint returns them. */
 interface NavLinkRow {
@@ -200,7 +187,7 @@ export default function Navbar({
       {/* Announcement Bar */}
       <Box
         sx={{
-          bgcolor: '#1a1a1a',
+          bgcolor: '#3B2314',
           py: 0.75,
           textAlign: 'center',
           color: 'white',
@@ -238,13 +225,13 @@ export default function Navbar({
                 fontWeight: 700,
                 fontSize: '0.7rem',
                 letterSpacing: '0.18em',
-                color: gender === g ? '#1a1a1a' : '#aaa',
-                borderBottom: gender === g ? '2px solid #1a1a1a' : '2px solid transparent',
+                color: gender === g ? '#3B2314' : '#aaa',
+                borderBottom: gender === g ? '2px solid #3B2314' : '2px solid transparent',
                 transition: 'color 0.2s, border-color 0.2s',
                 minWidth: 0,
                 '&:hover': {
                   bgcolor: 'transparent',
-                  color: '#1a1a1a',
+                  color: '#3B2314',
                 },
               }}
             >
@@ -278,7 +265,7 @@ export default function Navbar({
             {/* Logo */}
             <Box sx={{ flexGrow: { xs: 1, md: 0 }, display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, mr: { md: 5 } }}>
               <Link href={withCountry('/', country)} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                {settings.logo_url ? (
+                {BRAND_LOGO ? (
                   /**
                    * Height is set per breakpoint and the width follows from
                    * aspect-ratio, so the box is reserved before the image loads
@@ -298,8 +285,8 @@ export default function Navbar({
                     }}
                   >
                     <Image
-                      src={settings.logo_url}
-                      alt={settings.site_name || 'Unique Dressup'}
+                      src={BRAND_LOGO}
+                      alt={SITE_NAME}
                       fill
                       // Already sized and compressed at build time; skip the
                       // loader so we don't emit a srcset of identical URLs.
@@ -315,16 +302,16 @@ export default function Navbar({
                         fontFamily: 'var(--font-playfair)',
                         fontWeight: 800,
                         letterSpacing: '0.18em',
-                        color: '#1a1a1a',
+                        color: '#3B2314',
                         fontSize: { xs: '1.25rem', md: '1.8rem' },
                         lineHeight: 1,
                         textTransform: 'uppercase',
                       }}
                     >
-                      {settings.site_name || 'Unique Dressup'}
+                      {SITE_NAME}
                     </Typography>
                     <Typography sx={{ fontSize: '0.52rem', letterSpacing: '0.35em', color: '#aaa', fontWeight: 600, textTransform: 'uppercase', mt: 0.5 }}>
-                      Fashion &amp; Lifestyle
+                      Handcrafted Furniture
                     </Typography>
                   </Box>
                 )}
@@ -348,7 +335,7 @@ export default function Navbar({
                       px: 1.5,
                       borderRadius: 0,
                       borderBottom: '2px solid transparent',
-                      '&:hover': { color: '#1a1a1a', bgcolor: 'transparent', borderBottomColor: '#1a1a1a' },
+                      '&:hover': { color: '#3B2314', bgcolor: 'transparent', borderBottomColor: '#3B2314' },
                       transition: 'color 0.2s, border-color 0.2s',
                     }}
                   >
@@ -375,7 +362,7 @@ export default function Navbar({
                       px: 1.5,
                       borderRadius: 0,
                       borderBottom: '2px solid transparent',
-                      '&:hover': { color: '#1a1a1a', bgcolor: 'transparent', borderBottomColor: '#1a1a1a' },
+                      '&:hover': { color: '#3B2314', bgcolor: 'transparent', borderBottomColor: '#3B2314' },
                       transition: 'color 0.2s, border-color 0.2s',
                     }}
                   >
@@ -403,7 +390,7 @@ export default function Navbar({
                   >
                     <Avatar
                       src={user?.avatar}
-                      sx={{ width: 28, height: 28, fontSize: '0.7rem', bgcolor: '#1a1a1a' }}
+                      sx={{ width: 28, height: 28, fontSize: '0.7rem', bgcolor: '#3B2314' }}
                     >
                       {user?.firstName?.charAt(0)}
                     </Avatar>
@@ -445,7 +432,7 @@ export default function Navbar({
                   badgeContent={itemCount}
                   sx={{
                     '& .MuiBadge-badge': {
-                      bgcolor: '#1a1a1a',
+                      bgcolor: '#3B2314',
                       color: 'white',
                       minWidth: 18,
                       height: 18,
@@ -494,7 +481,7 @@ export default function Navbar({
                   <Search sx={{ color: '#666', mr: 1 }} />
                   <InputBase
                     autoFocus
-                    placeholder="T-shirts, dresses, jeans..."
+                    placeholder="Dining tables, chairs, decor..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     sx={{ flexGrow: 1, fontSize: '1rem' }}
@@ -536,14 +523,14 @@ export default function Navbar({
                           <Box sx={{ width: 40, height: 48, bgcolor: '#f0f0f0', borderRadius: 0.5, flexShrink: 0 }} />
                         )}
                         <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Typography variant="body2" sx={{ fontWeight: 500, color: '#1a1a1a', lineHeight: 1.3 }} noWrap>
+                          <Typography variant="body2" sx={{ fontWeight: 500, color: '#3B2314', lineHeight: 1.3 }} noWrap>
                             {p.name}
                           </Typography>
                           {p.category && (
                             <Typography variant="caption" sx={{ color: '#999' }}>{p.category.name}</Typography>
                           )}
                         </Box>
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#1a1a1a', flexShrink: 0 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#3B2314', flexShrink: 0 }}>
                           ₹{p.salePrice || p.basePrice}
                         </Typography>
                       </Box>
@@ -557,7 +544,7 @@ export default function Navbar({
                     >
                       <Box sx={{
                         px: 2, py: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        borderTop: '1px solid #f0f0f0', bgcolor: '#fafafa',
+                        borderTop: '1px solid #f0f0f0', bgcolor: '#FFFCF5',
                         '&:hover': { bgcolor: '#f0f0f0' }, cursor: 'pointer',
                       }}>
                         <Search sx={{ fontSize: 14, mr: 0.75, color: '#666' }} />
@@ -586,11 +573,11 @@ export default function Navbar({
             phone. The vw ceiling keeps the close button on screen whatever is set. */}
         <Box sx={{ width: navLayout.mobile.drawerWidth, maxWidth: '85vw' }}>
           <Box sx={{ px: 2.5, py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0f0f0' }}>
-            {settings.logo_url ? (
+            {BRAND_LOGO ? (
               <Box sx={{ position: 'relative', height: 34, aspectRatio: LOGO_ASPECT, flexShrink: 1, minWidth: 0, maxWidth: '70%' }}>
                 <Image
-                  src={settings.logo_url}
-                  alt={settings.site_name || 'Unique Dressup'}
+                  src={BRAND_LOGO}
+                  alt={SITE_NAME}
                   fill
                   unoptimized
                   style={{ objectFit: 'contain', objectPosition: 'left center' }}
@@ -599,10 +586,10 @@ export default function Navbar({
             ) : (
               <Box>
                 <Typography sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 800, letterSpacing: '0.15em', fontSize: '1.15rem', textTransform: 'uppercase', lineHeight: 1 }}>
-                  {settings.site_name || 'Unique Dressup'}
+                  {SITE_NAME}
                 </Typography>
                 <Typography sx={{ fontSize: '0.52rem', letterSpacing: '0.3em', color: '#aaa', fontWeight: 600, textTransform: 'uppercase', mt: 0.4 }}>
-                  Fashion &amp; Lifestyle
+                  Handcrafted Furniture
                 </Typography>
               </Box>
             )}
@@ -631,9 +618,9 @@ export default function Navbar({
                     fontWeight: 700,
                     fontSize: '0.7rem',
                     letterSpacing: '0.15em',
-                    color: gender === g ? '#1a1a1a' : '#aaa',
-                    borderBottom: gender === g ? '2px solid #1a1a1a' : '2px solid transparent',
-                    '&:hover': { bgcolor: 'transparent', color: '#1a1a1a' },
+                    color: gender === g ? '#3B2314' : '#aaa',
+                    borderBottom: gender === g ? '2px solid #3B2314' : '2px solid transparent',
+                    '&:hover': { bgcolor: 'transparent', color: '#3B2314' },
                   }}
                 >
                   {g}
@@ -647,7 +634,7 @@ export default function Navbar({
                 sx={{ color: 'inherit', textDecoration: 'none', '&:hover': { bgcolor: '#f5f5f5' } }}>
                 <ListItemText
                   primary={link.label}
-                  primaryTypographyProps={{ fontWeight: 500, fontSize: '0.9rem', letterSpacing: '0.04em', color: '#1a1a1a' }}
+                  primaryTypographyProps={{ fontWeight: 500, fontSize: '0.9rem', letterSpacing: '0.04em', color: '#3B2314' }}
                   sx={{ textAlign: drawerCentred ? 'center' : 'left' }}
                 />
               </ListItem>
@@ -668,11 +655,11 @@ export default function Navbar({
               <>
                 <ListItem component={Link} href="/account/orders" onClick={() => setMobileOpen(false)}
                   sx={{ color: 'inherit', textDecoration: 'none', '&:hover': { bgcolor: '#f5f5f5' } }}>
-                  <ListItemText primary="My Orders" primaryTypographyProps={{ color: '#1a1a1a', fontWeight: 500, fontSize: '0.9rem' }} sx={{ textAlign: drawerCentred ? 'center' : 'left' }} />
+                  <ListItemText primary="My Orders" primaryTypographyProps={{ color: '#3B2314', fontWeight: 500, fontSize: '0.9rem' }} sx={{ textAlign: drawerCentred ? 'center' : 'left' }} />
                 </ListItem>
                 <ListItem component={Link} href="/account/profile" onClick={() => setMobileOpen(false)}
                   sx={{ color: 'inherit', textDecoration: 'none', '&:hover': { bgcolor: '#f5f5f5' } }}>
-                  <ListItemText primary="Profile" primaryTypographyProps={{ color: '#1a1a1a', fontWeight: 500, fontSize: '0.9rem' }} sx={{ textAlign: drawerCentred ? 'center' : 'left' }} />
+                  <ListItemText primary="Profile" primaryTypographyProps={{ color: '#3B2314', fontWeight: 500, fontSize: '0.9rem' }} sx={{ textAlign: drawerCentred ? 'center' : 'left' }} />
                 </ListItem>
                 <ListItem onClick={() => { setMobileOpen(false); setLogoutConfirm(true); }}
                   sx={{ '&:hover': { bgcolor: '#fff5f5' }, cursor: 'pointer' }}>

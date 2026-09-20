@@ -90,12 +90,12 @@ export default function OrderDetailPage() {
                   {i > 0 && (
                     <Box sx={{
                       position: 'absolute', top: 12, right: '50%', left: '-50%',
-                      height: 2, bgcolor: i <= currentStep ? '#1a1a1a' : '#eee',
+                      height: 2, bgcolor: i <= currentStep ? '#3B2314' : '#eee',
                     }} />
                   )}
                   <Box sx={{
                     width: 24, height: 24, borderRadius: '50%', zIndex: 1,
-                    bgcolor: i <= currentStep ? '#1a1a1a' : '#eee',
+                    bgcolor: i <= currentStep ? '#3B2314' : '#eee',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     mb: 0.75,
                   }}>
@@ -214,7 +214,7 @@ export default function OrderDetailPage() {
           </Card>
 
           {order.trackingNumber && (
-            <Card elevation={0} sx={{ border: '1px solid', borderColor: '#c9a84c', borderRadius: 2, bgcolor: '#fffbf0' }}>
+            <Card elevation={0} sx={{ border: '1px solid', borderColor: '#A0693A', borderRadius: 2, bgcolor: '#fffbf0' }}>
               <CardContent sx={{ p: 2 }}>
                 <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.25 }}>
                   Tracking Number

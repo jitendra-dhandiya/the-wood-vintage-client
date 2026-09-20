@@ -147,7 +147,7 @@ export default function ProductCard({
         {!discount && !product.isNewArrival && product.isTrending && (
           <Box sx={{
             position: 'absolute', top: 10, left: 10,
-            bgcolor: '#c9a84c', px: 1, py: 0.3,
+            bgcolor: '#A0693A', px: 1, py: 0.3,
           }}>
             <Typography sx={{ fontSize: '0.6rem', fontWeight: 700, color: 'white', letterSpacing: '0.05em' }}>HOT</Typography>
           </Box>

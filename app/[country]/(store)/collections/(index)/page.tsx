@@ -91,7 +91,7 @@ export default function CollectionsPage() {
   const heroTitle    = showFallbackText ? (bannerTitle || 'Our Collections') : '';
   const heroSubtitle = showFallbackText
     ? (bannerSubtitle
-       || 'Explore our carefully curated collections — each one a story told through fabric, colour, and style.')
+       || 'Explore our carefully curated collections — each one a story told through wood, craft and finish.')
     : '';
   const hasHeroText  = !!(heroTitle || heroSubtitle);
 
@@ -100,7 +100,7 @@ export default function CollectionsPage() {
       {/* Hero */}
       <Box
         sx={{
-          bgcolor: '#1a1a1a',
+          bgcolor: '#3B2314',
           color: 'white',
           // Only the wordless block needs padding. With artwork the band is
           // exactly as tall as the artwork, so padding would add a black
@@ -244,7 +244,7 @@ export default function CollectionsPage() {
                                 }}
                               >
                                 <Typography
-                                  sx={{ fontFamily: 'var(--font-playfair)', fontSize: '3rem', color: '#c9a84c', opacity: 0.4 }}
+                                  sx={{ fontFamily: 'var(--font-playfair)', fontSize: '3rem', color: '#A0693A', opacity: 0.4 }}
                                 >
                                   {col.name.charAt(0)}
                                 </Typography>
@@ -255,7 +255,7 @@ export default function CollectionsPage() {
                               size="small"
                               sx={{
                                 position: 'absolute', top: 12, left: 12,
-                                bgcolor: '#c9a84c', color: 'white', fontWeight: 600,
+                                bgcolor: '#A0693A', color: 'white', fontWeight: 600,
                                 fontSize: '0.65rem', letterSpacing: '0.06em',
                               }}
                             />
@@ -282,7 +282,7 @@ export default function CollectionsPage() {
                                   instead. That is why the description was
                                   sliced mid-word with no ellipsis. */}
                               <Box sx={{ minWidth: 0 }}>
-                                <Typography variant="h6" fontWeight={700} sx={{ color: '#1a1a1a' }}>
+                                <Typography variant="h6" fontWeight={700} sx={{ color: '#3B2314' }}>
                                   {col.name}
                                 </Typography>
                                 {col.description && (
@@ -307,7 +307,7 @@ export default function CollectionsPage() {
                               </Box>
                               <ArrowForward
                                 className="col-arrow"
-                                sx={{ color: '#1a1a1a', transition: 'transform 0.2s', flexShrink: 0, mt: 0.5 }}
+                                sx={{ color: '#3B2314', transition: 'transform 0.2s', flexShrink: 0, mt: 0.5 }}
                               />
                             </Box>
                           </CardContent>
@@ -392,7 +392,7 @@ export default function CollectionsPage() {
                                 }}
                               >
                                 <Typography
-                                  sx={{ fontFamily: 'var(--font-playfair)', fontSize: '2.5rem', color: '#c9a84c', opacity: 0.4 }}
+                                  sx={{ fontFamily: 'var(--font-playfair)', fontSize: '2.5rem', color: '#A0693A', opacity: 0.4 }}
                                 >
                                   {col.name.charAt(0)}
                                 </Typography>
@@ -411,7 +411,7 @@ export default function CollectionsPage() {
                             )}
                           </Box>
                           <CardContent sx={{ p: 2 }}>
-                            <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#1a1a1a' }} noWrap>
+                            <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#3B2314' }} noWrap>
                               {col.name}
                             </Typography>
                             {col.description && (
@@ -445,7 +445,7 @@ export default function CollectionsPage() {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Check back soon — new collections are on their way.
             </Typography>
-            <Button component={Link} href={withCountry('/shop', country)} variant="outlined" sx={{ borderColor: '#1a1a1a', color: '#1a1a1a' }}>
+            <Button component={Link} href={withCountry('/shop', country)} variant="outlined" sx={{ borderColor: '#3B2314', color: '#3B2314' }}>
               Browse All Products
             </Button>
           </Box>

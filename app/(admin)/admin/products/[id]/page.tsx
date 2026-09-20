@@ -799,7 +799,7 @@ export default function EditProductPage() {
 
               <Button type="submit" variant="contained" fullWidth size="large"
                 disabled={formik.isSubmitting}
-                sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, py: 1.5, borderRadius: 2 }}>
+                sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, py: 1.5, borderRadius: 2 }}>
                 {formik.isSubmitting ? (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <CircularProgress size={16} sx={{ color: '#fff' }} />
@@ -886,7 +886,7 @@ export default function EditProductPage() {
           </Button>
           <Button
             variant="contained" onClick={saveVariant} disabled={variantSaving}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
           >
             {variantSaving ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : 'Save'}
           </Button>

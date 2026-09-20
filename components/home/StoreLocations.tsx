@@ -86,7 +86,7 @@ export default function StoreLocations({ stores, title = 'Visit Our Stores', sub
                     ) : (
                       <Box sx={{
                         position: 'absolute', inset: 0,
-                        background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
+                        background: 'linear-gradient(135deg, #3B2314 0%, #2d2d2d 100%)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}>
                         <Typography sx={{ fontFamily: 'var(--font-playfair)', fontSize: '3rem', color: 'rgba(201,168,76,0.3)', fontWeight: 700 }}>

@@ -214,7 +214,7 @@ export default function CountryShippingRulesDialog({ country, open, onClose }: P
               <Stack direction="row" spacing={1} justifyContent="flex-end">
                 <Button onClick={closeForm}>Cancel</Button>
                 <Button type="submit" variant="contained" disabled={formik.isSubmitting}
-                  sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}>
+                  sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}>
                   {formik.isSubmitting ? 'Saving…' : editRule ? 'Save Changes' : 'Create Rule'}
                 </Button>
               </Stack>

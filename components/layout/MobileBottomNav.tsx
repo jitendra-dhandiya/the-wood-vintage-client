@@ -57,7 +57,7 @@ export default function MobileBottomNav() {
         <BottomNavigationAction icon={<Search />} component={Link} href={withCountry('/search', country)} />
         <BottomNavigationAction
           icon={
-            <Badge badgeContent={itemCount} sx={{ '& .MuiBadge-badge': { bgcolor: '#1a1a1a', color: 'white', minWidth: 16, height: 16, fontSize: '0.6rem' } }}>
+            <Badge badgeContent={itemCount} sx={{ '& .MuiBadge-badge': { bgcolor: '#3B2314', color: 'white', minWidth: 16, height: 16, fontSize: '0.6rem' } }}>
               <ShoppingBag />
             </Badge>
           }

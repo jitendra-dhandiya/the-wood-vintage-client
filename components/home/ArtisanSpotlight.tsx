@@ -86,7 +86,7 @@ export default function ArtisanSpotlight({ artisans, title, subtitle }: Props) {
                     </Typography>
                   )}
                 </Box>
-                <Typography variant="subtitle1" fontWeight={700} sx={{ color: '#1a1a1a' }}>
+                <Typography variant="subtitle1" fontWeight={700} sx={{ color: '#3B2314' }}>
                   {artisan.name}
                 </Typography>
                 {artisan.region && (

@@ -117,12 +117,12 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
         sx={{
           background: 'none', border: 'none', cursor: 'pointer', padding: '0 12px',
           fontWeight: 500, fontSize: '0.8rem', letterSpacing: '0.06em',
-          textTransform: 'uppercase', color: open ? '#1a1a1a' : 'text.primary',
+          textTransform: 'uppercase', color: open ? '#3B2314' : 'text.primary',
           fontFamily: 'inherit',
           display: 'flex', alignItems: 'center', gap: 0.5, height: '100%',
-          borderBottom: open ? '2px solid #1a1a1a' : '2px solid transparent',
+          borderBottom: open ? '2px solid #3B2314' : '2px solid transparent',
           transition: 'color 0.15s, border-color 0.15s',
-          '&:hover': { color: '#1a1a1a' },
+          '&:hover': { color: '#3B2314' },
         }}
       >
         Shop
@@ -180,7 +180,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                         px: 1, py: 0.75, borderRadius: 1, mb: 0.25,
                         textDecoration: 'none', color: '#333',
                         fontSize: '0.8rem', fontWeight: 600,
-                        '&:hover': { bgcolor: '#f5f5f5', color: '#1a1a1a' },
+                        '&:hover': { bgcolor: '#f5f5f5', color: '#3B2314' },
                         transition: 'all 0.15s',
                       }}
                     >
@@ -206,12 +206,12 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                         px: 1, py: 0.85, borderRadius: 1, mb: 0.25,
                         textDecoration: 'none',
                         bgcolor: hovered === cat.id || (!hovered && cat.id === categories[0]?.id)
-                          ? '#1a1a1a' : 'transparent',
+                          ? '#3B2314' : 'transparent',
                         color: hovered === cat.id || (!hovered && cat.id === categories[0]?.id)
                           ? 'white' : '#333',
                         fontSize: '0.82rem', fontWeight: hovered === cat.id ? 700 : 500,
                         transition: 'all 0.12s',
-                        '&:hover': { bgcolor: '#1a1a1a', color: 'white' },
+                        '&:hover': { bgcolor: '#3B2314', color: 'white' },
                       }}
                     >
                       <span>{cat.name}</span>
@@ -231,7 +231,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                       px: 1, py: 0.75, borderRadius: 1,
                       textDecoration: 'none', color: '#888',
                       fontSize: '0.78rem', fontWeight: 500,
-                      '&:hover': { color: '#1a1a1a' },
+                      '&:hover': { color: '#3B2314' },
                     }}
                   >
                     <GridView sx={{ fontSize: 14 }} />
@@ -257,7 +257,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                               fontSize: '1.35rem',
                               fontWeight: 800,
                               letterSpacing: '0.02em',
-                              color: '#1a1a1a',
+                              color: '#3B2314',
                             }}
                           >
                             {activeCategory.name}
@@ -269,7 +269,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                             sx={{
                               fontSize: '0.75rem', color: '#888', textDecoration: 'none',
                               fontWeight: 500, letterSpacing: '0.06em',
-                              '&:hover': { color: '#1a1a1a' },
+                              '&:hover': { color: '#3B2314' },
                             }}
                           >
                             Shop all →
@@ -292,7 +292,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                                   display: 'block', px: 1.5, py: 0.9,
                                   borderRadius: 1, textDecoration: 'none',
                                   color: '#444', fontSize: '0.82rem', fontWeight: 400,
-                                  '&:hover': { bgcolor: '#f5f5f5', color: '#1a1a1a', fontWeight: 600 },
+                                  '&:hover': { bgcolor: '#f5f5f5', color: '#3B2314', fontWeight: 600 },
                                   transition: 'all 0.12s',
                                 }}
                               >
@@ -310,7 +310,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                                 px: 1.5, py: 0.9, borderRadius: 1, textDecoration: 'none',
                                 color: '#b0a090', fontSize: '0.78rem', fontWeight: 600,
                                 letterSpacing: '0.04em',
-                                '&:hover': { color: '#1a1a1a' },
+                                '&:hover': { color: '#3B2314' },
                               }}
                             >
                               See all {activeCategory.name} →
@@ -327,7 +327,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                               onClick={() => { setOpen(false); onLinkClick?.(); }}
                               sx={{
                                 display: 'inline-flex', alignItems: 'center', gap: 1,
-                                px: 2.5, py: 1, bgcolor: '#1a1a1a', color: 'white',
+                                px: 2.5, py: 1, bgcolor: '#3B2314', color: 'white',
                                 textDecoration: 'none', fontSize: '0.78rem',
                                 fontWeight: 600, letterSpacing: '0.08em',
                                 borderRadius: 0.5,
@@ -379,7 +379,7 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                             sx={{
                               fontSize: '0.78rem', fontWeight: 600,
                               letterSpacing: '0.08em', textTransform: 'uppercase',
-                              color: '#1a1a1a',
+                              color: '#3B2314',
                             }}
                           >
                             Shop {activeCategory.name}
@@ -399,11 +399,11 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                       >
                         <Box sx={{
                           height: 280, borderRadius: 1.5,
-                          background: 'linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%)',
+                          background: 'linear-gradient(135deg, #3B2314 0%, #3a3a3a 100%)',
                           display: 'flex', flexDirection: 'column',
                           alignItems: 'center', justifyContent: 'center', p: 3, mb: 1.5,
                         }}>
-                          <Typography sx={{ color: '#c9a96e', fontSize: '0.65rem', letterSpacing: '0.2em', mb: 1 }}>
+                          <Typography sx={{ color: '#A0693A', fontSize: '0.65rem', letterSpacing: '0.2em', mb: 1 }}>
                             DISCOVER
                           </Typography>
                           <Typography sx={{
@@ -424,10 +424,10 @@ export function MegaMenuDesktop({ categories, quickLinks, onLinkClick, layout }:
                             onClick={() => { setOpen(false); onLinkClick?.(); }}
                             sx={{
                               mt: 2.5, px: 2.5, py: 0.75,
-                              border: '1px solid #c9a96e', color: '#c9a96e',
+                              border: '1px solid #A0693A', color: '#A0693A',
                               textDecoration: 'none', fontSize: '0.72rem',
                               letterSpacing: '0.1em', fontWeight: 600, borderRadius: 0.5,
-                              '&:hover': { bgcolor: '#c9a96e', color: '#1a1a1a' },
+                              '&:hover': { bgcolor: '#A0693A', color: '#3B2314' },
                               transition: 'all 0.2s',
                             }}
                           >
@@ -486,7 +486,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
               border: '1px solid #e6e2dc', borderRadius: 5,
               fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.04em',
               color: '#6b5f4e', textDecoration: 'none', bgcolor: '#fdfcfa',
-              '&:active': { bgcolor: '#1a1a1a', color: '#fff' },
+              '&:active': { bgcolor: '#3B2314', color: '#fff' },
             }}
           >
             {q.label}
@@ -514,7 +514,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
                   display: 'flex', alignItems: 'center', justifyContent: rowJustify, gap: 1.5,
                   px: 2, py: L.rowPadding,
                   textDecoration: 'none', color: 'inherit',
-                  '&:active': { bgcolor: '#fafafa' },
+                  '&:active': { bgcolor: '#FFFCF5' },
                 }}
               >
                 {showThumb && (
@@ -544,7 +544,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
 
                 <Box sx={{ minWidth: 0, textAlign: centred ? 'center' : 'left' }}>
                   <Typography sx={{
-                    fontSize: '0.9rem', fontWeight: 700, color: '#1a1a1a',
+                    fontSize: '0.9rem', fontWeight: 700, color: '#3B2314',
                     lineHeight: 1.25, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>
                     {cat.name}
@@ -559,7 +559,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
                 <IconButton
                   onClick={() => setExpanded(isOpen ? false : cat.id)}
                   aria-label={isOpen ? `Collapse ${cat.name}` : `Expand ${cat.name}`}
-                  sx={{ px: 2, borderRadius: 0, color: '#bbb', '&:active': { bgcolor: '#fafafa' } }}
+                  sx={{ px: 2, borderRadius: 0, color: '#bbb', '&:active': { bgcolor: '#FFFCF5' } }}
                 >
                   {isOpen ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
                 </IconButton>
@@ -574,7 +574,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
                   onClick={onLinkClick}
                   sx={{
                     px: 1.5, py: 0.65, borderRadius: 5,
-                    bgcolor: '#1a1a1a', color: '#fff',
+                    bgcolor: '#3B2314', color: '#fff',
                     fontSize: '0.74rem', fontWeight: 700, textDecoration: 'none',
                   }}
                 >
@@ -591,7 +591,7 @@ export function MegaMenuMobile({ categories, quickLinks, onLinkClick, layout }: 
                       border: '1px solid #e8e8e8', bgcolor: '#fff',
                       fontSize: '0.74rem', fontWeight: 500, color: '#444',
                       textDecoration: 'none',
-                      '&:active': { bgcolor: '#1a1a1a', color: '#fff', borderColor: '#1a1a1a' },
+                      '&:active': { bgcolor: '#3B2314', color: '#fff', borderColor: '#3B2314' },
                     }}
                   >
                     {child.name}

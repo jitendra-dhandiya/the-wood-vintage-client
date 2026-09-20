@@ -11,7 +11,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
     <ImageCropperProvider>
       <AuthInitializer />
       <Navbar />
-      <Box sx={{ bgcolor: '#fafafa', minHeight: '80vh', py: 4 }}>
+      <Box sx={{ bgcolor: '#FFFCF5', minHeight: '80vh', py: 4 }}>
         <Container maxWidth="xl">
           <Grid container spacing={3}>
             <Grid item xs={12} md={3} lg={2.5}>

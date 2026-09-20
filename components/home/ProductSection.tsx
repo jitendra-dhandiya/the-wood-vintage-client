@@ -66,7 +66,7 @@ export default function ProductSection({
             <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} style={{ minWidth: 0 }}>
               <Box>
                 {subtitle && (
-                  <Typography variant="overline" sx={{ color: '#c9a84c', letterSpacing: '0.2em', fontWeight: 600, display: 'block', fontSize: '0.62rem', mb: 0.4 }}>
+                  <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', fontSize: '0.62rem', mb: 0.4 }}>
                     {subtitle}
                   </Typography>
                 )}
@@ -76,7 +76,7 @@ export default function ProductSection({
               </Box>
             </motion.div>
             {viewAllLink && (
-              <Typography component={Link} href={viewAllLink} sx={{ fontSize: '0.75rem', fontWeight: 700, color: '#111', textDecoration: 'underline', textUnderlineOffset: 3, '&:hover': { color: '#c9a84c' } }}>
+              <Typography component={Link} href={viewAllLink} sx={{ fontSize: '0.75rem', fontWeight: 700, color: '#111', textDecoration: 'underline', textUnderlineOffset: 3, '&:hover': { color: '#A0693A' } }}>
                 View all
               </Typography>
             )}
@@ -128,7 +128,7 @@ export default function ProductSection({
           <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} style={{ minWidth: 0 }}>
             <Box>
               {subtitle && (
-                <Typography variant="overline" sx={{ color: '#c9a84c', letterSpacing: '0.2em', fontWeight: 600, display: 'block', fontSize: '0.62rem', mb: 0.4 }}>
+                <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', fontSize: '0.62rem', mb: 0.4 }}>
                   {subtitle}
                 </Typography>
               )}
@@ -143,7 +143,7 @@ export default function ProductSection({
               <Typography
                 component={Link}
                 href={viewAllLink}
-                sx={{ fontSize: '0.75rem', fontWeight: 700, color: '#111', textDecoration: 'underline', textUnderlineOffset: 3, mr: 1, whiteSpace: 'nowrap', '&:hover': { color: '#c9a84c' }, transition: 'color 0.2s' }}
+                sx={{ fontSize: '0.75rem', fontWeight: 700, color: '#111', textDecoration: 'underline', textUnderlineOffset: 3, mr: 1, whiteSpace: 'nowrap', '&:hover': { color: '#A0693A' }, transition: 'color 0.2s' }}
               >
                 View all
               </Typography>

@@ -42,7 +42,7 @@ export default async function ArtisansPage({ params }: Props) {
 
   return (
     <Box sx={{ pb: { xs: 8, md: 6 } }}>
-      <Box sx={{ bgcolor: '#1a1a1a', color: 'white', py: { xs: 6, md: 9 }, textAlign: 'center' }}>
+      <Box sx={{ bgcolor: '#3B2314', color: 'white', py: { xs: 6, md: 9 }, textAlign: 'center' }}>
         <Container maxWidth="md">
           <Typography variant="h3" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, mb: 2 }}>
             Our Artisans
@@ -62,7 +62,7 @@ export default async function ArtisansPage({ params }: Props) {
               Check back soon — artisan profiles are on their way.
             </Typography>
             <Link href={withCountry('/shop', country)} style={{ textDecoration: 'none' }}>
-              <Typography sx={{ color: '#c9a84c', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 4 }}>
+              <Typography sx={{ color: '#A0693A', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 4 }}>
                 Browse all products
               </Typography>
             </Link>
@@ -96,7 +96,7 @@ export default async function ArtisansPage({ params }: Props) {
                       )}
                     </Box>
                     <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
-                      <Typography variant="h6" fontWeight={700} sx={{ color: '#1a1a1a' }}>
+                      <Typography variant="h6" fontWeight={700} sx={{ color: '#3B2314' }}>
                         {artisan.name}
                       </Typography>
                       {artisan.region && (

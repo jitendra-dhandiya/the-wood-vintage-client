@@ -134,7 +134,7 @@ export default function AdminReturnsPage() {
           {STATUSES.map(s => <MenuItem key={s} value={s}>{s.replace('_', ' ')}</MenuItem>)}
         </TextField>
         <Button variant="contained" startIcon={<Add />} onClick={openCreate}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
           Record a return
         </Button>
       </Stack>
@@ -264,7 +264,7 @@ export default function AdminReturnsPage() {
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setDialog(false)}>Cancel</Button>
           <Button variant="contained" onClick={save} disabled={saving}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
             {saving ? 'Saving…' : editingId ? 'Save changes' : 'Record return'}
           </Button>
         </DialogActions>

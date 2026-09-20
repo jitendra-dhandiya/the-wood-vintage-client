@@ -147,11 +147,11 @@ function LogoUploader({ value, onChange }: LogoUploaderProps) {
         <Paper
           elevation={0}
           sx={{
-            border: `2px dashed ${dragOver ? '#1a1a1a' : '#d0d0d0'}`,
+            border: `2px dashed ${dragOver ? '#3B2314' : '#d0d0d0'}`,
             borderRadius: 2,
             p: { xs: 3, md: 4 },
             textAlign: 'center',
-            bgcolor: dragOver ? '#f5f5f5' : '#fafafa',
+            bgcolor: dragOver ? '#f5f5f5' : '#FFFCF5',
             transition: 'all 0.15s',
             mb: 2,
             cursor: 'pointer',
@@ -163,9 +163,9 @@ function LogoUploader({ value, onChange }: LogoUploaderProps) {
         >
           {uploading ? (
             <Box>
-              <CircularProgress size={32} sx={{ color: '#1a1a1a', mb: 1 }} />
+              <CircularProgress size={32} sx={{ color: '#3B2314', mb: 1 }} />
               <Typography variant="body2" color="text.secondary">Uploading logo…</Typography>
-              <LinearProgress sx={{ mt: 2, borderRadius: 1, bgcolor: '#e0e0e0', '& .MuiLinearProgress-bar': { bgcolor: '#1a1a1a' } }} />
+              <LinearProgress sx={{ mt: 2, borderRadius: 1, bgcolor: '#e0e0e0', '& .MuiLinearProgress-bar': { bgcolor: '#3B2314' } }} />
             </Box>
           ) : (
             <Box>
@@ -200,7 +200,7 @@ function LogoUploader({ value, onChange }: LogoUploaderProps) {
           startIcon={uploading ? <CircularProgress size={14} /> : <CloudUpload sx={{ fontSize: 16 }} />}
           onClick={() => !uploading && inputRef.current?.click()}
           disabled={uploading}
-          sx={{ fontWeight: 700, borderColor: '#1a1a1a', color: '#1a1a1a', '&:hover': { bgcolor: '#1a1a1a', color: 'white' }, borderRadius: 1.5 }}
+          sx={{ fontWeight: 700, borderColor: '#3B2314', color: '#3B2314', '&:hover': { bgcolor: '#3B2314', color: 'white' }, borderRadius: 1.5 }}
         >
           {value ? 'Replace Logo' : 'Upload Logo'}
         </Button>
@@ -261,7 +261,7 @@ function RangeRow({ label, help, rangeKey, value, onChange }: {
         max={r.max}
         step={r.step}
         onChange={(_, v) => onChange(v as number)}
-        sx={{ color: '#1a1a1a', mt: 0.5 }}
+        sx={{ color: '#3B2314', mt: 0.5 }}
       />
       {help && <Typography sx={{ fontSize: '0.72rem', color: '#999', mt: -0.5 }}>{help}</Typography>}
     </Box>
@@ -285,7 +285,7 @@ function ChoiceRow<T extends string>({ label, help, value, options, onChange }: 
         onChange={(_, v) => { if (v) onChange(v as T); }}
         sx={{
           '& .MuiToggleButton-root': { textTransform: 'none', fontSize: '0.76rem', px: 1.5, py: 0.5 },
-          '& .Mui-selected': { bgcolor: '#1a1a1a !important', color: '#fff !important' },
+          '& .Mui-selected': { bgcolor: '#3B2314 !important', color: '#fff !important' },
         }}
       >
         {options.map(o => <ToggleButton key={o.value} value={o.value}>{o.label}</ToggleButton>)}
@@ -321,7 +321,7 @@ function NavDrawerPreview({ layout }: { layout: NavLayout }) {
         {/* header */}
         <Box sx={{ px: 2.5, py: 1.5, borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 800, letterSpacing: '0.15em', fontSize: '0.8rem' }}>
-            THE UNIQUE DRESSUP
+            THE WOOD VINTAGE
           </Typography>
         </Box>
         {/* gender tabs */}
@@ -329,14 +329,14 @@ function NavDrawerPreview({ layout }: { layout: NavLayout }) {
           {['WOMEN', 'MEN'].map((g, i) => (
             <Box key={g} sx={{
               flex: 1, textAlign: 'center', py: 0.9, fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.15em',
-              color: i === 0 ? '#1a1a1a' : '#aaa',
-              borderBottom: i === 0 ? '2px solid #1a1a1a' : '2px solid transparent',
+              color: i === 0 ? '#3B2314' : '#aaa',
+              borderBottom: i === 0 ? '2px solid #3B2314' : '2px solid transparent',
             }}>{g}</Box>
           ))}
         </Box>
         {/* top links */}
         {['New In', 'Collections', 'Sale', 'Blog'].map(l => (
-          <Box key={l} sx={{ px: 2, py: 0.85, fontSize: '0.8rem', fontWeight: 500, color: '#1a1a1a', textAlign }}>{l}</Box>
+          <Box key={l} sx={{ px: 2, py: 0.85, fontSize: '0.8rem', fontWeight: 500, color: '#3B2314', textAlign }}>{l}</Box>
         ))}
         <Divider sx={{ my: 0.5 }} />
         <Box sx={{ px: 2, py: 0.6, textAlign }}>
@@ -368,7 +368,7 @@ function NavDrawerPreview({ layout }: { layout: NavLayout }) {
               }}>{c.charAt(0)}</Box>
             )}
             <Box sx={{ minWidth: 0, textAlign }}>
-              <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: '#1a1a1a', lineHeight: 1.25, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: '#3B2314', lineHeight: 1.25, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {c}
               </Typography>
               <Typography sx={{ fontSize: '0.62rem', color: '#9a9a9a' }}>Shop now</Typography>
@@ -450,7 +450,7 @@ export default function SettingsPage() {
 
   const SaveBtn = ({ keys }: { keys: string[] }) => (
     <Button variant="contained" onClick={() => save(keys)} disabled={saving}
-      sx={{ mt: 3, bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+      sx={{ mt: 3, bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
       {saving ? 'Saving...' : 'Save Settings'}
     </Button>
   );
@@ -616,7 +616,7 @@ export default function SettingsPage() {
                 {/* ── Mobile ── */}
                 <Grid item xs={12} md={6}>
                   <Paper elevation={0} sx={{ border: '1px solid #e8e8e8', borderRadius: 2, p: 2.5 }}>
-                    <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#1a1a1a', mb: 2.5 }}>
+                    <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#3B2314', mb: 2.5 }}>
                       Mobile drawer
                     </Typography>
                     <Stack spacing={2.5}>
@@ -669,7 +669,7 @@ export default function SettingsPage() {
                   </Paper>
 
                   <Paper elevation={0} sx={{ border: '1px solid #e8e8e8', borderRadius: 2, p: 2.5, mt: 3 }}>
-                    <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#1a1a1a', mb: 2.5 }}>
+                    <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#3B2314', mb: 2.5 }}>
                       Desktop mega menu
                     </Typography>
                     <Stack spacing={2.5}>

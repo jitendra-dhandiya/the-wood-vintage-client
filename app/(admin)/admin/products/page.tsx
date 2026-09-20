@@ -191,7 +191,7 @@ export default function AdminProductsPage() {
             sx={{
               '& .MuiOutlinedInput-root': {
                 bgcolor: changed ? '#fff8e1' : 'transparent',
-                '& fieldset': { borderColor: changed ? '#c9a84c' : 'rgba(0,0,0,0.15)' },
+                '& fieldset': { borderColor: changed ? '#A0693A' : 'rgba(0,0,0,0.15)' },
               },
             }}
           />
@@ -259,7 +259,7 @@ export default function AdminProductsPage() {
       header: 'Flags',
       cell: ({ row }) => (
         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-          {row.original.isFeatured && <Chip label="Featured" size="small" sx={{ bgcolor: '#c9a84c', color: 'white', height: 18, fontSize: '0.6rem' }} />}
+          {row.original.isFeatured && <Chip label="Featured" size="small" sx={{ bgcolor: '#A0693A', color: 'white', height: 18, fontSize: '0.6rem' }} />}
           {row.original.isTrending && <Chip label="Trending" size="small" sx={{ bgcolor: '#1976d2', color: 'white', height: 18, fontSize: '0.6rem' }} />}
           {row.original.isNewArrival && <Chip label="New" size="small" sx={{ bgcolor: '#2e7d32', color: 'white', height: 18, fontSize: '0.6rem' }} />}
         </Box>
@@ -316,7 +316,7 @@ export default function AdminProductsPage() {
               onClick={handleSavePriorities}
               disabled={savingPriority}
               variant="contained"
-              sx={{ bgcolor: '#c9a84c', color: '#111', fontWeight: 700, '&:hover': { bgcolor: '#a8872a' } }}
+              sx={{ bgcolor: '#A0693A', color: '#111', fontWeight: 700, '&:hover': { bgcolor: '#a8872a' } }}
             >
               {savingPriority ? 'Saving…' : `Save order (${dirtyPriorities.length})`}
             </Button>
@@ -333,7 +333,7 @@ export default function AdminProductsPage() {
           >
             {exporting ? 'Preparing…' : 'Export Excel'}
           </Button>
-          <Button startIcon={<Add />} component={Link} href="/admin/products/add" variant="contained" sx={{ bgcolor: '#1a1a1a' }}>
+          <Button startIcon={<Add />} component={Link} href="/admin/products/add" variant="contained" sx={{ bgcolor: '#3B2314' }}>
             Add Product
           </Button>
         </Stack>
@@ -429,7 +429,7 @@ export default function AdminProductsPage() {
                 {loading ? (
                   <tr>
                     <td colSpan={columns.length} style={{ padding: '48px', textAlign: 'center' }}>
-                      <CircularProgress size={28} sx={{ color: '#1a1a1a' }} />
+                      <CircularProgress size={28} sx={{ color: '#3B2314' }} />
                     </td>
                   </tr>
                 ) : products.length === 0 ? (
@@ -440,7 +440,7 @@ export default function AdminProductsPage() {
                   </tr>
                 ) : table.getRowModel().rows.map((row) => (
                   <tr key={row.id} style={{ borderBottom: '1px solid #f5f5f5' }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fafafa')}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#FFFCF5')}
                     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -461,7 +461,7 @@ export default function AdminProductsPage() {
                 count={Math.ceil(total / limit)}
                 page={page}
                 onChange={(_, v) => setPage(v)}
-                sx={{ '& .MuiPaginationItem-root.Mui-selected': { bgcolor: '#1a1a1a', color: 'white' } }}
+                sx={{ '& .MuiPaginationItem-root.Mui-selected': { bgcolor: '#3B2314', color: 'white' } }}
               />
             </Box>
           )}

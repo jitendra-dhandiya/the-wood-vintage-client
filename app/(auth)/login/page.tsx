@@ -20,7 +20,7 @@ function LoginInner() {
   useEffect(() => { if (isAuth) router.replace(redirect); }, [isAuth, router, redirect]);
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', bgcolor: '#fafafa', py: 6 }}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', bgcolor: '#FFFCF5', py: 6 }}>
       <Container maxWidth="xs">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
           <Button component={Link} href={withCountry('/', country)} startIcon={<ArrowBack />}

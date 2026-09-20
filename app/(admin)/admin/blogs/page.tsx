@@ -85,7 +85,7 @@ export default function BlogsPage() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700 }}>Blog Posts</Typography>
         <Button variant="contained" startIcon={<Add />} onClick={openCreate}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>Write Post</Button>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>Write Post</Button>
       </Box>
 
       <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
@@ -178,7 +178,7 @@ export default function BlogsPage() {
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={closeDialog}>Cancel</Button>
             <Button type="submit" variant="contained" disabled={formik.isSubmitting}
-              sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+              sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
               {editBlog ? 'Save' : 'Publish'}
             </Button>
           </DialogActions>

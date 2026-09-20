@@ -145,7 +145,7 @@ export default function OrderDetailAdminPage() {
           />
           <Chip label={order.status} color={STATUS_COLORS[order.status] || 'default'} sx={{ fontWeight: 700 }} />
           <Button variant="outlined" size="small" onClick={() => setStatusDialog(true)}
-            sx={{ borderColor: '#1a1a1a', color: '#1a1a1a' }}>
+            sx={{ borderColor: '#3B2314', color: '#3B2314' }}>
             Update Status
           </Button>
         </Box>
@@ -299,7 +299,7 @@ export default function OrderDetailAdminPage() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
                 <Button variant="contained" size="small" startIcon={<Save sx={{ fontSize: 16 }} />}
                   onClick={saveFulfilment} disabled={savingFulfilment}
-                  sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+                  sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
                   {savingFulfilment ? 'Saving…' : 'Save delivery method'}
                 </Button>
                 {order.dispatchedAt && (
@@ -350,7 +350,7 @@ export default function OrderDetailAdminPage() {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 1 }}>
                       <Phone sx={{ fontSize: 15, color: 'text.secondary' }} />
                       <Typography variant="body2" component="a" href={`tel:${addr.phone}`}
-                        sx={{ color: '#1a1a1a', fontWeight: 600, textDecoration: 'none' }}>
+                        sx={{ color: '#3B2314', fontWeight: 600, textDecoration: 'none' }}>
                         {addr.phone}
                       </Typography>
                     </Box>
@@ -392,7 +392,7 @@ export default function OrderDetailAdminPage() {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                     <Phone sx={{ fontSize: 15, color: 'text.secondary' }} />
                     <Typography variant="caption" component="a" href={`tel:${order.user?.phone || addr?.phone}`}
-                      sx={{ color: '#1a1a1a', fontWeight: 600, textDecoration: 'none' }}>
+                      sx={{ color: '#3B2314', fontWeight: 600, textDecoration: 'none' }}>
                       {order.user?.phone || addr?.phone}
                     </Typography>
                   </Box>
@@ -401,7 +401,7 @@ export default function OrderDetailAdminPage() {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
                     <Email sx={{ fontSize: 15, color: 'text.secondary' }} />
                     <Typography variant="caption" component="a" href={`mailto:${order.user.email}`} noWrap
-                      sx={{ color: '#1a1a1a', textDecoration: 'none' }}>
+                      sx={{ color: '#3B2314', textDecoration: 'none' }}>
                       {order.user.email}
                     </Typography>
                   </Box>
@@ -496,7 +496,7 @@ export default function OrderDetailAdminPage() {
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setStatusDialog(false)}>Cancel</Button>
           <Button variant="contained" onClick={updateStatus} disabled={updating}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
             {updating ? 'Updating...' : 'Update'}
           </Button>
         </DialogActions>

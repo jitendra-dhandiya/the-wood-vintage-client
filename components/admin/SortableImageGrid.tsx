@@ -81,7 +81,7 @@ function SortableTile({ image, index, onRemove, colorOptions, color, onColorChan
           borderRadius: 1,
           overflow: 'hidden',
           border: '2px solid',
-          borderColor: image.isNew ? '#2e7d32' : index === 0 ? '#1a1a1a' : 'divider',
+          borderColor: image.isNew ? '#2e7d32' : index === 0 ? '#3B2314' : 'divider',
           borderStyle: image.isNew ? 'dashed' : 'solid',
           transition: 'border-color 0.2s',
           '&:hover .drag-hint': { opacity: 1 },
@@ -99,7 +99,7 @@ function SortableTile({ image, index, onRemove, colorOptions, color, onColorChan
         <Box sx={{
           position: 'absolute', top: 4, left: 4,
           width: 20, height: 20, borderRadius: '50%',
-          bgcolor: index === 0 ? '#1a1a1a' : 'rgba(0,0,0,0.62)',
+          bgcolor: index === 0 ? '#3B2314' : 'rgba(0,0,0,0.62)',
           color: '#fff', fontSize: '0.65rem', fontWeight: 700,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
@@ -117,7 +117,7 @@ function SortableTile({ image, index, onRemove, colorOptions, color, onColorChan
         {index === 0 && (
           <Chip label="Cover" size="small" sx={{
             position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)',
-            fontSize: '0.55rem', height: 16, bgcolor: '#1a1a1a', color: '#fff',
+            fontSize: '0.55rem', height: 16, bgcolor: '#3B2314', color: '#fff',
           }} />
         )}
         {image.isNew && index !== 0 && (
@@ -150,11 +150,11 @@ function SortableTile({ image, index, onRemove, colorOptions, color, onColorChan
             sx={{
               mt: 0.5, px: 0.5, py: 0.25,
               display: 'flex', alignItems: 'center', gap: 0.25,
-              border: '1px solid', borderColor: color ? '#1a1a1a' : '#e0e0e0',
+              border: '1px solid', borderColor: color ? '#3B2314' : '#e0e0e0',
               borderRadius: 0.5, cursor: 'pointer',
-              bgcolor: color ? '#1a1a1a' : 'transparent',
+              bgcolor: color ? '#3B2314' : 'transparent',
               color: color ? '#fff' : '#777',
-              '&:hover': { borderColor: '#1a1a1a' },
+              '&:hover': { borderColor: '#3B2314' },
             }}
           >
             <Palette sx={{ fontSize: 12, flexShrink: 0 }} />

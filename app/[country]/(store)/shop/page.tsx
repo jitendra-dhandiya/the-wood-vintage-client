@@ -179,7 +179,7 @@ export default function ShopPage() {
                 startIcon={<TuneOutlined />}
                 onClick={() => setFilterOpen(true)}
                 variant="outlined" size="small"
-                sx={{ borderColor: '#1a1a1a' }}
+                sx={{ borderColor: '#3B2314' }}
               >
                 Filter {activeFilterCount > 0 && `(${activeFilterCount})`}
               </Button>
@@ -198,30 +198,30 @@ export default function ShopPage() {
         {activeFilterCount > 0 && (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
             {selectedSizes.map(s => (
-              <Chip key={s} label={s} size="small" onDelete={() => toggleSize(s)} sx={{ bgcolor: '#1a1a1a', color: 'white' }} />
+              <Chip key={s} label={s} size="small" onDelete={() => toggleSize(s)} sx={{ bgcolor: '#3B2314', color: 'white' }} />
             ))}
             {selectedColors.map(c => (
-              <Chip key={c} label={c} size="small" onDelete={() => toggleColor(c)} sx={{ bgcolor: '#1a1a1a', color: 'white' }} />
+              <Chip key={c} label={c} size="small" onDelete={() => toggleColor(c)} sx={{ bgcolor: '#3B2314', color: 'white' }} />
             ))}
             {selectedMaterial && (
               <Chip
                 label={materials.find(m => m.slug === selectedMaterial)?.name || selectedMaterial}
                 size="small" onDelete={() => selectMaterial(selectedMaterial)}
-                sx={{ bgcolor: '#1a1a1a', color: 'white' }}
+                sx={{ bgcolor: '#3B2314', color: 'white' }}
               />
             )}
             {selectedStyle && (
               <Chip
                 label={styles.find(s => s.slug === selectedStyle)?.name || selectedStyle}
                 size="small" onDelete={() => selectStyle(selectedStyle)}
-                sx={{ bgcolor: '#1a1a1a', color: 'white' }}
+                sx={{ bgcolor: '#3B2314', color: 'white' }}
               />
             )}
             {selectedRoom && (
               <Chip
                 label={rooms.find(r => r.slug === selectedRoom)?.name || selectedRoom}
                 size="small" onDelete={() => selectRoom(selectedRoom)}
-                sx={{ bgcolor: '#1a1a1a', color: 'white' }}
+                sx={{ bgcolor: '#3B2314', color: 'white' }}
               />
             )}
           </Box>
@@ -283,7 +283,7 @@ export default function ShopPage() {
                       count={Math.ceil(total / limit)}
                       page={page}
                       onChange={(_, v) => { setPage(v); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                      sx={{ '& .MuiPaginationItem-root.Mui-selected': { bgcolor: '#1a1a1a', color: 'white' } }}
+                      sx={{ '& .MuiPaginationItem-root.Mui-selected': { bgcolor: '#3B2314', color: 'white' } }}
                     />
                   </Box>
                 )}
@@ -307,7 +307,7 @@ export default function ShopPage() {
           <FilterPanel {...filterProps} />
 
           <Box sx={{ p: 2 }}>
-            <Button fullWidth variant="contained" sx={{ bgcolor: '#1a1a1a' }}
+            <Button fullWidth variant="contained" sx={{ bgcolor: '#3B2314' }}
               onClick={() => setFilterOpen(false)}>
               Apply Filters
             </Button>

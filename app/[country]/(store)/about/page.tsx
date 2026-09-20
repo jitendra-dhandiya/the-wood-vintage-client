@@ -4,43 +4,43 @@ import { Favorite, VerifiedUser, LocalShipping, SupportAgent } from '@mui/icons-
 import { withCountry } from '../../../../lib/withCountry';
 
 export const metadata: Metadata = {
-  title: 'About Us | Unique Dressup',
-  description: 'Discover the story behind Unique Dressup — bringing trendy, affordable fashion to every wardrobe across India.',
+  title: 'About Us | The Wood Vintage',
+  description: 'Discover the story behind The Wood Vintage — handcrafted wooden furniture and home décor, made by skilled artisans from responsibly sourced wood.',
 };
 
 const values = [
   {
-    icon: <Favorite sx={{ fontSize: 32, color: '#c9a84c' }} />,
-    title: 'Fashion for Everyone',
-    desc: 'We believe great style shouldn\'t cost a fortune. Every collection is curated to deliver trends that are accessible to all.',
+    icon: <Favorite sx={{ fontSize: 32, color: '#A0693A' }} />,
+    title: 'Made by Hand, Made to Last',
+    desc: 'Every piece is shaped, joined and finished by skilled artisans, so no two are exactly alike and each is built to be used for decades.',
   },
   {
-    icon: <VerifiedUser sx={{ fontSize: 32, color: '#c9a84c' }} />,
-    title: 'Quality Assurance',
-    desc: 'Every product goes through quality checks before it reaches you. We source from trusted manufacturers with strict standards.',
+    icon: <VerifiedUser sx={{ fontSize: 32, color: '#A0693A' }} />,
+    title: 'Responsibly Sourced Wood',
+    desc: 'We work with solid sheesham, mango and teak from managed sources, seasoned properly before it is worked, and checked at every stage before it ships.',
   },
   {
-    icon: <LocalShipping sx={{ fontSize: 32, color: '#c9a84c' }} />,
-    title: 'Pan-India Delivery',
-    desc: 'We ship to thousands of pin codes across India with multiple shipping options to suit your timeline and budget.',
+    icon: <LocalShipping sx={{ fontSize: 32, color: '#A0693A' }} />,
+    title: 'Careful Delivery',
+    desc: 'Furniture is packed in protective, reinforced packaging and shipped across India, with tracking from dispatch to your door.',
   },
   {
-    icon: <SupportAgent sx={{ fontSize: 32, color: '#c9a84c' }} />,
-    title: 'Customer First',
-    desc: 'Our support team is available Monday–Saturday to help with orders, returns, and anything else you need.',
+    icon: <SupportAgent sx={{ fontSize: 32, color: '#A0693A' }} />,
+    title: 'Support You Can Reach',
+    desc: 'Our support team is available Monday–Saturday to help with orders, care advice, damage claims and anything else you need.',
   },
 ];
 
 export default async function AboutPage({ params }: { params: Promise<{ country: string }> }) {
   const { country } = await params;
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#FFFCF5' }}>
       {/* Hero */}
-      <Box sx={{ bgcolor: '#1a1a1a', py: { xs: 8, md: 12 }, textAlign: 'center' }}>
+      <Box sx={{ bgcolor: '#3B2314', py: { xs: 8, md: 12 }, textAlign: 'center' }}>
         <Container maxWidth="md">
           <Typography
             variant="overline"
-            sx={{ color: '#c9a84c', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
+            sx={{ color: '#D9A66E', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
           >
             Our Story
           </Typography>
@@ -48,10 +48,10 @@ export default async function AboutPage({ params }: { params: Promise<{ country:
             variant="h2"
             sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, color: 'white', mb: 2 }}
           >
-            About Unique Dressup
+            About The Wood Vintage
           </Typography>
-          <Typography variant="body1" sx={{ color: '#aaa', lineHeight: 1.9, maxWidth: 600, mx: 'auto' }}>
-            Trendy, affordable fashion for every occasion — curated with love from India.
+          <Typography variant="body1" sx={{ color: 'rgba(255,252,245,0.78)', lineHeight: 1.9, maxWidth: 600, mx: 'auto' }}>
+            Handcrafted wooden furniture and décor, made in India by artisans who take their time.
           </Typography>
         </Container>
       </Box>
@@ -62,23 +62,22 @@ export default async function AboutPage({ params }: { params: Promise<{ country:
           <Grid item xs={12}>
             <Typography
               variant="h4"
-              sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, color: '#1a1a1a', mb: 2.5 }}
+              sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, color: '#3B2314', mb: 2.5 }}
             >
               Who We Are
             </Typography>
             <Typography variant="body1" sx={{ color: '#555', lineHeight: 1.9, mb: 2 }}>
-              Unique Dressup is an Indian fashion brand dedicated to making contemporary style accessible to everyone.
-              We launched with a simple belief: that looking good should never mean compromising your budget.
+              The Wood Vintage is a handicraft brand dedicated to bringing honest, well-made wooden furniture into everyday homes.
+              We began with a simple belief: a piece of furniture should feel good to touch, age gracefully and outlast trends.
             </Typography>
             <Typography variant="body1" sx={{ color: '#555', lineHeight: 1.9, mb: 2 }}>
-              From everyday casuals to festive occasion wear, our collections are carefully curated by our in-house
-              fashion team to reflect the latest trends while staying true to the diverse tastes across India.
-              Whether you're dressing for a college day, an office meeting, or a wedding celebration, we have
-              something that fits the moment.
+              Our dining tables, chairs, storage pieces and décor are made in partnership with artisan workshops that
+              have shaped wood for generations. Each piece is hand-finished, so you will see the grain, the joinery
+              and the small variations that mark real craftsmanship rather than factory uniformity.
             </Typography>
             <Typography variant="body1" sx={{ color: '#555', lineHeight: 1.9 }}>
-              We're proud to serve customers across thousands of cities and towns in India, offering a seamless
-              online shopping experience with secure payments, fast delivery, and a hassle-free return process.
+              We deliver across India with secure payments, transparent pricing and clear care guidance, so your furniture
+              looks its best for years. If something is not right on arrival, we will work with you to fix it.
             </Typography>
           </Grid>
         </Grid>
@@ -90,13 +89,13 @@ export default async function AboutPage({ params }: { params: Promise<{ country:
           <Box sx={{ textAlign: 'center', mb: 6 }}>
             <Typography
               variant="overline"
-              sx={{ color: '#c9a84c', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
+              sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
             >
               Our Values
             </Typography>
             <Typography
               variant="h4"
-              sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, color: '#1a1a1a' }}
+              sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, color: '#3B2314' }}
             >
               What Drives Us
             </Typography>
@@ -107,10 +106,10 @@ export default async function AboutPage({ params }: { params: Promise<{ country:
                 <Box sx={{
                   border: '1px solid', borderColor: 'divider', borderRadius: 2,
                   p: 3.5, height: '100%',
-                  '&:hover': { borderColor: '#c9a84c', transition: 'border-color 0.2s' },
+                  '&:hover': { borderColor: '#A0693A', transition: 'border-color 0.2s' },
                 }}>
                   <Box sx={{ mb: 2 }}>{v.icon}</Box>
-                  <Typography variant="subtitle1" fontWeight={700} sx={{ color: '#1a1a1a', mb: 1 }}>
+                  <Typography variant="subtitle1" fontWeight={700} sx={{ color: '#3B2314', mb: 1 }}>
                     {v.title}
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#666', lineHeight: 1.8 }}>
@@ -124,30 +123,30 @@ export default async function AboutPage({ params }: { params: Promise<{ country:
       </Box>
 
       {/* CTA */}
-      <Box sx={{ bgcolor: '#1a1a1a', py: { xs: 7, md: 9 }, textAlign: 'center' }}>
+      <Box sx={{ bgcolor: '#3B2314', py: { xs: 7, md: 9 }, textAlign: 'center' }}>
         <Container maxWidth="sm">
           <Typography
             variant="h4"
             sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, color: 'white', mb: 2 }}
           >
-            Experience Fashion Your Way
+            Bring Home Something Made by Hand
           </Typography>
-          <Typography variant="body1" sx={{ color: '#aaa', mb: 4, lineHeight: 1.8 }}>
-            Shop the latest collections and discover styles that define you.
+          <Typography variant="body1" sx={{ color: 'rgba(255,252,245,0.78)', mb: 4, lineHeight: 1.8 }}>
+            Explore furniture and décor crafted to be lived with and passed on.
           </Typography>
           <Box
             component="a"
             href={withCountry('/shop', country)}
             sx={{
-              display: 'inline-block', bgcolor: '#c9a84c', color: 'white',
+              display: 'inline-block', bgcolor: '#A0693A', color: 'white',
               px: 4, py: 1.5, borderRadius: 1, textDecoration: 'none',
               fontWeight: 700, fontSize: '0.85rem', letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              '&:hover': { bgcolor: '#a07c20' },
+              '&:hover': { bgcolor: '#7E5029' },
               transition: 'background-color 0.2s',
             }}
           >
-            Shop Now
+            Shop the Collection
           </Box>
         </Container>
       </Box>

@@ -78,7 +78,7 @@ export default function AdminDashboard() {
           <StatCard
             title="Total Products"
             value={loading ? '' : data?.products || 0}
-            icon={<Inventory2 />} color="#c9a84c" loading={loading}
+            icon={<Inventory2 />} color="#A0693A" loading={loading}
           />
         </Grid>
       </Grid>

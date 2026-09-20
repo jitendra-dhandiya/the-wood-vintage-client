@@ -113,7 +113,7 @@ export default function ProfilePage() {
                     component="label" size="small"
                     sx={{
                       position: 'absolute', bottom: 0, right: 0,
-                      bgcolor: '#1a1a1a', color: '#fff', width: 26, height: 26,
+                      bgcolor: '#3B2314', color: '#fff', width: 26, height: 26,
                       '&:hover': { bgcolor: '#333' },
                     }}>
                     <CameraAlt sx={{ fontSize: 14 }} />
@@ -146,7 +146,7 @@ export default function ProfilePage() {
                     <TextField label="Email" size="small" fullWidth disabled value={user.email} />
                   </Grid>
                 </Grid>
-                <Button type="submit" variant="contained" sx={{ mt: 2.5, bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+                <Button type="submit" variant="contained" sx={{ mt: 2.5, bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
                   disabled={profileFormik.isSubmitting}>
                   Save Changes
                 </Button>
@@ -177,7 +177,7 @@ export default function ProfilePage() {
                       helperText={passwordFormik.touched.confirmPassword && passwordFormik.errors.confirmPassword} />
                   </Grid>
                 </Grid>
-                <Button type="submit" variant="outlined" sx={{ mt: 2.5, borderColor: '#1a1a1a', color: '#1a1a1a' }}
+                <Button type="submit" variant="outlined" sx={{ mt: 2.5, borderColor: '#3B2314', color: '#3B2314' }}
                   disabled={passwordFormik.isSubmitting}>
                   Update Password
                 </Button>

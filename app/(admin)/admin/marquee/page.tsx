@@ -39,10 +39,10 @@ const SEPARATOR_OPTIONS = [
 ];
 
 const VARIANT_OPTIONS = [
-  { value: 'dark',   label: 'Dark',   bg: '#1a1a1a', text: '#ffffff', accent: '#c9a84c' },
-  { value: 'light',  label: 'Light',  bg: '#f5f5f5', text: '#1a1a1a', accent: '#c9a84c' },
-  { value: 'gold',   label: 'Gold',   bg: '#c9a84c', text: '#1a1a1a', accent: '#1a1a1a' },
-  { value: 'accent', label: 'Accent', bg: '#0d0d0d', text: '#c9a84c', accent: '#ffffff' },
+  { value: 'dark',   label: 'Dark',   bg: '#3B2314', text: '#ffffff', accent: '#A0693A' },
+  { value: 'light',  label: 'Light',  bg: '#f5f5f5', text: '#3B2314', accent: '#A0693A' },
+  { value: 'gold',   label: 'Gold',   bg: '#A0693A', text: '#3B2314', accent: '#3B2314' },
+  { value: 'accent', label: 'Accent', bg: '#2A190E', text: '#A0693A', accent: '#ffffff' },
 ];
 
 const FONT_SIZE_OPTIONS = [
@@ -228,10 +228,10 @@ export default function MarqueeAdminPage() {
       <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <Box sx={{
-            bgcolor: '#1a1a1a', borderRadius: '10px', p: 1,
+            bgcolor: '#3B2314', borderRadius: '10px', p: 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <Campaign sx={{ color: '#c9a84c', fontSize: 22 }} />
+            <Campaign sx={{ color: '#A0693A', fontSize: 22 }} />
           </Box>
           <Box>
             <Typography variant="h5" fontWeight={800}>Marquee / Ticker</Typography>
@@ -262,7 +262,7 @@ export default function MarqueeAdminPage() {
             startIcon={saving ? <CircularProgress size={16} sx={{ color: 'white' }} /> : <Save />}
             onClick={save}
             disabled={saving}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700, borderRadius: 2, px: 3 }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700, borderRadius: 2, px: 3 }}
           >
             {saving ? 'Saving…' : 'Save Changes'}
           </Button>
@@ -273,7 +273,7 @@ export default function MarqueeAdminPage() {
       <Card elevation={0} sx={{ border: '1px solid #e8e8e8', borderRadius: 2, mb: 3, overflow: 'visible' }}>
         <CardContent sx={{ p: 2.5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-            <Preview sx={{ fontSize: 18, color: '#c9a84c' }} />
+            <Preview sx={{ fontSize: 18, color: '#A0693A' }} />
             <Typography variant="caption" fontWeight={800} sx={{ letterSpacing: '0.1em', color: '#555' }}>
               LIVE PREVIEW
             </Typography>
@@ -290,19 +290,19 @@ export default function MarqueeAdminPage() {
           <CardContent sx={{ p: 2.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Article sx={{ fontSize: 18, color: '#c9a84c' }} />
+                <Article sx={{ fontSize: 18, color: '#A0693A' }} />
                 <Typography variant="subtitle2" fontWeight={800}>
                   MESSAGES
                 </Typography>
-                <Chip label={config.items.length} size="small" sx={{ bgcolor: '#1a1a1a', color: 'white', fontSize: '0.65rem', height: 20 }} />
+                <Chip label={config.items.length} size="small" sx={{ bgcolor: '#3B2314', color: 'white', fontSize: '0.65rem', height: 20 }} />
               </Box>
               <Button
                 size="small"
                 variant="outlined"
                 startIcon={<AddCircleOutline sx={{ fontSize: 16 }} />}
                 onClick={addItem}
-                sx={{ fontSize: '0.75rem', fontWeight: 700, borderColor: '#1a1a1a', color: '#1a1a1a',
-                  '&:hover': { bgcolor: '#1a1a1a', color: 'white' }, borderRadius: 1.5 }}
+                sx={{ fontSize: '0.75rem', fontWeight: 700, borderColor: '#3B2314', color: '#3B2314',
+                  '&:hover': { bgcolor: '#3B2314', color: 'white' }, borderRadius: 1.5 }}
               >
                 Add Message
               </Button>
@@ -315,9 +315,9 @@ export default function MarqueeAdminPage() {
                   elevation={0}
                   sx={{
                     border: '1.5px solid',
-                    borderColor: dragIdx === i ? '#c9a84c' : '#f0f0f0',
+                    borderColor: dragIdx === i ? '#A0693A' : '#f0f0f0',
                     borderRadius: 2, p: 1.75,
-                    bgcolor: '#fafafa',
+                    bgcolor: '#FFFCF5',
                     transition: 'border-color 0.15s',
                   }}
                 >
@@ -328,13 +328,13 @@ export default function MarqueeAdminPage() {
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
                         <Tooltip title="Move up">
                           <IconButton size="small" onClick={() => moveItem(i, i - 1)} disabled={i === 0}
-                            sx={{ p: 0.25, color: '#aaa', '&:not(:disabled):hover': { color: '#1a1a1a' } }}>
+                            sx={{ p: 0.25, color: '#aaa', '&:not(:disabled):hover': { color: '#3B2314' } }}>
                             <Box sx={{ fontSize: 12, lineHeight: 1 }}>▲</Box>
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Move down">
                           <IconButton size="small" onClick={() => moveItem(i, i + 1)} disabled={i === config.items.length - 1}
-                            sx={{ p: 0.25, color: '#aaa', '&:not(:disabled):hover': { color: '#1a1a1a' } }}>
+                            sx={{ p: 0.25, color: '#aaa', '&:not(:disabled):hover': { color: '#3B2314' } }}>
                             <Box sx={{ fontSize: 12, lineHeight: 1 }}>▼</Box>
                           </IconButton>
                         </Tooltip>
@@ -343,7 +343,7 @@ export default function MarqueeAdminPage() {
 
                     {/* Item number */}
                     <Box sx={{
-                      width: 24, height: 24, borderRadius: '50%', bgcolor: '#1a1a1a',
+                      width: 24, height: 24, borderRadius: '50%', bgcolor: '#3B2314',
                       color: 'white', fontSize: '0.65rem', fontWeight: 800,
                       display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, mt: 0.5,
                     }}>
@@ -405,7 +405,7 @@ export default function MarqueeAdminPage() {
               startIcon={<AddCircleOutline />}
               onClick={addItem}
               sx={{ mt: 2, borderStyle: 'dashed', borderColor: '#ddd', color: '#888', fontWeight: 600,
-                '&:hover': { borderColor: '#1a1a1a', color: '#1a1a1a', borderStyle: 'dashed' } }}
+                '&:hover': { borderColor: '#3B2314', color: '#3B2314', borderStyle: 'dashed' } }}
             >
               Add Message
             </Button>
@@ -419,7 +419,7 @@ export default function MarqueeAdminPage() {
           <Card elevation={0} sx={{ border: '1px solid #e8e8e8', borderRadius: 2 }}>
             <CardContent sx={{ p: 2.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Palette sx={{ fontSize: 18, color: '#c9a84c' }} />
+                <Palette sx={{ fontSize: 18, color: '#A0693A' }} />
                 <Typography variant="subtitle2" fontWeight={800}>COLOUR THEME</Typography>
               </Box>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
@@ -460,8 +460,8 @@ export default function MarqueeAdminPage() {
                     sx={{
                       px: 1.5, py: 0.6, borderRadius: 1, cursor: 'pointer', flex: 1, textAlign: 'center',
                       border: '1.5px solid',
-                      borderColor: config.separatorStyle === s.value ? '#1a1a1a' : '#e0e0e0',
-                      bgcolor: config.separatorStyle === s.value ? '#1a1a1a' : 'white',
+                      borderColor: config.separatorStyle === s.value ? '#3B2314' : '#e0e0e0',
+                      bgcolor: config.separatorStyle === s.value ? '#3B2314' : 'white',
                       color: config.separatorStyle === s.value ? 'white' : '#555',
                       fontSize: '0.72rem', fontWeight: 600, userSelect: 'none',
                       transition: 'all 0.15s',
@@ -478,7 +478,7 @@ export default function MarqueeAdminPage() {
           <Card elevation={0} sx={{ border: '1px solid #e8e8e8', borderRadius: 2 }}>
             <CardContent sx={{ p: 2.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Speed sx={{ fontSize: 18, color: '#c9a84c' }} />
+                <Speed sx={{ fontSize: 18, color: '#A0693A' }} />
                 <Typography variant="subtitle2" fontWeight={800}>SPEED & SIZE</Typography>
               </Box>
 
@@ -500,7 +500,7 @@ export default function MarqueeAdminPage() {
                     { value: 35, label: 'Normal' },
                     { value: 70, label: 'Slow' },
                   ]}
-                  sx={{ color: '#1a1a1a', '& .MuiSlider-markLabel': { fontSize: '0.65rem' } }}
+                  sx={{ color: '#3B2314', '& .MuiSlider-markLabel': { fontSize: '0.65rem' } }}
                 />
               </Box>
 
@@ -517,8 +517,8 @@ export default function MarqueeAdminPage() {
                     sx={{
                       flex: 1, textAlign: 'center', py: 0.75, borderRadius: 1, cursor: 'pointer',
                       border: '1.5px solid',
-                      borderColor: config.fontSize === f.value ? '#1a1a1a' : '#e0e0e0',
-                      bgcolor: config.fontSize === f.value ? '#1a1a1a' : 'white',
+                      borderColor: config.fontSize === f.value ? '#3B2314' : '#e0e0e0',
+                      bgcolor: config.fontSize === f.value ? '#3B2314' : 'white',
                       color: config.fontSize === f.value ? 'white' : '#555',
                       fontSize: '0.75rem', fontWeight: 700, userSelect: 'none', transition: 'all 0.15s',
                     }}
@@ -579,7 +579,7 @@ export default function MarqueeAdminPage() {
             onClick={save}
             disabled={saving}
             sx={{
-              bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' },
+              bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' },
               fontWeight: 800, fontSize: '0.9rem', py: 1.5, borderRadius: 2,
               letterSpacing: '0.04em',
             }}

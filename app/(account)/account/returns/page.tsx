@@ -13,8 +13,8 @@ import { formatDate, formatPrice } from '../../../../utils/format';
 import { useCountry } from '../../../../contexts/CountryContext';
 import { withCountry } from '../../../../lib/withCountry';
 
-const INSTAGRAM_HANDLE = '@uniquedressup.inn';
-const INSTAGRAM_URL = 'https://www.instagram.com/uniquedressup.inn';
+const INSTAGRAM_HANDLE = '@thewoodvintage';
+const INSTAGRAM_URL = 'https://www.instagram.com/thewoodvintage';
 /** The published policy's window, measured from delivery. */
 const RETURN_WINDOW_HOURS = 36;
 
@@ -84,9 +84,9 @@ export default function ReturnsPage() {
     <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, mb: 3 }}>
       <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mb: 1.5 }}>
-          <Instagram sx={{ color: '#c9a84c' }} />
+          <Instagram sx={{ color: '#A0693A' }} />
           <Typography variant="subtitle1" fontWeight={800}>
-            How to raise a return or exchange
+            How to raise a return or replacement
           </Typography>
         </Stack>
 
@@ -117,7 +117,7 @@ export default function ReturnsPage() {
             variant="contained" component="a" href={INSTAGRAM_URL}
             target="_blank" rel="noopener noreferrer"
             startIcon={<Instagram />} endIcon={<OpenInNew sx={{ fontSize: 15 }} />}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
           >
             Message us on Instagram
           </Button>
@@ -133,7 +133,7 @@ export default function ReturnsPage() {
     return (
       <Box>
         <Typography variant="h5" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 800, mb: 3 }}>
-          Returns & Exchanges
+          Returns & Replacements
         </Typography>
         <Skeleton variant="rectangular" height={280} sx={{ borderRadius: 2, mb: 3 }} />
         <Skeleton variant="rectangular" height={140} sx={{ borderRadius: 2 }} />
@@ -144,7 +144,7 @@ export default function ReturnsPage() {
   return (
     <Box>
       <Typography variant="h5" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 800, mb: 3 }}>
-        Returns & Exchanges
+        Returns & Replacements
       </Typography>
 
       {error && (

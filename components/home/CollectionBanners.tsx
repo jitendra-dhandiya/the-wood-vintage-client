@@ -17,7 +17,7 @@ export default function CollectionBanners({ categories, title = 'Shop by Collect
   if (!categories.length) return null;
 
   return (
-    <Box sx={{ py: { xs: 6, md: 9 }, bgcolor: '#fafafa' }}>
+    <Box sx={{ py: { xs: 6, md: 9 }, bgcolor: '#FFFCF5' }}>
       {/* Section title */}
       <Container maxWidth="xl">
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
@@ -63,8 +63,8 @@ export default function CollectionBanners({ categories, title = 'Shop by Collect
                   cursor: 'pointer',
                   '&:hover .coll-img': { transform: 'scale(1.06)' },
                   '&:hover .coll-cta': {
-                    bgcolor: '#c9a84c',
-                    borderColor: '#c9a84c',
+                    bgcolor: '#A0693A',
+                    borderColor: '#A0693A',
                     color: '#111',
                   },
                 }}
@@ -94,7 +94,7 @@ export default function CollectionBanners({ categories, title = 'Shop by Collect
                   <Typography sx={{
                     fontSize: { xs: '1.05rem', md: '1.2rem' },
                     fontWeight: 900,
-                    color: '#c9a84c',
+                    color: '#A0693A',
                     textTransform: 'uppercase',
                     letterSpacing: '0.03em',
                     lineHeight: 1.15,

@@ -110,7 +110,7 @@ export default function CouponsPage() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700 }}>Coupons</Typography>
         <Button variant="contained" startIcon={<Add />} onClick={openCreate}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
           Add Coupon
         </Button>
       </Box>
@@ -212,7 +212,7 @@ export default function CouponsPage() {
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={closeDialog}>Cancel</Button>
             <Button type="submit" variant="contained" disabled={formik.isSubmitting}
-              sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+              sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
               {editCoupon ? 'Save' : 'Create'}
             </Button>
           </DialogActions>

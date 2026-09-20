@@ -252,13 +252,13 @@ export default function ImageCropperProvider({ children }: { children: React.Rea
         fullWidth
       >
         <DialogTitle sx={{ fontWeight: 800, display: 'flex', alignItems: 'center', gap: 1.25, borderBottom: '1px solid #f0f0f0' }}>
-          <CropIcon sx={{ color: '#c9a84c' }} />
+          <CropIcon sx={{ color: '#A0693A' }} />
           Crop image
           {pending && (
             <Chip
               label={pending.preset.label}
               size="small"
-              sx={{ fontWeight: 700, fontSize: '0.68rem', bgcolor: '#f8f4ef', color: '#8a6d1f' }}
+              sx={{ fontWeight: 700, fontSize: '0.68rem', bgcolor: '#F6EEDF', color: '#8a6d1f' }}
             />
           )}
         </DialogTitle>
@@ -278,10 +278,10 @@ export default function ImageCropperProvider({ children }: { children: React.Rea
                     onClick={() => setShape(s.key)}
                     sx={{
                       fontWeight: 700, fontSize: '0.68rem', cursor: 'pointer',
-                      bgcolor: shape === s.key ? '#1a1a1a' : 'transparent',
+                      bgcolor: shape === s.key ? '#3B2314' : 'transparent',
                       color: shape === s.key ? '#fff' : '#555',
-                      border: '1px solid', borderColor: shape === s.key ? '#1a1a1a' : '#ddd',
-                      '&:hover': { bgcolor: shape === s.key ? '#1a1a1a' : '#f5f5f5' },
+                      border: '1px solid', borderColor: shape === s.key ? '#3B2314' : '#ddd',
+                      '&:hover': { bgcolor: shape === s.key ? '#3B2314' : '#f5f5f5' },
                     }}
                   />
                 ))}
@@ -313,7 +313,7 @@ export default function ImageCropperProvider({ children }: { children: React.Rea
                 )}
                 {!bitmap && !loadError && (
                   <Box sx={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CircularProgress size={26} sx={{ color: '#c9a84c' }} />
+                    <CircularProgress size={26} sx={{ color: '#A0693A' }} />
                   </Box>
                 )}
               </Box>
@@ -327,7 +327,7 @@ export default function ImageCropperProvider({ children }: { children: React.Rea
                   max={4}
                   step={0.01}
                   onChange={(_, v) => setZoom(v as number)}
-                  sx={{ color: '#c9a84c', flex: 1 }}
+                  sx={{ color: '#A0693A', flex: 1 }}
                   aria-label="Zoom"
                 />
                 <ZoomIn sx={{ color: '#999', fontSize: 20 }} />
@@ -396,7 +396,7 @@ export default function ImageCropperProvider({ children }: { children: React.Rea
             onClick={apply}
             variant="contained"
             disabled={busy || !area || !bitmap || cropTooSmall || sourceTooSmall}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700, minWidth: 120 }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700, minWidth: 120 }}
           >
             {busy ? <CircularProgress size={18} sx={{ color: '#fff' }} /> : 'Crop & use'}
           </Button>

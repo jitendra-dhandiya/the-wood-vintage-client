@@ -30,7 +30,7 @@ export default function StoreNotFound() {
       <Typography
         sx={{
           fontFamily: 'var(--font-playfair)', fontWeight: 700, lineHeight: 1,
-          fontSize: { xs: '4.5rem', md: '6rem' }, color: '#1a1a1a',
+          fontSize: { xs: '4.5rem', md: '6rem' }, color: '#3B2314',
         }}
       >
         404
@@ -39,7 +39,7 @@ export default function StoreNotFound() {
       <Typography
         sx={{
           fontFamily: 'var(--font-playfair)', fontWeight: 600,
-          fontSize: { xs: '1.4rem', md: '1.8rem' }, mt: 1, mb: 1.5, color: '#1a1a1a',
+          fontSize: { xs: '1.4rem', md: '1.8rem' }, mt: 1, mb: 1.5, color: '#3B2314',
         }}
       >
         We couldn&apos;t find that page
@@ -58,7 +58,7 @@ export default function StoreNotFound() {
         <Button
           component={Link} href={withCountry('/shop', country)} variant="contained" size="large"
           sx={{
-            bgcolor: '#1a1a1a', px: 4, py: 1.5, fontSize: '0.78rem',
+            bgcolor: '#3B2314', px: 4, py: 1.5, fontSize: '0.78rem',
             letterSpacing: '0.12em', fontWeight: 700,
             '&:hover': { bgcolor: '#333' },
           }}
@@ -68,9 +68,9 @@ export default function StoreNotFound() {
         <Button
           component={Link} href={withCountry('/', country)} variant="outlined" size="large"
           sx={{
-            borderColor: '#ddd', color: '#1a1a1a', px: 4, py: 1.5,
+            borderColor: '#ddd', color: '#3B2314', px: 4, py: 1.5,
             fontSize: '0.78rem', letterSpacing: '0.12em', fontWeight: 700,
-            '&:hover': { borderColor: '#1a1a1a', bgcolor: 'transparent' },
+            '&:hover': { borderColor: '#3B2314', bgcolor: 'transparent' },
           }}
         >
           Home

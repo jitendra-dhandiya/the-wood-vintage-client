@@ -3,8 +3,8 @@ import BlogListClient from '../../../../../components/blog/BlogListClient';
 import { API_URL, SITE_NAME } from '../../../../../constants';
 
 export const metadata: Metadata = {
-  title: 'Fashion Blog — Unique Dressup',
-  description: 'Style guides, fashion tips, trend reports and behind-the-scenes stories from Unique Dressup.',
+  title: 'Journal — The Wood Vintage',
+  description: 'Craft stories, furniture care guides, styling ideas and behind-the-scenes looks at the artisans of The Wood Vintage.',
 };
 
 /**

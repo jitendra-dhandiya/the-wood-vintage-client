@@ -71,7 +71,7 @@ function AdminLoginInner() {
 
         <Box sx={{ bgcolor: '#fff', borderRadius: 2, p: { xs: 3, sm: 4 } }}>
           <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mb: 0.5 }}>
-            <AdminPanelSettings sx={{ color: '#c9a84c' }} />
+            <AdminPanelSettings sx={{ color: '#A0693A' }} />
             <Typography variant="h5" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 800 }}>
               Staff sign in
             </Typography>
@@ -110,7 +110,7 @@ function AdminLoginInner() {
               />
               <Button
                 type="submit" fullWidth size="large" variant="contained" disabled={submitting}
-                sx={{ py: 1.4, bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+                sx={{ py: 1.4, bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
               >
                 {submitting ? <CircularProgress size={22} sx={{ color: '#fff' }} /> : 'Sign in'}
               </Button>
@@ -118,7 +118,7 @@ function AdminLoginInner() {
           </form>
 
           <Alert severity="info" sx={{ mt: 3, py: 0.5 }}>
-            Not staff? <Link href="/login" style={{ fontWeight: 700, color: '#1a1a1a' }}>Sign in here</Link> — no password needed.
+            Not staff? <Link href="/login" style={{ fontWeight: 700, color: '#3B2314' }}>Sign in here</Link> — no password needed.
           </Alert>
         </Box>
       </Container>

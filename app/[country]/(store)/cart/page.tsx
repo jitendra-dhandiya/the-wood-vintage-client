@@ -62,7 +62,7 @@ export default function CartPage() {
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
           Looks like you haven't added anything to your bag yet
         </Typography>
-        <Button variant="contained" component={Link} href={withCountry('/shop', country)} sx={{ bgcolor: '#1a1a1a', py: 1.5, px: 5 }}>
+        <Button variant="contained" component={Link} href={withCountry('/shop', country)} sx={{ bgcolor: '#3B2314', py: 1.5, px: 5 }}>
           Start Shopping
         </Button>
       </Container>
@@ -94,7 +94,7 @@ export default function CartPage() {
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <Box>
                           <Typography component={Link} href={withCountry(`/product/${item.product?.slug}`, country)}
-                            sx={{ fontWeight: 700, textDecoration: 'none', color: 'inherit', '&:hover': { color: '#c9a84c' } }}>
+                            sx={{ fontWeight: 700, textDecoration: 'none', color: 'inherit', '&:hover': { color: '#A0693A' } }}>
                             {item.product?.name}
                           </Typography>
                           {item.variant && (
@@ -160,7 +160,7 @@ export default function CartPage() {
                       onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                       sx={{ flex: 1 }}
                     />
-                    <Button variant="outlined" onClick={applyCoupon} disabled={couponLoading} sx={{ borderColor: '#1a1a1a', color: '#1a1a1a', px: 2 }}>
+                    <Button variant="outlined" onClick={applyCoupon} disabled={couponLoading} sx={{ borderColor: '#3B2314', color: '#3B2314', px: 2 }}>
                       Apply
                     </Button>
                   </Box>
@@ -197,7 +197,7 @@ export default function CartPage() {
                 fullWidth variant="contained" size="large"
                 component={Link}
                 href={withCountry(`/checkout?coupon=${encodeURIComponent(appliedCoupon || '')}&discount=${couponDiscount}`, country)}
-                sx={{ bgcolor: '#1a1a1a', py: 1.75, letterSpacing: '0.1em', fontWeight: 700 }}
+                sx={{ bgcolor: '#3B2314', py: 1.75, letterSpacing: '0.1em', fontWeight: 700 }}
               >
                 Proceed to Checkout
               </Button>

@@ -2,15 +2,15 @@ import type { Metadata } from 'next';
 import { Box, Container, Typography, Divider } from '@mui/material';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Unique Dressup',
-  description: 'Learn how Unique Dressup collects, uses, and protects your personal information.',
+  title: 'Privacy Policy | The Wood Vintage',
+  description: 'Learn how The Wood Vintage collects, uses, and protects your personal information.',
 };
 
 const LAST_UPDATED = 'June 1, 2025';
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <Box sx={{ mb: 4 }}>
-    <Typography variant="h6" fontWeight={700} sx={{ mb: 1.5, color: '#1a1a1a' }}>
+    <Typography variant="h6" fontWeight={700} sx={{ mb: 1.5, color: '#3B2314' }}>
       {title}
     </Typography>
     {children}
@@ -31,13 +31,13 @@ const Li = ({ children }: { children: React.ReactNode }) => (
 
 export default function PrivacyPolicyPage() {
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#FFFCF5' }}>
       {/* Hero */}
-      <Box sx={{ bgcolor: '#1a1a1a', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
+      <Box sx={{ bgcolor: '#3B2314', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
         <Container maxWidth="md">
           <Typography
             variant="overline"
-            sx={{ color: '#c9a84c', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
+            sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
           >
             Legal
           </Typography>
@@ -58,10 +58,10 @@ export default function PrivacyPolicyPage() {
         <Box sx={{ bgcolor: 'white', borderRadius: 2, border: '1px solid', borderColor: 'divider', p: { xs: 3, md: 5 } }}>
 
           <P>
-            Welcome to Unique Dressup ("we", "our", or "us"). We are committed to protecting your personal
+            Welcome to The Wood Vintage ("we", "our", or "us"). We are committed to protecting your personal
             information and your right to privacy. This Privacy Policy explains how we collect, use, disclose,
             and safeguard your information when you visit our website{' '}
-            <strong>www.theuniquedressup.com</strong> and make purchases from us.
+            <strong>www.thewoodvintage.com</strong> and make purchases from us.
           </P>
           <P>
             Please read this policy carefully. If you disagree with its terms, please discontinue use of our site.
@@ -180,9 +180,9 @@ export default function PrivacyPolicyPage() {
               If you have questions, concerns, or requests regarding this Privacy Policy, please contact us:
             </P>
             <Box sx={{ bgcolor: '#f9f9f9', borderRadius: 1.5, p: 2.5, mt: 1 }}>
-              <Typography variant="body2" sx={{ color: '#444', fontWeight: 700, mb: 0.5 }}>Unique Dressup</Typography>
-              <Typography variant="body2" sx={{ color: '#444' }}>Email: support@theuniquedressup.com</Typography>
-              <Typography variant="body2" sx={{ color: '#444' }}>Website: www.theuniquedressup.com</Typography>
+              <Typography variant="body2" sx={{ color: '#444', fontWeight: 700, mb: 0.5 }}>The Wood Vintage</Typography>
+              <Typography variant="body2" sx={{ color: '#444' }}>Email: support@thewoodvintage.com</Typography>
+              <Typography variant="body2" sx={{ color: '#444' }}>Website: www.thewoodvintage.com</Typography>
             </Box>
           </Section>
 

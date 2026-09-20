@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const countries = await getEnabledCountries();
   const alt = buildCountryAlternates(`/collections/${col.slug}`, country, countries);
   return {
-    title: `${col.name} Collection — Unique Dressup`,
+    title: `${col.name} Collection — The Wood Vintage`,
     description: col.description,
     openGraph: { title: col.name, description: col.description, images: col.imageUrl ? [col.imageUrl] : [], url: alt.canonical },
     alternates: alt,

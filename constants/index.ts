@@ -1,4 +1,4 @@
-export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'Unique Dressup';
+export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'The Wood Vintage';
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 export const CURRENCY = process.env.NEXT_PUBLIC_DEFAULT_CURRENCY || 'INR';
@@ -10,8 +10,9 @@ export const GENDERS = [
   { value: 'UNISEX', label: 'Unisex' },
 ];
 
-export const PRODUCT_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'Free Size'];
-export const PRODUCT_COLORS = ['Black', 'White', 'Navy', 'Grey', 'Beige', 'Brown', 'Green', 'Blue', 'Red', 'Pink', 'Yellow', 'Orange', 'Purple'];
+// Furniture is not sold in apparel sizes; dimensions are product attributes.
+export const PRODUCT_SIZES: string[] = [];
+export const PRODUCT_COLORS = ['Natural', 'Honey', 'Walnut', 'Mahogany', 'Espresso', 'Whitewash', 'Black'];
 
 export const SORT_OPTIONS = [
   // Curated order: the admin's per-product display priority, highest first,
@@ -81,3 +82,10 @@ export const SHIPPING_CHARGE = 79;
 
 export const ITEMS_PER_PAGE = 20;
 export const ADMIN_ITEMS_PER_PAGE = 20;
+
+// Brand assets (public/). The horizontal lockup suits headers; the light
+// variants are for dark backgrounds.
+export const BRAND_LOGO = '/logo-horizontal.png';
+export const BRAND_LOGO_LIGHT = '/logo-horizontal-light.png';
+export const BRAND_LOGO_ASPECT = '1168 / 300';
+export const BRAND_TAGLINE = 'Handcrafted Wooden Furniture & Décor';

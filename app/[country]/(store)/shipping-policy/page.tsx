@@ -3,15 +3,15 @@ import { Box, Container, Typography, Divider, Grid, Chip } from '@mui/material';
 import { LocalShipping, FlashOn, AttachMoney } from '@mui/icons-material';
 
 export const metadata: Metadata = {
-  title: 'Shipping Policy | Unique Dressup',
-  description: 'Learn about our shipping methods, delivery timelines, and charges at Unique Dressup.',
+  title: 'Shipping Policy | The Wood Vintage',
+  description: 'Learn about our shipping methods, delivery timelines, and charges at The Wood Vintage.',
 };
 
 const LAST_UPDATED = 'June 1, 2025';
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <Box sx={{ mb: 4 }}>
-    <Typography variant="h6" fontWeight={700} sx={{ mb: 1.5, color: '#1a1a1a' }}>
+    <Typography variant="h6" fontWeight={700} sx={{ mb: 1.5, color: '#3B2314' }}>
       {title}
     </Typography>
     {children}
@@ -32,21 +32,21 @@ const Li = ({ children }: { children: React.ReactNode }) => (
 
 const shippingOptions = [
   {
-    icon: <LocalShipping sx={{ fontSize: 28, color: '#c9a84c' }} />,
+    icon: <LocalShipping sx={{ fontSize: 28, color: '#A0693A' }} />,
     name: 'Standard Delivery',
     charge: '₹79',
     days: '5–7 Business Days',
     desc: 'Reliable delivery at a great price',
   },
   {
-    icon: <AttachMoney sx={{ fontSize: 28, color: '#c9a84c' }} />,
+    icon: <AttachMoney sx={{ fontSize: 28, color: '#A0693A' }} />,
     name: 'Cash on Delivery',
     charge: '₹149',
     days: '5–7 Business Days',
     desc: 'Pay ₹149 online + product amount on delivery',
   },
   {
-    icon: <FlashOn sx={{ fontSize: 28, color: '#c9a84c' }} />,
+    icon: <FlashOn sx={{ fontSize: 28, color: '#A0693A' }} />,
     name: 'Express Delivery',
     charge: '₹249',
     days: '1–2 Business Days',
@@ -56,13 +56,13 @@ const shippingOptions = [
 
 export default function ShippingPolicyPage() {
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#FFFCF5' }}>
       {/* Hero */}
-      <Box sx={{ bgcolor: '#1a1a1a', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
+      <Box sx={{ bgcolor: '#3B2314', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
         <Container maxWidth="md">
           <Typography
             variant="overline"
-            sx={{ color: '#c9a84c', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
+            sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
           >
             Customer Support
           </Typography>
@@ -89,10 +89,10 @@ export default function ShippingPolicyPage() {
                   p: 3, textAlign: 'center', height: '100%',
                 }}>
                   <Box sx={{ mb: 1.5 }}>{opt.icon}</Box>
-                  <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#1a1a1a', mb: 0.5 }}>
+                  <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#3B2314', mb: 0.5 }}>
                     {opt.name}
                   </Typography>
-                  <Chip label={opt.charge} size="small" sx={{ bgcolor: '#1a1a1a', color: 'white', mb: 1 }} />
+                  <Chip label={opt.charge} size="small" sx={{ bgcolor: '#3B2314', color: 'white', mb: 1 }} />
                   <Typography variant="caption" sx={{ color: '#888', display: 'block', mb: 0.5 }}>
                     {opt.days}
                   </Typography>
@@ -181,7 +181,7 @@ export default function ShippingPolicyPage() {
             <P>
               We are not responsible for delays or failed deliveries caused by incorrect or incomplete
               addresses provided at checkout. Please double-check your shipping address before placing
-              an order. Contact us immediately at <strong>support@theuniquedressup.com</strong> if you
+              an order. Contact us immediately at <strong>support@thewoodvintage.com</strong> if you
               need to update your address after placing an order (before dispatch).
             </P>
           </Section>
@@ -202,8 +202,8 @@ export default function ShippingPolicyPage() {
           <Section title="9. Contact Us">
             <P>For shipping-related queries, please contact us:</P>
             <Box sx={{ bgcolor: '#f9f9f9', borderRadius: 1.5, p: 2.5, mt: 1 }}>
-              <Typography variant="body2" sx={{ color: '#444', fontWeight: 700, mb: 0.5 }}>Unique Dressup — Customer Support</Typography>
-              <Typography variant="body2" sx={{ color: '#444' }}>Email: support@theuniquedressup.com</Typography>
+              <Typography variant="body2" sx={{ color: '#444', fontWeight: 700, mb: 0.5 }}>The Wood Vintage — Customer Support</Typography>
+              <Typography variant="body2" sx={{ color: '#444' }}>Email: support@thewoodvintage.com</Typography>
               <Typography variant="body2" sx={{ color: '#444' }}>Support Hours: Monday–Saturday, 10 AM – 6 PM IST</Typography>
             </Box>
           </Section>

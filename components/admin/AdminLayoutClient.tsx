@@ -118,13 +118,11 @@ export default function AdminLayoutClient({ children }: Props) {
   const isActive = (href?: string) => href && pathname.startsWith(href);
 
   const DrawerContent = () => (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#0d0d0d' }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#2A190E' }}>
       {/* Logo */}
       <Box sx={{ p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="h5" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 600, color: 'white', letterSpacing: '0.1em' }}>
-          Unique Dressup
-        </Typography>
-        {/* <Typography variant="caption" sx={{ color: '#c9a84c', fontWeight: 600 }}>Admin</Typography> */}
+        <Box component="img" src="/logo-horizontal-light.png" alt="The Wood Vintage" sx={{ height: 34, width: 'auto', display: 'block' }} />
+        {/* <Typography variant="caption" sx={{ color: '#A0693A', fontWeight: 600 }}>Admin</Typography> */}
       </Box>
 
       <Divider sx={{ borderColor: 'rgba(255,255,255,0.08)' }} />
@@ -156,7 +154,7 @@ export default function AdminLayoutClient({ children }: Props) {
                         sx={{
                           pl: 6, py: 0.75, cursor: 'pointer', borderRadius: 1, mx: 1,
                           textDecoration: 'none',
-                          color: isActive(child.href) ? '#c9a84c' : 'rgba(255,255,255,0.55)',
+                          color: isActive(child.href) ? '#A0693A' : 'rgba(255,255,255,0.55)',
                           bgcolor: isActive(child.href) ? 'rgba(201,168,76,0.1)' : 'transparent',
                           '&:hover': { color: 'white', bgcolor: 'rgba(255,255,255,0.04)' },
                         }}
@@ -173,7 +171,7 @@ export default function AdminLayoutClient({ children }: Props) {
                   sx={{
                     px: 2.5, py: 1, borderRadius: 1, mx: 1, mb: 0.25,
                     textDecoration: 'none',
-                    color: isActive(item.href) ? '#c9a84c' : 'rgba(255,255,255,0.7)',
+                    color: isActive(item.href) ? '#A0693A' : 'rgba(255,255,255,0.7)',
                     bgcolor: isActive(item.href) ? 'rgba(201,168,76,0.1)' : 'transparent',
                     '&:hover': { bgcolor: 'rgba(255,255,255,0.06)', color: 'white' },
                   }}
@@ -190,7 +188,7 @@ export default function AdminLayoutClient({ children }: Props) {
       {/* User info */}
       <Divider sx={{ borderColor: 'rgba(255,255,255,0.08)' }} />
       <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <Avatar sx={{ width: 36, height: 36, bgcolor: '#c9a84c', fontSize: '0.8rem', fontWeight: 700 }}>
+        <Avatar sx={{ width: 36, height: 36, bgcolor: '#A0693A', fontSize: '0.8rem', fontWeight: 700 }}>
           {user?.firstName?.charAt(0)}
         </Avatar>
         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -240,7 +238,7 @@ export default function AdminLayoutClient({ children }: Props) {
                 <Box sx={{
                   display: 'flex', alignItems: 'center', gap: 1,
                   bgcolor: searchFocused ? 'white' : '#f5f5f7',
-                  border: '1px solid', borderColor: searchFocused ? '#1a1a1a' : 'transparent',
+                  border: '1px solid', borderColor: searchFocused ? '#3B2314' : 'transparent',
                   borderRadius: 2, px: 1.5, py: 0.5,
                   transition: 'all 0.2s',
                 }}>

@@ -266,7 +266,7 @@ export default function CategoriesPage() {
           </Typography>
         </Box>
         <Button variant="contained" startIcon={<Add />} onClick={openCreate}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, borderRadius: 1.5, fontWeight: 700, fontSize: '0.8rem' }}>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, borderRadius: 1.5, fontWeight: 700, fontSize: '0.8rem' }}>
           Add Category
         </Button>
       </Box>
@@ -315,7 +315,7 @@ export default function CategoriesPage() {
       {dirtyOrders.length > 0 && (
         <Box sx={{
           display: 'flex', alignItems: 'center', gap: 1.5, mb: 2, p: 1.5,
-          border: '1px solid #c9a84c', borderRadius: 2, bgcolor: '#fffdf5',
+          border: '1px solid #A0693A', borderRadius: 2, bgcolor: '#fffdf5',
         }}>
           <Typography variant="caption" sx={{ fontWeight: 700, color: '#7a6320', flex: 1 }}>
             {dirtyOrders.length} unsaved menu {dirtyOrders.length === 1 ? 'position' : 'positions'} — lower numbers show first in the Shop menu.
@@ -328,7 +328,7 @@ export default function CategoriesPage() {
             variant="contained"
             onClick={handleSaveOrder}
             disabled={savingOrder}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}
           >
             {savingOrder ? 'Saving…' : `Save order (${dirtyOrders.length})`}
           </Button>
@@ -525,8 +525,8 @@ export default function CategoriesPage() {
                   sx={{
                     height: 100, border: '1.5px dashed #d0d0d0', borderRadius: 1,
                     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                    gap: 0.5, cursor: 'pointer', bgcolor: '#fafafa',
-                    '&:hover': { borderColor: '#1a1a1a', bgcolor: '#f5f5f5' },
+                    gap: 0.5, cursor: 'pointer', bgcolor: '#FFFCF5',
+                    '&:hover': { borderColor: '#3B2314', bgcolor: '#f5f5f5' },
                     mb: 1,
                   }}
                 >
@@ -674,7 +674,7 @@ export default function CategoriesPage() {
           <DialogActions sx={{ p: 2, gap: 1 }}>
             <Button onClick={closeDialog}>Cancel</Button>
             <Button type="submit" variant="contained" disabled={formik.isSubmitting}
-              sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}>
+              sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}>
               {formik.isSubmitting ? 'Saving…' : editCat ? 'Save Changes' : 'Create Category'}
             </Button>
           </DialogActions>

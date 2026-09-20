@@ -230,7 +230,7 @@ export default function MenuLinksPage() {
           variant="contained"
           startIcon={<Add />}
           onClick={openAdd}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, borderRadius: 2, fontWeight: 700 }}
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, borderRadius: 2, fontWeight: 700 }}
         >
           Add Link
         </Button>
@@ -261,7 +261,7 @@ export default function MenuLinksPage() {
       {dirtyOrders.length > 0 && (
         <Box sx={{
           display: 'flex', alignItems: 'center', gap: 1.5, mb: 2, p: 1.5,
-          border: '1px solid #c9a84c', borderRadius: 2, bgcolor: '#fffdf5',
+          border: '1px solid #A0693A', borderRadius: 2, bgcolor: '#fffdf5',
         }}>
           <Typography variant="caption" sx={{ fontWeight: 700, color: '#7a6320', flex: 1 }}>
             {dirtyOrders.length} unsaved {dirtyOrders.length === 1 ? 'position' : 'positions'} — lower numbers show first.
@@ -269,7 +269,7 @@ export default function MenuLinksPage() {
           <Button size="small" onClick={() => setOrderEdits({})} sx={{ color: '#7a6320' }}>Discard</Button>
           <Button
             size="small" variant="contained" onClick={saveOrder} disabled={savingOrder}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}
           >
             {savingOrder ? 'Saving…' : `Save order (${dirtyOrders.length})`}
           </Button>
@@ -314,7 +314,7 @@ export default function MenuLinksPage() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.4, fontSize: '0.72rem', color: '#888', textDecoration: 'none', '&:hover': { color: '#1a1a1a' } }}
+                    sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.4, fontSize: '0.72rem', color: '#888', textDecoration: 'none', '&:hover': { color: '#3B2314' } }}
                   >
                     {link.url} <OpenInNew sx={{ fontSize: 11 }} />
                   </Box>
@@ -392,7 +392,7 @@ export default function MenuLinksPage() {
           <Button onClick={() => setDialog(false)} variant="outlined" sx={{ borderColor: '#ddd', color: '#555' }}>Cancel</Button>
           <Button
             onClick={save} variant="contained" disabled={saving}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700, minWidth: 110 }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700, minWidth: 110 }}
           >
             {saving ? 'Saving…' : editingId ? 'Save Changes' : 'Add Link'}
           </Button>

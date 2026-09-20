@@ -84,10 +84,10 @@ const SEPARATOR_OPTIONS = [
 ];
 
 const VARIANT_OPTIONS = [
-  { value: 'dark',   label: 'Dark', bg: '#1a1a1a', text: '#fff' },
-  { value: 'light',  label: 'Light', bg: '#f5f5f5', text: '#1a1a1a' },
-  { value: 'gold',   label: 'Gold', bg: '#c9a84c', text: '#1a1a1a' },
-  { value: 'accent', label: 'Accent', bg: '#0d0d0d', text: '#c9a84c' },
+  { value: 'dark',   label: 'Dark', bg: '#3B2314', text: '#fff' },
+  { value: 'light',  label: 'Light', bg: '#f5f5f5', text: '#3B2314' },
+  { value: 'gold',   label: 'Gold', bg: '#A0693A', text: '#3B2314' },
+  { value: 'accent', label: 'Accent', bg: '#2A190E', text: '#A0693A' },
 ];
 
 interface MarqueeItem { text: string; icon: string; link: string; }
@@ -143,7 +143,7 @@ function MarqueeEditor({ config, onChange }: MarqueeEditorProps) {
               {item.icon && <span>{item.icon}</span>}
               <span>{item.text}</span>
               {i < Math.min(2, items.length - 1) && sep !== 'none' && (
-                <Box component="span" sx={{ color: '#c9a84c', mx: 0.5 }}>
+                <Box component="span" sx={{ color: '#A0693A', mx: 0.5 }}>
                   {{ diamond: '◆', dot: '•', star: '★', slash: '/', line: '|' }[sep as 'diamond' | 'dot' | 'star' | 'slash' | 'line'] || '◆'}
                 </Box>
               )}
@@ -164,7 +164,7 @@ function MarqueeEditor({ config, onChange }: MarqueeEditorProps) {
             size="small"
             startIcon={<AddCircleOutline sx={{ fontSize: 16 }} />}
             onClick={addItem}
-            sx={{ fontSize: '0.72rem', color: '#1a1a1a', fontWeight: 700 }}
+            sx={{ fontSize: '0.72rem', color: '#3B2314', fontWeight: 700 }}
           >
             Add Message
           </Button>
@@ -178,7 +178,7 @@ function MarqueeEditor({ config, onChange }: MarqueeEditorProps) {
               gap: 1, alignItems: 'flex-start',
               p: 1.5, borderRadius: 1.5,
               border: '1px solid', borderColor: 'divider',
-              bgcolor: '#fafafa',
+              bgcolor: '#FFFCF5',
             }}>
               {/* Icon */}
               <TextField
@@ -273,8 +273,8 @@ function MarqueeEditor({ config, onChange }: MarqueeEditorProps) {
                   sx={{
                     px: 1.5, py: 0.5, borderRadius: 1, cursor: 'pointer',
                     border: '1px solid',
-                    borderColor: sep === s.value ? '#1a1a1a' : 'divider',
-                    bgcolor: sep === s.value ? '#1a1a1a' : 'white',
+                    borderColor: sep === s.value ? '#3B2314' : 'divider',
+                    bgcolor: sep === s.value ? '#3B2314' : 'white',
                     color: sep === s.value ? 'white' : 'text.secondary',
                     fontSize: '0.72rem', fontWeight: 600,
                     userSelect: 'none',
@@ -308,7 +308,7 @@ function MarqueeEditor({ config, onChange }: MarqueeEditorProps) {
                 ]}
                 onChange={(_, val) => update({ speed: val as number })}
                 sx={{
-                  color: '#1a1a1a',
+                  color: '#3B2314',
                   '& .MuiSlider-markLabel': { fontSize: '0.65rem' },
                 }}
               />
@@ -665,7 +665,7 @@ export default function HomepageBuilderPage() {
           variant="contained"
           startIcon={<Add />}
           onClick={() => setAddOpen(true)}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, borderRadius: 1.5, fontWeight: 700, fontSize: '0.8rem' }}
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, borderRadius: 1.5, fontWeight: 700, fontSize: '0.8rem' }}
         >
           Add Section
         </Button>
@@ -751,7 +751,7 @@ export default function HomepageBuilderPage() {
             variant="contained"
             onClick={handleAdd}
             disabled={!newType || adding}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
           >
             {adding ? 'Adding...' : 'Add Section'}
           </Button>
@@ -841,7 +841,7 @@ export default function HomepageBuilderPage() {
             variant="contained"
             onClick={saveConfig}
             disabled={saving}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700, px: 3 }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700, px: 3 }}
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </Button>

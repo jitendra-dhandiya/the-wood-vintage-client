@@ -103,7 +103,7 @@ export default function PasswordlessAuth({ onDone, dense = false }: Props) {
         <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
           <MarkEmailRead sx={{ fontSize: 20, color: 'secondary.main' }} />
           <Typography variant="body2" color="text.secondary">
-            Code sent to <strong style={{ color: '#1a1a1a' }}>{email}</strong>
+            Code sent to <strong style={{ color: '#3B2314' }}>{email}</strong>
           </Typography>
         </Stack>
 
@@ -127,7 +127,7 @@ export default function PasswordlessAuth({ onDone, dense = false }: Props) {
         <Button
           fullWidth size="large" variant="contained"
           onClick={() => verify(otp)} disabled={otp.length !== 6 || busy}
-          sx={{ py: 1.4, bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+          sx={{ py: 1.4, bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
         >
           {busy ? <CircularProgress size={22} sx={{ color: '#fff' }} /> : 'Continue'}
         </Button>
@@ -141,7 +141,7 @@ export default function PasswordlessAuth({ onDone, dense = false }: Props) {
             onClick={() => cooldown === 0 && send()}
             sx={{
               mt: 0.5, fontWeight: 700, fontSize: '0.85rem',
-              color: cooldown > 0 ? 'text.disabled' : '#1a1a1a',
+              color: cooldown > 0 ? 'text.disabled' : '#3B2314',
               cursor: cooldown > 0 ? 'default' : 'pointer',
             }}
           >
@@ -179,7 +179,7 @@ export default function PasswordlessAuth({ onDone, dense = false }: Props) {
 
       <Button
         fullWidth size="large" variant="contained" onClick={send} disabled={busy || !email.trim()}
-        sx={{ py: 1.4, bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+        sx={{ py: 1.4, bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
       >
         {busy ? <CircularProgress size={22} sx={{ color: '#fff' }} /> : 'Continue with email'}
       </Button>

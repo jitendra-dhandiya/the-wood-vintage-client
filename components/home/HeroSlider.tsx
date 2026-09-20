@@ -52,12 +52,12 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
         height: PLACEHOLDER_H,
         position: 'relative', overflow: 'hidden',
         display: 'flex', alignItems: 'center',
-        background: 'linear-gradient(135deg, #0d0d0d 0%, #1e1a14 60%, #2c2410 100%)',
+        background: 'linear-gradient(135deg, #2A190E 0%, #3B2314 60%, #4A2F1D 100%)',
       }}>
         <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
           <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.85 }}>
-            <Typography variant="overline" sx={{ color: '#c9a84c', letterSpacing: '0.32em', display: 'block', mb: 2, fontSize: '0.7rem', fontWeight: 600 }}>
-              NEW COLLECTION
+            <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.32em', display: 'block', mb: 2, fontSize: '0.7rem', fontWeight: 600 }}>
+              HANDCRAFTED IN INDIA
             </Typography>
             <Typography
               variant="h1"
@@ -68,29 +68,29 @@ export default function HeroSlider({ banners }: HeroSliderProps) {
                 maxWidth: 540,
               }}
             >
-              Dress to<br />Impress
+              Furniture with<br />a story
             </Typography>
             <Button
               component={Link} href={withCountry('/shop', country)}
               variant="contained"
               sx={{
-                bgcolor: '#c9a84c', color: '#111',
+                bgcolor: '#A0693A', color: '#fff',
                 fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.14em',
                 py: 1.6, px: 5,
                 borderRadius: 0,
-                '&:hover': { bgcolor: '#a8872a' },
-                boxShadow: '0 4px 20px rgba(201,168,76,0.4)',
+                '&:hover': { bgcolor: '#7E5029' },
+                boxShadow: '0 4px 20px rgba(160,105,58,0.4)',
               }}
             >
-              Shop Now
+              Shop the Collection
             </Button>
           </motion.div>
         </Container>
 
         {/* Decorative gold accent lines */}
         <Box sx={{ position: 'absolute', right: { xs: -60, md: 80 }, top: '50%', transform: 'translateY(-50%)', opacity: 0.06 }}>
-          <Box sx={{ width: 320, height: 320, border: '1px solid #c9a84c', borderRadius: '50%' }} />
-          <Box sx={{ position: 'absolute', top: 30, left: 30, width: 260, height: 260, border: '1px solid #c9a84c', borderRadius: '50%' }} />
+          <Box sx={{ width: 320, height: 320, border: '1px solid #A0693A', borderRadius: '50%' }} />
+          <Box sx={{ position: 'absolute', top: 30, left: 30, width: 260, height: 260, border: '1px solid #A0693A', borderRadius: '50%' }} />
         </Box>
       </Box>
     );

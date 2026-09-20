@@ -25,44 +25,44 @@ const baseTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#1a1a1a',
-      light: '#404040',
-      dark: '#000000',
+      main: '#3B2314',
+      light: '#5A3D2B',
+      dark: '#24140A',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#c9a84c',
-      light: '#e2c97e',
-      dark: '#a07c20',
+      main: '#A0693A',
+      light: '#C9925C',
+      dark: '#7E5029',
       contrastText: '#ffffff',
     },
     background: {
-      default: '#fafafa',
+      default: '#FFFCF5',
       paper: '#ffffff',
     },
     text: {
-      primary: '#1a1a1a',
-      secondary: '#666666',
+      primary: '#3B2314',
+      secondary: '#6B5646',
     },
-    error: { main: '#d32f2f' },
+    error: { main: '#B3261E' },
     warning: { main: '#f57c00' },
     success: { main: '#2e7d32' },
     luxury: {
-      gold: '#c9a84c',
-      darkGold: '#a07c20',
-      cream: '#f8f4ef',
-      charcoal: '#2c2c2c',
-      midnight: '#0d0d0d',
+      gold: '#A0693A',
+      darkGold: '#7E5029',
+      cream: '#F6EEDF',
+      charcoal: '#4A2F1D',
+      midnight: '#2A190E',
     },
   },
   typography: {
     fontFamily: '"Inter", "Helvetica Neue", Arial, sans-serif',
-    h1: { fontFamily: '"Playfair Display", serif', fontWeight: 700, letterSpacing: '-0.02em' },
-    h2: { fontFamily: '"Playfair Display", serif', fontWeight: 700, letterSpacing: '-0.01em' },
-    h3: { fontFamily: '"Playfair Display", serif', fontWeight: 600 },
-    h4: { fontFamily: '"Playfair Display", serif', fontWeight: 600 },
-    h5: { fontWeight: 600 },
-    h6: { fontWeight: 600 },
+    h1: { fontFamily: '"Cormorant Garamond", "Playfair Display", Georgia, serif', fontWeight: 700, letterSpacing: '-0.02em' },
+    h2: { fontFamily: '"Cormorant Garamond", "Playfair Display", Georgia, serif', fontWeight: 700, letterSpacing: '-0.01em' },
+    h3: { fontFamily: '"Cormorant Garamond", "Playfair Display", Georgia, serif', fontWeight: 600 },
+    h4: { fontFamily: '"Cormorant Garamond", "Playfair Display", Georgia, serif', fontWeight: 600 },
+    h5: { fontFamily: '"Cormorant Garamond", Georgia, serif', fontWeight: 600 },
+    h6: { fontFamily: '"Cormorant Garamond", Georgia, serif', fontWeight: 600 },
     subtitle1: { fontWeight: 500, letterSpacing: '0.02em' },
     subtitle2: { fontWeight: 500 },
     body1: { lineHeight: 1.7, letterSpacing: '0.01em' },
@@ -73,8 +73,8 @@ const baseTheme = createTheme({
   shape: { borderRadius: 2 },
   shadows: [
     'none',
-    '0 1px 3px rgba(0,0,0,0.06)',
-    '0 2px 6px rgba(0,0,0,0.08)',
+    '0 1px 3px rgba(59,35,20,0.10)',
+    '0 2px 6px rgba(59,35,20,0.14)',
     '0 4px 12px rgba(0,0,0,0.10)',
     '0 6px 16px rgba(0,0,0,0.12)',
     '0 8px 24px rgba(0,0,0,0.14)',
@@ -115,13 +115,13 @@ const baseTheme = createTheme({
         },
         outlined: {
           borderWidth: '1.5px',
-          '&:hover': { borderWidth: '1.5px', backgroundColor: 'rgba(0,0,0,0.04)' },
+          '&:hover': { borderWidth: '1.5px', backgroundColor: 'rgba(59,35,20,0.05)' },
         },
       },
     },
     MuiCard: {
       styleOverrides: {
-        root: { borderRadius: 4, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' },
+        root: { borderRadius: 4, boxShadow: '0 2px 8px rgba(59,35,20,0.14)' },
       },
     },
     MuiChip: {
@@ -133,20 +133,20 @@ const baseTheme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            '&:hover fieldset': { borderColor: '#1a1a1a' },
-            '&.Mui-focused fieldset': { borderColor: '#1a1a1a', borderWidth: 1.5 },
+            '&:hover fieldset': { borderColor: '#3B2314' },
+            '&.Mui-focused fieldset': { borderColor: '#3B2314', borderWidth: 1.5 },
           },
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
-        root: { boxShadow: 'none', borderBottom: '1px solid rgba(0,0,0,0.06)' },
+        root: { boxShadow: 'none', borderBottom: '1px solid rgba(59,35,20,0.10)' },
       },
     },
     MuiDivider: {
       styleOverrides: {
-        root: { borderColor: 'rgba(0,0,0,0.08)' },
+        root: { borderColor: 'rgba(59,35,20,0.14)' },
       },
     },
     MuiInputBase: {

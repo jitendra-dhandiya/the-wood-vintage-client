@@ -51,7 +51,7 @@ export default function CartDrawer() {
       <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
         {isLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', pt: 8 }}>
-            <CircularProgress size={32} sx={{ color: '#1a1a1a' }} />
+            <CircularProgress size={32} sx={{ color: '#3B2314' }} />
           </Box>
         ) : !cart?.items.length ? (
           <Box sx={{ textAlign: 'center', pt: 8 }}>
@@ -65,7 +65,7 @@ export default function CartDrawer() {
               component={Link}
               href={withCountry('/shop', country)}
               onClick={() => dispatch(closeCart())}
-              sx={{ bgcolor: '#1a1a1a' }}
+              sx={{ bgcolor: '#3B2314' }}
             >
               Continue Shopping
             </Button>
@@ -99,7 +99,7 @@ export default function CartDrawer() {
                       {[item.variant.size, item.variant.color].filter(Boolean).join(' / ')}
                     </Typography>
                   )}
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#1a1a1a' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#3B2314' }}>
                     {formatPrice(item.price)}
                   </Typography>
 
@@ -130,7 +130,7 @@ export default function CartDrawer() {
         <Box sx={{ p: 2.5, borderTop: '1px solid', borderColor: 'divider' }}>
           {/* Shipping message */}
           {shippingCharge > 0 && (
-            <Box sx={{ mb: 2, p: 1.5, bgcolor: '#fafafa', borderRadius: 1, textAlign: 'center' }}>
+            <Box sx={{ mb: 2, p: 1.5, bgcolor: '#FFFCF5', borderRadius: 1, textAlign: 'center' }}>
               <Typography variant="caption" color="text.secondary">
                 Add {formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} more for FREE shipping
               </Typography>
@@ -161,7 +161,7 @@ export default function CartDrawer() {
             component={Link}
             href={withCountry('/checkout', country)}
             onClick={() => dispatch(closeCart())}
-            sx={{ bgcolor: '#1a1a1a', py: 1.5, fontSize: '0.8rem', letterSpacing: '0.1em' }}
+            sx={{ bgcolor: '#3B2314', py: 1.5, fontSize: '0.8rem', letterSpacing: '0.1em' }}
           >
             Proceed to Checkout
           </Button>

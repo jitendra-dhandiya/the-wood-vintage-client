@@ -101,7 +101,7 @@ export default function AddressesPage() {
           My Addresses
         </Typography>
         <Button variant="contained" startIcon={<Add />} onClick={openCreate}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
           Add Address
         </Button>
       </Box>
@@ -113,7 +113,7 @@ export default function AddressesPage() {
           <Home sx={{ fontSize: 56, color: '#eee', mb: 2 }} />
           <Typography variant="h6" fontWeight={700} sx={{ mb: 1 }}>No saved addresses</Typography>
           <Typography color="text.secondary" sx={{ mb: 3 }}>Add a delivery address to make checkout faster.</Typography>
-          <Button variant="contained" onClick={openCreate} sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+          <Button variant="contained" onClick={openCreate} sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
             Add Address
           </Button>
         </Box>
@@ -122,12 +122,12 @@ export default function AddressesPage() {
           {addresses.map(addr => (
             <Grid item xs={12} sm={6} key={addr.id}>
               <Card elevation={0} sx={{
-                border: '1px solid', borderColor: addr.isDefault ? '#1a1a1a' : 'divider',
+                border: '1px solid', borderColor: addr.isDefault ? '#3B2314' : 'divider',
                 borderRadius: 2, position: 'relative',
               }}>
                 {addr.isDefault && (
                   <Chip label="Default" size="small"
-                    sx={{ position: 'absolute', top: 12, right: 12, bgcolor: '#1a1a1a', color: '#fff', fontSize: '0.65rem', height: 22 }} />
+                    sx={{ position: 'absolute', top: 12, right: 12, bgcolor: '#3B2314', color: '#fff', fontSize: '0.65rem', height: 22 }} />
                 )}
                 <CardContent sx={{ p: 2.5 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -207,7 +207,7 @@ export default function AddressesPage() {
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={closeDialog}>Cancel</Button>
             <Button type="submit" variant="contained" disabled={formik.isSubmitting}
-              sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+              sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
               {editAddress ? 'Save' : 'Add Address'}
             </Button>
           </DialogActions>

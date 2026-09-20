@@ -178,7 +178,7 @@ export default function StoresAdminPage() {
           </Typography>
         </Box>
         <Button variant="contained" startIcon={<Add />} onClick={openAdd}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, borderRadius: 1.5, fontWeight: 700, fontSize: '0.8rem' }}>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, borderRadius: 1.5, fontWeight: 700, fontSize: '0.8rem' }}>
           Add Store
         </Button>
       </Box>
@@ -195,7 +195,7 @@ export default function StoresAdminPage() {
             Add your first store location to show it on the home page.
           </Typography>
           <Button variant="contained" startIcon={<Add />} onClick={openAdd}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
             Add Store
           </Button>
         </Box>
@@ -286,9 +286,9 @@ export default function StoresAdminPage() {
                   height: 130, border: '1.5px dashed #d0d0d0', borderRadius: 1,
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                   gap: 0.75, cursor: 'pointer', mb: 1,
-                  bgcolor: '#fafafa',
+                  bgcolor: '#FFFCF5',
                   transition: 'border-color 0.2s, bgcolor 0.2s',
-                  '&:hover': { borderColor: '#1a1a1a', bgcolor: '#f5f5f5' },
+                  '&:hover': { borderColor: '#3B2314', bgcolor: '#f5f5f5' },
                 }}
               >
                 <CloudUpload sx={{ fontSize: 32, color: '#bbb' }} />
@@ -334,7 +334,7 @@ export default function StoresAdminPage() {
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
           <Button variant="contained" onClick={handleSave} disabled={saving}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
             {saving ? 'Saving...' : editing ? 'Save Changes' : 'Add Store'}
           </Button>
         </DialogActions>

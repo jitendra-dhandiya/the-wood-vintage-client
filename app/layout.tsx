@@ -55,7 +55,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#1a1a1a',
+  themeColor: '#3B2314',
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -116,7 +116,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Non-blocking font load — runs in parallel, not serial like @import in CSS */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         />
       </head>
       <body>
@@ -139,12 +139,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   toastOptions={{
                     duration: 3000,
                     style: {
-                      background: '#1a1a1a',
+                      background: '#3B2314',
                       color: '#fff',
                       fontSize: '0.875rem',
                       fontFamily: 'Inter, sans-serif',
                     },
-                    success: { iconTheme: { primary: '#c9a84c', secondary: '#fff' } },
+                    success: { iconTheme: { primary: '#A0693A', secondary: '#fff' } },
                   }}
                 />
               </CountryProvider>

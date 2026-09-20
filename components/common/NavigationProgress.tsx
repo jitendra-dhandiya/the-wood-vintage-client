@@ -67,7 +67,7 @@ export default function NavigationProgress() {
           height: '100%',
           width: '100%',
           transformOrigin: '0 50%',
-          background: 'linear-gradient(90deg, #c9a84c, #e6cf8a)',
+          background: 'linear-gradient(90deg, #A0693A, #e6cf8a)',
           // A soft bloom so the bar reads against both the white header and a
           // dark hero without needing a heavier stroke.
           boxShadow: '0 0 8px rgba(201,168,76,0.6)',

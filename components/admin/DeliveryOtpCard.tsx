@@ -201,7 +201,7 @@ export default function DeliveryOtpCard({ orderId, order, onDelivered }: Props) 
                 startIcon={sending ? <CircularProgress size={14} /> : <Send sx={{ fontSize: 16 }} />}
                 onClick={send}
                 disabled={!canSend || sending}
-                sx={!codeLive ? { bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } } : undefined}
+                sx={!codeLive ? { bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } } : undefined}
               >
                 {sending ? 'Sending…' : codeLive ? 'Send a new code' : 'Send code to customer'}
               </Button>

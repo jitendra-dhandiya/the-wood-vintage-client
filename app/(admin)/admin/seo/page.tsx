@@ -131,7 +131,7 @@ export default function SeoPage() {
                         <Grid item xs={12}>
                           <Button variant="contained" size="small" onClick={() => save(meta)}
                             disabled={saving === meta.id}
-                            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+                            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
                             {saving === meta.id ? 'Saving...' : 'Save'}
                           </Button>
                         </Grid>

@@ -86,7 +86,7 @@ export default function ErrorFallback({ error, reset, variant = 'page' }: Props)
             variant="contained"
             startIcon={<RefreshRounded />}
             onClick={reset}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
           >
             Try Again
           </Button>

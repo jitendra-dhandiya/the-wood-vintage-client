@@ -212,7 +212,7 @@ function ReelCard({ reel, index }: ReelCardProps) {
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
             sx={{
               display: 'inline-flex', alignItems: 'center', gap: 0.4,
-              color: '#c9a84c', fontSize: '0.6rem', fontWeight: 700,
+              color: '#A0693A', fontSize: '0.6rem', fontWeight: 700,
               letterSpacing: '0.06em', textTransform: 'uppercase', textDecoration: 'none',
               '&:hover': { color: 'white' },
             }}
@@ -236,7 +236,7 @@ export default function InstagramReels({ reels, sectionTitle }: Props) {
   if (!reels || reels.length === 0) return null;
 
   return (
-    <Box sx={{ py: { xs: 7, md: 10 }, bgcolor: '#fafafa', overflow: 'hidden' }}>
+    <Box sx={{ py: { xs: 7, md: 10 }, bgcolor: '#FFFCF5', overflow: 'hidden' }}>
       <Container maxWidth="xl">
 
         {/* Header */}
@@ -256,7 +256,7 @@ export default function InstagramReels({ reels, sectionTitle }: Props) {
                 }}>
                   <Instagram sx={{ color: 'white', fontSize: 16 }} />
                 </Box>
-                <Typography sx={{ fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#c9a84c' }}>
+                <Typography sx={{ fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#A0693A' }}>
                   Instagram
                 </Typography>
               </Box>
@@ -279,7 +279,7 @@ export default function InstagramReels({ reels, sectionTitle }: Props) {
                 color: '#555', fontSize: '0.72rem', fontWeight: 700,
                 textDecoration: 'none', letterSpacing: '0.06em', textTransform: 'uppercase',
                 transition: 'all 0.2s',
-                '&:hover': { borderColor: '#c9a84c', color: '#c9a84c', bgcolor: 'rgba(201,168,76,0.04)' },
+                '&:hover': { borderColor: '#A0693A', color: '#A0693A', bgcolor: 'rgba(201,168,76,0.04)' },
               }}
             >
               <Instagram sx={{ fontSize: 16 }} />

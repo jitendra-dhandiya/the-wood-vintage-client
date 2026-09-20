@@ -53,7 +53,7 @@ export default function OrdersPage() {
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
         When you place an order, it will appear here.
       </Typography>
-      <Button variant="contained" component={Link} href={withCountry('/shop', country)} sx={{ bgcolor: '#1a1a1a' }}>
+      <Button variant="contained" component={Link} href={withCountry('/shop', country)} sx={{ bgcolor: '#3B2314' }}>
         Start Shopping
       </Button>
     </Box>
@@ -116,7 +116,7 @@ export default function OrdersPage() {
               <Divider sx={{ mb: 2 }} />
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <Button size="small" component={Link} href={`/account/orders/${order.id}`}
-                  variant="outlined" sx={{ borderColor: '#1a1a1a', color: '#1a1a1a', fontSize: '0.75rem' }}>
+                  variant="outlined" sx={{ borderColor: '#3B2314', color: '#3B2314', fontSize: '0.75rem' }}>
                   View Details
                 </Button>
                 {order.trackingNumber && (

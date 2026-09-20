@@ -76,7 +76,7 @@ export default function MediaPage() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700 }}>Media Library</Typography>
         <Button variant="contained" startIcon={<CloudUpload />} component="label" disabled={uploading}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}>
           {uploading ? 'Uploading...' : 'Upload Files'}
           <input type="file" hidden multiple accept="image/*" onChange={handleUpload} />
         </Button>

@@ -3,18 +3,18 @@ import { Box, Container, Typography, Divider, Grid } from '@mui/material';
 import { Timer, Videocam, CardGiftcard, SwapHoriz, Instagram } from '@mui/icons-material';
 
 export const metadata: Metadata = {
-  title: 'Return & Exchange Policy | Unique Dressup',
+  title: 'Return & Replacement Policy | The Wood Vintage',
   description:
-    'Return requests within 36 hours of delivery for wrong or damaged products, store credit refunds, and size exchanges — how it works at The Unique Dressup.',
+    'Return requests within 36 hours of delivery for wrong or damaged products, store credit refunds, and replacements — how it works at The Wood Vintage.',
 };
 
 const LAST_UPDATED = 'September 1, 2026';
-const INSTAGRAM_HANDLE = '@uniquedressup.inn';
-const INSTAGRAM_URL = 'https://www.instagram.com/uniquedressup.inn';
+const INSTAGRAM_HANDLE = '@thewoodvintage';
+const INSTAGRAM_URL = 'https://www.instagram.com/thewoodvintage';
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <Box sx={{ mb: 4 }}>
-    <Typography variant="h6" fontWeight={700} sx={{ mb: 1.5, color: '#1a1a1a' }}>
+    <Typography variant="h6" fontWeight={700} sx={{ mb: 1.5, color: '#3B2314' }}>
       {title}
     </Typography>
     {children}
@@ -39,28 +39,28 @@ const IgLink = () => (
     href={INSTAGRAM_URL}
     target="_blank"
     rel="noopener noreferrer"
-    sx={{ color: '#c9a84c', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+    sx={{ color: '#A0693A', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
   >
     {INSTAGRAM_HANDLE}
   </Box>
 );
 
 const highlights = [
-  { icon: <Timer sx={{ fontSize: 28, color: '#c9a84c' }} />, title: '36-Hour Window', desc: 'Raise a request within 36 hours of delivery' },
-  { icon: <Videocam sx={{ fontSize: 28, color: '#c9a84c' }} />, title: 'Unboxing Video', desc: 'Mandatory for every claim' },
-  { icon: <CardGiftcard sx={{ fontSize: 28, color: '#c9a84c' }} />, title: 'Store Credit', desc: 'Issued for all eligible returns' },
-  { icon: <SwapHoriz sx={{ fontSize: 28, color: '#c9a84c' }} />, title: 'Size Exchange', desc: '₹200 round-trip courier handling' },
+  { icon: <Timer sx={{ fontSize: 28, color: '#A0693A' }} />, title: '36-Hour Window', desc: 'Raise a request within 36 hours of delivery' },
+  { icon: <Videocam sx={{ fontSize: 28, color: '#A0693A' }} />, title: 'Unboxing Video', desc: 'Mandatory for every claim' },
+  { icon: <CardGiftcard sx={{ fontSize: 28, color: '#A0693A' }} />, title: 'Store Credit', desc: 'Issued for all eligible returns' },
+  { icon: <SwapHoriz sx={{ fontSize: 28, color: '#A0693A' }} />, title: 'Replacement', desc: 'For wrong or damaged pieces' },
 ];
 
 export default function ReturnPolicyPage() {
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#FFFCF5' }}>
       {/* Hero */}
-      <Box sx={{ bgcolor: '#1a1a1a', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
+      <Box sx={{ bgcolor: '#3B2314', py: { xs: 6, md: 8 }, textAlign: 'center' }}>
         <Container maxWidth="md">
           <Typography
             variant="overline"
-            sx={{ color: '#c9a84c', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
+            sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}
           >
             Customer Support
           </Typography>
@@ -68,7 +68,7 @@ export default function ReturnPolicyPage() {
             variant="h3"
             sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, color: 'white', mb: 1.5 }}
           >
-            Return &amp; Exchange Policy
+            Return &amp; Replacement Policy
           </Typography>
           <Typography variant="body2" sx={{ color: '#aaa' }}>
             Last updated: {LAST_UPDATED}
@@ -84,7 +84,7 @@ export default function ReturnPolicyPage() {
               <Grid item xs={6} sm={3} key={h.title}>
                 <Box sx={{ textAlign: 'center' }}>
                   <Box sx={{ mb: 1 }}>{h.icon}</Box>
-                  <Typography variant="body2" fontWeight={700} sx={{ color: '#1a1a1a', mb: 0.5 }}>{h.title}</Typography>
+                  <Typography variant="body2" fontWeight={700} sx={{ color: '#3B2314', mb: 0.5 }}>{h.title}</Typography>
                   <Typography variant="caption" sx={{ color: '#888' }}>{h.desc}</Typography>
                 </Box>
               </Grid>
@@ -98,7 +98,7 @@ export default function ReturnPolicyPage() {
         <Box sx={{ bgcolor: 'white', borderRadius: 2, border: '1px solid', borderColor: 'divider', p: { xs: 3, md: 5 } }}>
 
           <P>
-            At The Unique Dressup, we are committed to making your shopping experience smooth and
+            At The Wood Vintage, we are committed to making your shopping experience smooth and
             hassle-free. We carefully check and pack every order before dispatch, but if you face an
             issue with your order, our team is always here to assist you.
           </P>
@@ -117,9 +117,9 @@ export default function ReturnPolicyPage() {
               alignItems: 'flex-start',
             }}
           >
-            <Videocam sx={{ fontSize: 22, color: '#c9a84c', mt: '2px', flexShrink: 0 }} />
+            <Videocam sx={{ fontSize: 22, color: '#A0693A', mt: '2px', flexShrink: 0 }} />
             <Box>
-              <Typography variant="body2" fontWeight={700} sx={{ color: '#1a1a1a', mb: 0.5 }}>
+              <Typography variant="body2" fontWeight={700} sx={{ color: '#3B2314', mb: 0.5 }}>
                 Please record your unboxing
               </Typography>
               <Typography variant="body2" sx={{ color: '#5a5a5a', lineHeight: 1.8 }}>
@@ -193,49 +193,33 @@ export default function ReturnPolicyPage() {
             </Box>
           </Section>
 
-          <Section title="5. Exchange Policy — Size Issues">
+          <Section title="5. Replacement & Repair">
             <P>
-              We understand that choosing the right size online can sometimes be difficult. Size exchanges
-              are available if you need a different size.
+              If a wrong or damaged piece is confirmed after review, we will arrange a replacement or, where
+              the damage is minor, a repair or part replacement, as we agree with you.
             </P>
             <P>
-              To initiate an exchange, DM us on Instagram at <IgLink /> with your order details.
-            </P>
-            <P>
-              A <strong>₹200 charge</strong> applies towards round-trip courier handling, including pickup
-              and re-delivery. This charge is collected towards logistics services and is not retained by
-              The Unique Dressup. As an affordable fashion brand operating with tight margins, we
-              currently do not offer free size exchanges.
-            </P>
-            <P>
-              Once we receive the returned product it undergoes a quality check. If it meets our exchange
-              conditions, your requested size is dispatched.
-            </P>
-            <P>
-              Products showing signs of wear, use, washing, alteration, stains, or customer-caused damage
-              are not eligible for exchange.
+              Once approved, we arrange collection wherever the service is available. Pieces showing signs
+              of use, alteration, exposure to moisture or damage after delivery are not eligible.
             </P>
           </Section>
 
-          <Section title="6. Exchange Pick-Up Charges">
-            <Box component="ul" sx={{ pl: 3, m: 0 }}>
-              <Li>₹200 for the exchange of up to 2 products in a single pickup</Li>
-              <Li>₹50 additional for every extra product included in the same exchange request</Li>
-              <Li>
-                No return or exchange fee is charged if the exchange is due to a wrong or damaged product
-                received from our end
-              </Li>
-            </Box>
+          <Section title="6. Natural Variation in Wood">
+            <P>
+              Our furniture is made from solid wood and finished by hand. Differences in grain, colour,
+              knots and finish between pieces, and against product photographs, are natural characteristics
+              of handcrafted work and are not treated as defects.
+            </P>
           </Section>
 
           <Section title="7. Contact Us">
-            <P>For all return and exchange queries, please reach out to us on Instagram:</P>
+            <P>For all return and replacement queries, please reach out to us on Instagram:</P>
             <Box sx={{ bgcolor: '#f9f9f9', borderRadius: 1.5, p: 2.5, mt: 1 }}>
               <Typography variant="body2" sx={{ color: '#444', fontWeight: 700, mb: 0.75 }}>
-                The Unique Dressup — Customer Support
+                The Wood Vintage — Customer Support
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Instagram sx={{ fontSize: 18, color: '#c9a84c' }} />
+                <Instagram sx={{ fontSize: 18, color: '#A0693A' }} />
                 <Typography variant="body2" sx={{ color: '#444' }}>
                   Instagram: <IgLink />
                 </Typography>

@@ -368,7 +368,7 @@ export default function ProductDetailClient({ product }: Props) {
                   position: 'relative', paddingTop: '133%', borderRadius: 2,
                   overflow: 'hidden', bgcolor: '#f8f8f8', mb: 1.5,
                   outline: 'none',
-                  '&:focus-visible': { boxShadow: '0 0 0 2px #c9a84c' },
+                  '&:focus-visible': { boxShadow: '0 0 0 2px #A0693A' },
                 }}
               >
                 {gallery[selectedImage]?.url && (
@@ -416,14 +416,14 @@ export default function ProductDetailClient({ product }: Props) {
                       ...arrow.edge,
                       width: 40, height: 40,
                       bgcolor: 'rgba(255,255,255,0.92)',
-                      color: '#1a1a1a',
+                      color: '#3B2314',
                       boxShadow: '0 2px 10px rgba(0,0,0,0.12)',
                       // Always on screen rather than revealed by hover: a phone
                       // has no hover at all, and a control you have to go
                       // looking for may as well not be there.
                       transition: 'background-color 0.2s, box-shadow 0.2s',
                       '&:hover': { bgcolor: '#fff', boxShadow: '0 3px 14px rgba(0,0,0,0.22)' },
-                      '&:focus-visible': { outline: '2px solid #c9a84c' },
+                      '&:focus-visible': { outline: '2px solid #A0693A' },
                     }}
                   >
                     {arrow.icon}
@@ -473,9 +473,9 @@ export default function ProductDetailClient({ product }: Props) {
                               fontSize: '0.62rem', fontWeight: 700,
                               letterSpacing: '0.1em', textTransform: 'uppercase',
                               whiteSpace: 'nowrap',
-                              color: isChosen ? '#1a1a1a' : '#9a9a9a',
+                              color: isChosen ? '#3B2314' : '#9a9a9a',
                               borderLeft: '2px solid',
-                              borderColor: isChosen ? '#c9a84c' : 'transparent',
+                              borderColor: isChosen ? '#A0693A' : 'transparent',
                               transition: 'color 0.2s, border-color 0.2s',
                             }}
                           >
@@ -493,7 +493,7 @@ export default function ProductDetailClient({ product }: Props) {
                                   position: 'relative', width: 64, height: 85, borderRadius: 1,
                                   overflow: 'hidden', cursor: 'pointer', bgcolor: '#f8f8f8',
                                   border: '2px solid',
-                                  borderColor: index === selectedImage ? '#1a1a1a' : 'transparent',
+                                  borderColor: index === selectedImage ? '#3B2314' : 'transparent',
                                   opacity: muted ? 0.5 : 1,
                                   transition: 'border-color 0.2s, opacity 0.2s',
                                   '&:hover': { borderColor: '#888', opacity: 1 },
@@ -518,7 +518,7 @@ export default function ProductDetailClient({ product }: Props) {
           <Grid item xs={12} md={6}>
             <Box>
               {product.brand && (
-                <Typography variant="overline" sx={{ color: '#c9a84c', letterSpacing: '0.12em', fontWeight: 600 }}>
+                <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.12em', fontWeight: 600 }}>
                   {product.brand}
                 </Typography>
               )}
@@ -539,7 +539,7 @@ export default function ProductDetailClient({ product }: Props) {
 
               {/* Price */}
               <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mb: 3 }}>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: '#1a1a1a' }}>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: '#3B2314' }}>
                   {formatPrice(displayPrice, currencySymbol)}
                 </Typography>
                 {product.salePrice && (
@@ -564,7 +564,7 @@ export default function ProductDetailClient({ product }: Props) {
                   taxonomy) and §33 (craft storytelling, expanded further down
                   the page as its own section, not buried here). */}
               {craftFacts.length > 0 && (
-                <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 2, bgcolor: '#fafafa' }}>
+                <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 2, bgcolor: '#FFFCF5' }}>
                   <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5 }}>
                     Craft &amp; Materials
                   </Typography>
@@ -690,7 +690,7 @@ export default function ProductDetailClient({ product }: Props) {
                   onClick={handleAddToCart}
                   disabled={isLoading}
                   sx={{
-                    bgcolor: '#1a1a1a', py: 1.75, fontSize: '0.8rem',
+                    bgcolor: '#3B2314', py: 1.75, fontSize: '0.8rem',
                     letterSpacing: '0.12em', fontWeight: 700,
                     '&:hover': { bgcolor: '#333' },
                   }}
@@ -702,7 +702,7 @@ export default function ProductDetailClient({ product }: Props) {
                   sx={{
                     border: '1.5px solid', borderColor: '#e0e0e0',
                     borderRadius: 1, px: 2,
-                    '&:hover': { borderColor: '#1a1a1a' },
+                    '&:hover': { borderColor: '#3B2314' },
                   }}
                 >
                   {inWishlist ? <Favorite sx={{ color: '#d32f2f' }} /> : <FavoriteBorder />}
@@ -719,8 +719,8 @@ export default function ProductDetailClient({ product }: Props) {
               {/* Trust badges */}
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 3 }}>
                 {[
-                  { icon: <LocalShipping fontSize="small" />, text: 'Free shipping above ₹999' },
-                  { icon: <Replay fontSize="small" />, text: 'Easy size exchange' },
+                  { icon: <LocalShipping fontSize="small" />, text: 'Shipped in protective packaging' },
+                  { icon: <Replay fontSize="small" />, text: 'Hand-finished by artisans' },
                   { icon: <Security fontSize="small" />, text: 'Secure payments' },
                 ].map((item) => (
                   <Box key={item.text} sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: '#666' }}>
@@ -734,7 +734,7 @@ export default function ProductDetailClient({ product }: Props) {
               <Box>
                 <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ borderBottom: '1px solid', borderColor: 'divider', mb: 2 }}>
                   <Tab label="Description" sx={{ fontSize: '0.8rem', fontWeight: 600 }} />
-                  {product.fabric && <Tab label="Fabric & Care" sx={{ fontSize: '0.8rem', fontWeight: 600 }} />}
+                  {(product.fabric || product.careInstructions) && <Tab label="Material & Care" sx={{ fontSize: '0.8rem', fontWeight: 600 }} />}
                   {product.faqs?.length ? <Tab label="FAQs" sx={{ fontSize: '0.8rem', fontWeight: 600 }} /> : null}
                 </Tabs>
 
@@ -744,16 +744,16 @@ export default function ProductDetailClient({ product }: Props) {
                   </Typography>
                 )}
 
-                {tab === 1 && product.fabric && (
+                {tab === 1 && (product.fabric || product.careInstructions) && (
                   <Box>
                     <Typography variant="body2" sx={{ mb: 1.5, lineHeight: 1.9, color: 'text.secondary' }}>
-                      <strong>Fabric:</strong> {product.fabric}
+                      <strong>Material:</strong> {product.fabric}
                     </Typography>
-                    {product.careInstructions && (
-                      <Typography variant="body2" sx={{ lineHeight: 1.9, color: 'text.secondary' }}>
-                        <strong>Care:</strong> {product.careInstructions}
-                      </Typography>
-                    )}
+                    <Typography variant="body2" sx={{ lineHeight: 1.9, color: 'text.secondary' }}>
+                      <strong>Care:</strong>{' '}
+                      {product.careInstructions ||
+                        'Dust with a soft dry cloth, wipe spills promptly, and keep away from direct sunlight and damp. Natural variation in grain and colour is part of handcrafted wood.'}
+                    </Typography>
                   </Box>
                 )}
 
@@ -785,14 +785,14 @@ export default function ProductDetailClient({ product }: Props) {
             <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
               {product.craftStory && (
                 <Grid item xs={12} md={product.artisan ? 7 : 12}>
-                  <Typography variant="overline" sx={{ color: '#c9a84c', letterSpacing: '0.14em', fontWeight: 700 }}>
+                  <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.14em', fontWeight: 700 }}>
                     The Craft Story
                   </Typography>
                   <Typography
                     variant="h5"
                     sx={{
                       fontFamily: 'var(--font-playfair)', fontStyle: 'italic', fontWeight: 500,
-                      lineHeight: 1.6, mt: 1.5, color: '#2c2c2c',
+                      lineHeight: 1.6, mt: 1.5, color: '#4A2F1D',
                       maxWidth: product.artisan ? 'none' : 760,
                     }}
                   >
@@ -833,7 +833,7 @@ export default function ProductDetailClient({ product }: Props) {
                       )}
                     </Box>
                     <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="caption" sx={{ color: '#c9a84c', letterSpacing: '0.1em', fontWeight: 700, display: 'block' }}>
+                      <Typography variant="caption" sx={{ color: '#A0693A', letterSpacing: '0.1em', fontWeight: 700, display: 'block' }}>
                         MEET THE MAKER
                       </Typography>
                       <Typography variant="subtitle1" fontWeight={700} sx={{ mt: 0.25 }}>

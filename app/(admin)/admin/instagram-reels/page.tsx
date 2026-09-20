@@ -220,7 +220,7 @@ export default function InstagramReelsAdminPage() {
           variant="contained"
           startIcon={<Add />}
           onClick={openAdd}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, borderRadius: 2, fontWeight: 700 }}
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, borderRadius: 2, fontWeight: 700 }}
         >
           Add Reel
         </Button>
@@ -229,7 +229,7 @@ export default function InstagramReelsAdminPage() {
       {/* Stats */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
         {[
-          { label: 'Total Reels', value: reels.length, color: '#1a1a1a' },
+          { label: 'Total Reels', value: reels.length, color: '#3B2314' },
           { label: 'Active', value: reels.filter(r => r.isActive).length, color: '#2e7d32' },
           { label: 'Shown to Women', value: reels.filter(r => (r.gender || 'ALL') !== 'MEN').length, color: '#e91e8c' },
           { label: 'Shown to Men', value: reels.filter(r => (r.gender || 'ALL') !== 'WOMEN').length, color: '#1565c0' },
@@ -256,7 +256,7 @@ export default function InstagramReelsAdminPage() {
         <Typography variant="caption" fontWeight={700} sx={{ color: '#666', mr: 0.5 }}>
           SHOW:
         </Typography>
-        {[{ value: '', label: 'All reels', color: '#1a1a1a' }, ...GENDERS].map(opt => {
+        {[{ value: '', label: 'All reels', color: '#3B2314' }, ...GENDERS].map(opt => {
           const selected = genderFilter === opt.value;
           const count = opt.value
             ? reels.filter(r => (r.gender || 'ALL') === opt.value).length
@@ -315,7 +315,7 @@ export default function InstagramReelsAdminPage() {
             <TableBody>
               {visibleReels.map((reel, i) => {
                 return (
-                  <TableRow key={reel.id} sx={{ '&:hover': { bgcolor: '#fafafa' } }}>
+                  <TableRow key={reel.id} sx={{ '&:hover': { bgcolor: '#FFFCF5' } }}>
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                         <DragIndicator sx={{ color: '#ccc', fontSize: 18, cursor: 'grab' }} />
@@ -365,7 +365,7 @@ export default function InstagramReelsAdminPage() {
                         href={reel.reelUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3, color: '#c9a84c', fontSize: '0.65rem', mt: 0.5, textDecoration: 'none' }}
+                        sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.3, color: '#A0693A', fontSize: '0.65rem', mt: 0.5, textDecoration: 'none' }}
                       >
                         View reel <OpenInNew sx={{ fontSize: 10 }} />
                       </Box>
@@ -660,7 +660,7 @@ export default function InstagramReelsAdminPage() {
             onClick={save}
             variant="contained"
             disabled={saving}
-            sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700, minWidth: 100 }}
+            sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700, minWidth: 100 }}
           >
             {saving
               ? <CircularProgress size={18} sx={{ color: 'white' }} />

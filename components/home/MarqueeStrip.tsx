@@ -32,10 +32,10 @@ const SEPARATORS: Record<string, string> = {
 };
 
 const VARIANT_STYLES: Record<string, { bg: string; text: string; accent: string }> = {
-  dark:   { bg: '#1a1a1a', text: '#ffffff', accent: '#c9a84c' },
-  light:  { bg: '#f5f5f5', text: '#1a1a1a', accent: '#c9a84c' },
-  gold:   { bg: '#c9a84c', text: '#1a1a1a', accent: '#1a1a1a' },
-  accent: { bg: '#0d0d0d', text: '#c9a84c', accent: '#ffffff' },
+  dark:   { bg: '#3B2314', text: '#ffffff', accent: '#A0693A' },
+  light:  { bg: '#f5f5f5', text: '#3B2314', accent: '#A0693A' },
+  gold:   { bg: '#A0693A', text: '#3B2314', accent: '#3B2314' },
+  accent: { bg: '#2A190E', text: '#A0693A', accent: '#ffffff' },
 };
 
 const FONT_SIZES: Record<string, string> = {
@@ -46,9 +46,9 @@ const FONT_SIZES: Record<string, string> = {
 
 const DEFAULT_ITEMS: MarqueeItem[] = [
   { text: 'Free Shipping on Orders Above ₹999', icon: '🚚' },
-  { text: 'Easy Size Exchange', icon: '↩' },
-  { text: 'New Arrivals Every Week', icon: '✨' },
-  { text: 'Exclusive Offers for Members', icon: '🎁' },
+  { text: 'Hand-Finished by Artisans', icon: '🪵' },
+  { text: 'New Pieces Added Regularly', icon: '✨' },
+  { text: 'Sustainably Sourced Wood', icon: '🎁' },
   { text: 'Secure Payments — UPI · Cards · COD', icon: '🔒' },
 ];
 

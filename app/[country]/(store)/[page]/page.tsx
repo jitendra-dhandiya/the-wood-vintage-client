@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const countries = await getEnabledCountries();
   const alt = buildCountryAlternates(`/${slug}`, country, countries);
   return {
-    title: page.seoMeta?.metaTitle || `${page.title} — Unique Dressup`,
+    title: page.seoMeta?.metaTitle || `${page.title} — The Wood Vintage`,
     description: page.seoMeta?.metaDescription || page.excerpt,
     alternates: alt,
   };
@@ -49,7 +49,7 @@ export default async function CmsPage({ params }: Props) {
           '& p': { mb: 2, lineHeight: 1.8, color: '#333' },
           '& ul, & ol': { mb: 2, pl: 3 },
           '& li': { mb: 0.5, lineHeight: 1.7 },
-          '& a': { color: '#c9a84c' },
+          '& a': { color: '#A0693A' },
           '& strong': { fontWeight: 700 },
           '& table': { width: '100%', borderCollapse: 'collapse', mb: 2 },
           '& th, & td': { border: '1px solid #eee', p: 1.5, textAlign: 'left' },

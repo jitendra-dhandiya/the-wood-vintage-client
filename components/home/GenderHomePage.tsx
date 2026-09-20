@@ -21,7 +21,7 @@ import type { GenderType } from '../../lib/genderPreference';
 function PromoStrip() {
   const ITEMS = [
     { label: 'Free Shipping', desc: 'On orders above ₹999' },
-    { label: 'Easy Exchanges', desc: 'Size exchange available' },
+    { label: 'Artisan Made', desc: 'Solid wood, hand-finished' },
     { label: 'Secure Payments', desc: 'Razorpay · UPI · COD' },
   ];
   return (
@@ -269,7 +269,7 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
               subtitle={subtitle || 'Fan Favourites'}
               products={products.bestSellers}
               viewAllLink="/shop?isBestSeller=true"
-              bgColor="#f8f4ef"
+              bgColor="#F6EEDF"
             />
           </Box>
         );
@@ -364,7 +364,7 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
           subtitle="Everyone's Talking About"
           products={products.trending}
           viewAllLink="/shop?isTrending=true"
-          bgColor="#fafafa"
+          bgColor="#FFFCF5"
         />
       </Box>
 

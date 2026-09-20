@@ -85,7 +85,7 @@ export default function GenderSettingsPage() {
                   <Switch
                     checked={toggleEnabled}
                     onChange={(e) => setToggleEnabled(e.target.checked)}
-                    sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: '#1a1a1a' }, '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#1a1a1a' } }}
+                    sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: '#3B2314' }, '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#3B2314' } }}
                   />
                 }
                 label={
@@ -124,7 +124,7 @@ export default function GenderSettingsPage() {
                 variant="contained"
                 onClick={handleSave}
                 disabled={saving}
-                sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' } }}
+                sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' } }}
               >
                 {saving ? <CircularProgress size={18} sx={{ color: 'white', mr: 1 }} /> : null}
                 Save Settings
@@ -158,7 +158,7 @@ export default function GenderSettingsPage() {
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1.5 }}>
                 <Typography variant="body2" fontWeight={600}>Total Active Products</Typography>
-                <Chip label={stats.total} size="small" sx={{ fontWeight: 700, bgcolor: '#1a1a1a', color: 'white' }} />
+                <Chip label={stats.total} size="small" sx={{ fontWeight: 700, bgcolor: '#3B2314', color: 'white' }} />
               </Box>
 
               <Alert severity="warning" sx={{ mt: 2, fontSize: '0.75rem' }}>

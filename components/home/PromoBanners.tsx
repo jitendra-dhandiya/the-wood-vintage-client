@@ -43,10 +43,10 @@ export default function PromoBanners({ banners, title }: Props) {
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
                 {/* Gold accent bar */}
-                <Box sx={{ width: 28, height: 2, bgcolor: '#c9a84c', flexShrink: 0 }} />
+                <Box sx={{ width: 28, height: 2, bgcolor: '#A0693A', flexShrink: 0 }} />
                 <Typography sx={{
                   fontSize: '0.63rem', fontWeight: 700, letterSpacing: '0.28em',
-                  textTransform: 'uppercase', color: '#c9a84c',
+                  textTransform: 'uppercase', color: '#A0693A',
                 }}>
                   {meta.overline}
                 </Typography>
@@ -75,7 +75,7 @@ export default function PromoBanners({ banners, title }: Props) {
             {/* Decorative dots pattern */}
             <Box sx={{ display: { xs: 'none', md: 'grid' }, gridTemplateColumns: 'repeat(5,8px)', gap: '6px', opacity: 0.18, mr: 2 }}>
               {Array.from({ length: 25 }).map((_, i) => (
-                <Box key={i} sx={{ width: 4, height: 4, borderRadius: '50%', bgcolor: '#c9a84c' }} />
+                <Box key={i} sx={{ width: 4, height: 4, borderRadius: '50%', bgcolor: '#A0693A' }} />
               ))}
             </Box>
           </Box>
@@ -139,14 +139,14 @@ function PromoBannerCard({ banner, tall }: { banner: any; tall?: boolean }) {
         overflow: 'hidden',
         cursor: banner.link ? 'pointer' : 'default',
         '&:hover .promo-img': { transform: 'scale(1.04)' },
-        '&:hover .promo-cta': { bgcolor: '#c9a84c', borderColor: '#c9a84c', color: '#111 !important' },
+        '&:hover .promo-cta': { bgcolor: '#A0693A', borderColor: '#A0693A', color: '#111 !important' },
         '&::after': {
           // Bottom gold accent line
           content: '""',
           position: 'absolute',
           bottom: 0, left: 0,
           width: '100%', height: '3px',
-          background: 'linear-gradient(to right, #c9a84c 0%, transparent 100%)',
+          background: 'linear-gradient(to right, #A0693A 0%, transparent 100%)',
           opacity: 0.7,
           zIndex: 3,
         },
@@ -170,8 +170,8 @@ function PromoBannerCard({ banner, tall }: { banner: any; tall?: boolean }) {
         }}>
           {/* Decorative circle */}
           <Box sx={{ position: 'absolute', right: '-10%', top: '50%', transform: 'translateY(-50%)', opacity: 0.04 }}>
-            <Box sx={{ width: 400, height: 400, border: '1px solid #c9a84c', borderRadius: '50%' }} />
-            <Box sx={{ position: 'absolute', top: 40, left: 40, width: 320, height: 320, border: '1px solid #c9a84c', borderRadius: '50%' }} />
+            <Box sx={{ width: 400, height: 400, border: '1px solid #A0693A', borderRadius: '50%' }} />
+            <Box sx={{ position: 'absolute', top: 40, left: 40, width: 320, height: 320, border: '1px solid #A0693A', borderRadius: '50%' }} />
           </Box>
         </Box>
       )}
@@ -193,10 +193,10 @@ function PromoBannerCard({ banner, tall }: { banner: any; tall?: boolean }) {
           {/* Overline */}
           {banner.subtitle && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-              <Box sx={{ width: 20, height: 1.5, bgcolor: '#c9a84c', flexShrink: 0 }} />
+              <Box sx={{ width: 20, height: 1.5, bgcolor: '#A0693A', flexShrink: 0 }} />
               <Typography sx={{
                 fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.25em',
-                textTransform: 'uppercase', color: '#c9a84c',
+                textTransform: 'uppercase', color: '#A0693A',
               }}>
                 {banner.subtitle}
               </Typography>

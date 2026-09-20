@@ -121,7 +121,7 @@ export default function WishlistPage() {
             </Typography>
             <Button
               variant="contained" component={Link} href={withCountry('/shop', country)}
-              sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, px: 4 }}
+              sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, px: 4 }}
             >
               Start shopping
             </Button>

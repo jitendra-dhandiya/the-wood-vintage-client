@@ -127,7 +127,7 @@ export default function ArtisansPage() {
           </Typography>
         </Box>
         <Button variant="contained" startIcon={<Add />} onClick={openCreate}
-          sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, borderRadius: 1.5, fontWeight: 700, fontSize: '0.8rem' }}>
+          sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, borderRadius: 1.5, fontWeight: 700, fontSize: '0.8rem' }}>
           Add Artisan
         </Button>
       </Box>
@@ -195,7 +195,7 @@ export default function ArtisansPage() {
           <DialogActions sx={{ p: 2, gap: 1 }}>
             <Button onClick={closeDialog}>Cancel</Button>
             <Button type="submit" variant="contained" disabled={formik.isSubmitting}
-              sx={{ bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}>
+              sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, fontWeight: 700 }}>
               {formik.isSubmitting ? 'Saving…' : editItem ? 'Save Changes' : 'Create Artisan'}
             </Button>
           </DialogActions>

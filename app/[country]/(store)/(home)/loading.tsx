@@ -20,7 +20,7 @@ function HeroSkeleton() {
 
 function PromoStripSkeleton() {
   return (
-    <Box sx={{ bgcolor: '#f8f4ef', py: 2, px: { xs: 2, md: 8 } }}>
+    <Box sx={{ bgcolor: '#F6EEDF', py: 2, px: { xs: 2, md: 8 } }}>
       <Grid container spacing={2}>
         {[0, 1, 2].map(i => (
           <Grid item xs={12} sm={4} key={i}>
@@ -69,7 +69,7 @@ function ProductSectionSkeleton({ bgColor = '#ffffff' }: { bgColor?: string }) {
 
 function CategorySectionSkeleton() {
   return (
-    <Box sx={{ py: { xs: 6, md: 10 }, bgcolor: '#fafafa' }}>
+    <Box sx={{ py: { xs: 6, md: 10 }, bgcolor: '#FFFCF5' }}>
       <Container maxWidth="xl">
         <Box sx={{ mb: 4, textAlign: 'center' }}>
           <Skeleton variant="text" width={80} height={16} animation="wave" sx={{ mx: 'auto', mb: 0.5 }} />
@@ -92,7 +92,7 @@ function CategorySectionSkeleton() {
 
 function TestimonialsSkeleton() {
   return (
-    <Box sx={{ py: { xs: 6, md: 10 }, bgcolor: '#1a1a1a' }}>
+    <Box sx={{ py: { xs: 6, md: 10 }, bgcolor: '#3B2314' }}>
       <Container maxWidth="xl">
         <Box sx={{ mb: 5, textAlign: 'center' }}>
           <Skeleton variant="text" width={80} height={16} animation="wave" sx={{ mx: 'auto', mb: 0.5, bgcolor: 'rgba(255,255,255,0.1)' }} />
@@ -131,7 +131,7 @@ export default function HomePageLoading() {
       <ProductSectionSkeleton />
       <CategorySectionSkeleton />
       <ProductSectionSkeleton />
-      <ProductSectionSkeleton bgColor="#f8f4ef" />
+      <ProductSectionSkeleton bgColor="#F6EEDF" />
       <TestimonialsSkeleton />
     </>
   );
