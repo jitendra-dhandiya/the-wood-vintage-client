@@ -66,7 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // neither Navbar nor anything country-aware, but inheriting the provider is
   // harmless for them.
   //
-  // Seeded here, unvalidated, from whatever this request's `wv_country`
+  // Seeded here, unvalidated, from the middleware-written `wv_country` hint
   // cookie says — CountryProvider itself checks it against the real
   // enabled-countries list (`GET /countries` only returns enabled markets,
   // so validity can only be confirmed once that call resolves; see the

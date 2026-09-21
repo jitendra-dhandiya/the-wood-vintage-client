@@ -1,29 +1,35 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { legacyCategoryTarget } from './lib/legacyCategorySlugs';
 import { API_URL } from './constants';
-import { COUNTRY_COOKIE, guessCountryFromAcceptLanguage } from './lib/countryPreference';
+import { COUNTRY_COOKIE } from './lib/countryPreference';
 import type { Country } from './types';
 
 /**
- * Country-prefix resolution for the phase-3 URL restructuring
- * (`documentation/docs/architecture/phase-3-url-restructuring-spec.md`),
- * composed with the pre-existing wishlist/category-slug redirects below —
- * see that spec's "Middleware — CORRECTION" section for exactly why this is
- * additive to the existing file, not a replacement of it.
+ * Country lock (decision 0036, building on the phase-3 URL restructuring in
+ * `docs/architecture/phase-3-url-restructuring-spec.md`).
  *
- * Every storefront path now lives under `/<country>/...`. This function:
- *   - passes a request straight through when its first path segment is
- *     already a valid, *enabled* `Country.code`;
- *   - otherwise resolves one (cookie → `Accept-Language` region → the
- *     enabled list's `isDefault` row) and redirects to the same path under
- *     that country — replacing the first segment if it merely *looked* like
- *     a country code (invalid, or a real-but-disabled one), or inserting a
- *     new first segment if there wasn't one at all (a flat legacy URL, or
- *     `/`).
+ * The visitor's market is decided by their LOCATION, never by the URL or a
+ * cookie. For every storefront request this middleware:
+ *   1. resolves the visitor's country via the backend `GET /geo/resolve`
+ *      (offline GeoIP; forwards the client IP; cached ~60s per IP);
+ *   2. if that country has an ENABLED market: `/<other>/...` -> 307 to the
+ *      same path under the visitor's market; a request with no country segment
+ *      gets one inserted;
+ *   3. if it has NO enabled market: rewrites to `/not-available` (designed
+ *      "not available in your region yet" page) — no wrong-market storefront;
+ *   4. FAILS OPEN: geo service down/slow/unknown IP -> the default market, so
+ *      an outage of the geo lookup never takes the shop down (documented risk:
+ *      during an outage the lock is not enforced).
  *
- * `/admin`, `/admin-login`, `/account`, `/login`, `/register`, `/api`, `/_next`, and static
- * assets are excluded entirely via `matcher` below — they're session-scoped
- * or non-page paths with no SEO value from a URL-level country signal.
+ * Exempt: `/admin*`, `/admin-login`, `/account`, `/login`, `/register`, `/api`,
+ * `/_next`, `/not-available`, static assets (via `matcher`), and search-engine
+ * crawlers (by User-Agent — spoofable, documented) which keep the original
+ * behaviour: any enabled `/<country>/` path is served as-is so hreflang and
+ * indexing of every market keep working.
+ *
+ * `wv_country` is written as a derived hint only (see lib/countryPreference).
+ * Non-production: `?__geo=US` (or the `__geo` cookie it sets) overrides the
+ * visitor's location so behaviour is testable from one machine.
  */
 
 interface CountriesCache {
@@ -67,22 +73,62 @@ function resolveDefaultCountryCode(countries: Country[]): string {
   return countries[0]?.code?.toUpperCase() ?? HARD_FALLBACK_COUNTRY;
 }
 
-/**
- * Full tiered resolution — used only when the URL carries no country segment
- * at all (a flat legacy URL, or `/`). `wv_country` cookie → `Accept-Language`
- * region → the enabled list's default row.
- */
-function resolveCountryCode(req: NextRequest, countries: Country[]): string {
-  const isEnabled = (code?: string | null) =>
-    !!code && countries.some((c) => c.isEnabled && c.code.toUpperCase() === code.toUpperCase());
+const CRAWLER_UA = /googlebot|adsbot-google|google-inspectiontool|bingbot|bingpreview|slurp|duckduckbot|baiduspider|yandexbot|applebot|facebookexternalhit|twitterbot|linkedinbot|pinterestbot|ia_archiver/i;
+const isCrawler = (req: NextRequest) => CRAWLER_UA.test(req.headers.get('user-agent') ?? '');
 
-  const cookieCandidate = req.cookies.get(COUNTRY_COOKIE)?.value;
-  if (isEnabled(cookieCandidate)) return cookieCandidate!.toUpperCase();
+const IS_PROD = process.env.NODE_ENV === 'production';
 
-  const localeCandidate = guessCountryFromAcceptLanguage(req.headers.get('accept-language'));
-  if (isEnabled(localeCandidate)) return localeCandidate!.toUpperCase();
+interface Geo { countryCode: string | null; lat: number | null; lng: number | null; source: string }
 
-  return resolveDefaultCountryCode(countries);
+const GEO_TTL_MS = 60_000;
+const GEO_FAIL_TTL_MS = 10_000;
+const GEO_TIMEOUT_MS = 1500;
+const geoCache = new Map<string, { geo: Geo | null; expiresAt: number }>();
+
+/** The address the trusted hop in front of us saw — rightmost XFF entry, or x-real-ip. */
+function clientIp(req: NextRequest): string {
+  const real = req.headers.get('x-real-ip')?.trim();
+  if (real) return real;
+  const xff = (req.headers.get('x-forwarded-for') ?? '').split(',');
+  return xff[xff.length - 1]?.trim() ?? '';
+}
+
+/** `null` = geo unavailable (caller fails open). */
+async function resolveVisitorGeo(req: NextRequest, override: string | null): Promise<Geo | null> {
+  const ip = clientIp(req);
+  const cdn = req.headers.get('cf-ipcountry') ?? req.headers.get('x-vercel-ip-country') ?? '';
+  const key = `${ip}|${cdn}|${override ?? ''}`;
+  const hit = geoCache.get(key);
+  if (hit && hit.expiresAt > Date.now()) return hit.geo;
+
+  let geo: Geo | null = null;
+  try {
+    const headers: Record<string, string> = {};
+    if (ip) headers['x-forwarded-for'] = ip;
+    const cdnCountry = req.headers.get('cf-ipcountry');
+    if (cdnCountry) headers['cf-ipcountry'] = cdnCountry;
+    const vercel = req.headers.get('x-vercel-ip-country');
+    if (vercel) headers['x-vercel-ip-country'] = vercel;
+    const qs = override ? `?__geo=${encodeURIComponent(override)}` : '';
+    const res = await fetch(`${API_URL}/geo/resolve${qs}`, {
+      cache: 'no-store', headers, signal: AbortSignal.timeout(GEO_TIMEOUT_MS),
+    });
+    if (res.ok) geo = (await res.json())?.data ?? null;
+  } catch {
+    geo = null; // fail open
+  }
+  if (geoCache.size > 5000) geoCache.clear();
+  geoCache.set(key, { geo, expiresAt: Date.now() + (geo ? GEO_TTL_MS : GEO_FAIL_TTL_MS) });
+  return geo;
+}
+
+/** Stamps the derived-hint cookie (and the non-prod dev override cookie) onto a response. */
+function withHints(res: NextResponse, market: string | null, overrideToSet: string | null): NextResponse {
+  if (market) {
+    res.cookies.set(COUNTRY_COOKIE, market.toUpperCase(), { path: '/', sameSite: 'lax', maxAge: 60 * 60 * 24 });
+  }
+  if (overrideToSet) res.cookies.set('__geo', overrideToSet, { path: '/', sameSite: 'lax' });
+  return res;
 }
 
 /**
@@ -122,7 +168,7 @@ export const config = {
     // Everything except /admin, /account, /login, /register, /api, /_next,
     // and anything that looks like a static asset (has a "." in its last
     // segment — favicon.ico, robots.txt, sitemap.xml, images, fonts, ...).
-    '/((?!(?:admin|admin-login|account|login|register|api|_next)(?:/|$)|.*\\..*).*)',
+    '/((?!(?:admin|admin-login|account|login|register|api|_next|not-available)(?:/|$)|.*\\..*).*)',
   ],
 };
 
@@ -143,35 +189,66 @@ export async function middleware(req: NextRequest) {
   const parts = pathname.split('/').filter(Boolean); // '/in/category/x' -> ['in','category','x']
   const first = parts[0] ?? '';
   const looksLikeCountryCode = /^[A-Za-z]{2}$/.test(first);
+  const isEnabledCode = (list: Country[], code?: string | null) =>
+    !!code && list.some((c) => c.isEnabled && c.code.toUpperCase() === code.toUpperCase());
 
   const countries = await getEnabledCountries();
+  const defaultCode = resolveDefaultCountryCode(countries);
 
-  if (looksLikeCountryCode && countries.some(
-    (c) => c.isEnabled && c.code.toUpperCase() === first.toUpperCase(),
-  )) {
-    // Valid, enabled — pass through, but still subject to the legacy
-    // category-slug forwarding below.
-    const legacy = await legacyCategoryRedirect(req, parts);
-    return legacy ?? NextResponse.next();
+  // Backend unreachable AND nothing cached: we cannot tell which markets exist,
+  // so fail open rather than show a region page to everyone.
+  if (countries.length === 0) {
+    if (looksLikeCountryCode) return NextResponse.next();
+    const url = req.nextUrl.clone();
+    url.pathname = `/${[defaultCode.toLowerCase(), ...parts].join('/')}`;
+    return NextResponse.redirect(url, 307);
   }
 
-  // Two distinct cases, resolved differently per the spec:
-  //   - No country segment at all (flat legacy URL, or `/`) → full tiered
-  //     resolution (cookie → Accept-Language → default).
-  //   - The first segment *looks* like a country code but isn't in the
-  //     enabled list. The public `/countries` endpoint only ever returns
-  //     enabled rows, so middleware has no way to tell "not a real country"
-  //     (`/xx/...`) apart from "a real, currently-disabled one"
-  //     (`/ae/...` while AE is off) — both look identical from here. Both go
-  //     straight to the resolved *default* country rather than reinterpreting
-  //     via cookie/locale, matching the spec's explicit rule for the
-  //     disabled case and extending it to the indistinguishable invalid one.
-  const resolved = (looksLikeCountryCode
-    ? resolveDefaultCountryCode(countries)
-    : resolveCountryCode(req, countries)
-  ).toLowerCase();
+  // Search-engine crawlers: no lock — every enabled market path is served so
+  // hreflang/indexing works. (UA is spoofable; a spoofer merely sees another
+  // market's catalogue, which the backend still prices from its own rules.)
+  if (isCrawler(req)) {
+    if (looksLikeCountryCode && isEnabledCode(countries, first)) {
+      return (await legacyCategoryRedirect(req, parts)) ?? NextResponse.next();
+    }
+    const url = req.nextUrl.clone();
+    url.pathname = `/${[defaultCode.toLowerCase(), ...(looksLikeCountryCode ? parts.slice(1) : parts)].join('/')}`;
+    return NextResponse.redirect(url, 307);
+  }
+
+  // Non-production location override, for testing from one machine.
+  let override: string | null = null;
+  let overrideToSet: string | null = null;
+  if (!IS_PROD) {
+    const q = req.nextUrl.searchParams.get('__geo');
+    if (q && /^[A-Za-z]{2}$/.test(q)) { override = q.toUpperCase(); overrideToSet = override; }
+    else {
+      const c = req.cookies.get('__geo')?.value;
+      if (c && /^[A-Za-z]{2}$/.test(c)) override = c.toUpperCase();
+    }
+  }
+
+  const geo = await resolveVisitorGeo(req, override);
+  // Fail open: no answer (or an unlocatable IP) -> the default market.
+  const visitorCountry = (geo?.countryCode ?? defaultCode).toUpperCase();
+
+  if (!isEnabledCode(countries, visitorCountry)) {
+    // Located in a country we do not sell to (yet): designed region page, not a wrong storefront.
+    const url = req.nextUrl.clone();
+    url.pathname = '/not-available';
+    url.search = `?c=${encodeURIComponent(visitorCountry)}`;
+    return withHints(NextResponse.rewrite(url), null, overrideToSet);
+  }
+
+  const market = visitorCountry.toLowerCase();
+  if (looksLikeCountryCode && first.toLowerCase() === market) {
+    const legacy = await legacyCategoryRedirect(req, parts);
+    return withHints(legacy ?? NextResponse.next(), visitorCountry, overrideToSet);
+  }
+
+  // Wrong or missing country segment -> the same path under the visitor's market.
   const rest = looksLikeCountryCode ? parts.slice(1) : parts;
   const url = req.nextUrl.clone();
-  url.pathname = `/${[resolved, ...rest].join('/')}`;
-  return NextResponse.redirect(url, 307);
+  url.pathname = `/${[market, ...rest].join('/')}`;
+  return withHints(NextResponse.redirect(url, 307), visitorCountry, overrideToSet);
 }

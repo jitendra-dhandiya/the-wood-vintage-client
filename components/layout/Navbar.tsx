@@ -24,7 +24,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { productApi } from '../../services/api.service';
 import { MegaMenuDesktop, MegaMenuMobile, resolveQuickLinks, type NavCategory, type QuickLink } from './MegaMenu';
 import { BRAND_LOGO, BRAND_LOGO_ASPECT, SITE_NAME } from '../../constants';
-import CountrySelector from '../common/CountrySelector';
+import RegionLabel from '../common/RegionLabel';
 import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
 import { visibleNavCategories } from '../../lib/navMenu';
@@ -73,9 +73,7 @@ export default function Navbar({
     prevItemCount.current = itemCount;
   }, [itemCount]);
   const gender = useAppSelector((s) => s.gender.selected);
-  // Multi-market chrome only shows once there is something to switch between.
-  const { countries: enabledCountries, country } = useCountry();
-  const showCountrySwitcher = enabledCountries.length >= 2;
+  const { country } = useCountry();
 
   // Parents AND their children are filtered — see lib/navMenu. Previously only
   // the parents were, which is how "Mens denim" appeared under DENIM while the
@@ -381,7 +379,7 @@ export default function Navbar({
 
             {/* Icons */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              {!isMobile && showCountrySwitcher && <CountrySelector />}
+              {!isMobile && <RegionLabel />}
               <IconButton onClick={() => setSearchOpen(true)} size="small">
                 <Search fontSize="small" />
               </IconButton>
@@ -606,12 +604,10 @@ export default function Navbar({
               <Close />
             </IconButton>
           </Box>
-          {/* Country selector in mobile drawer — same "nothing to switch to yet" guard as desktop. */}
-          {showCountrySwitcher && (
-            <Box sx={{ px: 2.5, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
-              <CountrySelector variant="full" />
-            </Box>
-          )}
+          {/* Read-only market label — the country is locked to the visitor's location (decision 0036). */}
+          <Box sx={{ px: 1.5, py: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
+            <RegionLabel variant="full" />
+          </Box>
           {/* Gender toggle in mobile drawer */}
           {genderToggleEnabled && (
             <Box sx={{ display: 'flex', borderBottom: '1px solid', borderColor: 'divider' }}>

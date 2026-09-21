@@ -7,6 +7,8 @@ import withBundleAnalyzerInit from '@next/bundle-analyzer';
 const withBundleAnalyzer = withBundleAnalyzerInit({ enabled: process.env.ANALYZE === 'true' });
 
 const nextConfig: NextConfig = {
+  // Lets verification runs build/serve into a separate dir without touching a running dev server's .next.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   output: process.env.NEXT_OUTPUT === 'standalone' ? 'standalone' : undefined,
   images: {
     // Resizing is delegated to the backend's /img endpoint, which serves
