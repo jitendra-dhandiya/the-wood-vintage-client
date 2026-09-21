@@ -284,13 +284,26 @@ export default function ProductDetailClient({ product }: Props) {
     await addToCart(product.id, selectedVariant?.id);
   };
 
+  const [wishBusy, setWishBusy] = useState(false);
+  const [wishPop, setWishPop] = useState(0);
   const handleWishlist = async () => {
     if (!isAuthenticated) { toast.error('Please login to add to wishlist'); return; }
+    if (wishBusy) return;
+    // Optimistic flip with rollback on failure.
+    const next = !inWishlist;
+    setWishBusy(true);
+    setInWishlist(next);
+    if (next) setWishPop((k) => k + 1);
     try {
       const { data } = await wishlistApi.toggle(product.id);
       setInWishlist(data.data.inWishlist);
       toast.success(data.data.inWishlist ? 'Added to wishlist' : 'Removed from wishlist');
-    } catch {}
+    } catch {
+      setInWishlist(!next);
+      toast.error('Could not update your wishlist. Please try again.');
+    } finally {
+      setWishBusy(false);
+    }
   };
 
   /**
@@ -688,24 +701,29 @@ export default function ProductDetailClient({ product }: Props) {
                   variant="contained"
                   size="large"
                   onClick={handleAddToCart}
-                  disabled={isLoading}
+                  loading={isLoading}
+                  loadingPosition="start"
                   sx={{
                     bgcolor: '#3B2314', py: 1.75, fontSize: '0.8rem',
                     letterSpacing: '0.12em', fontWeight: 700,
-                    '&:hover': { bgcolor: '#333' },
+                    '&:hover': { bgcolor: '#A0693A' },
+                    '&.MuiButton-loading': { color: 'transparent' },
+                    '& .MuiButton-loadingIndicator': { color: '#fff' },
                   }}
                 >
-                  {isLoading ? 'Adding...' : 'Add to Bag'}
+                  {isLoading ? 'Adding' : 'Add to Bag'}
                 </Button>
                 <IconButton
                   onClick={handleWishlist}
+                  aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                  aria-pressed={inWishlist}
                   sx={{
                     border: '1.5px solid', borderColor: '#e0e0e0',
                     borderRadius: 1, px: 2,
                     '&:hover': { borderColor: '#3B2314' },
                   }}
                 >
-                  {inWishlist ? <Favorite sx={{ color: '#7E5029' }} /> : <FavoriteBorder />}
+                  {inWishlist ? <Favorite key={wishPop} className={wishPop ? 'pop' : undefined} sx={{ color: '#7E5029' }} /> : <FavoriteBorder />}
                 </IconButton>
                 <IconButton
                   onClick={handleShare}

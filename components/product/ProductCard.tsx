@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  Box, Typography, IconButton, Rating, Skeleton, Button,
+  Box, Typography, IconButton, Rating, Skeleton, Button, CircularProgress,
 } from '@mui/material';
 import { FavoriteBorder, Favorite, ShoppingBag } from '@mui/icons-material';
 import type { Product } from '../../types';
@@ -41,6 +41,9 @@ export default function ProductCard({
   const [inWishlist, setInWishlist] = useState(initialInWishlist);
   const [hovered, setHovered] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(true);
+  const [popKey, setPopKey] = useState(0);
+  const [wishBusy, setWishBusy] = useState(false);
   // On touch devices mouseenter fires during scroll — guard against it.
   // useRef so this never causes a re-render.
   const isTouch = useRef(
@@ -56,17 +59,29 @@ export default function ProductCard({
     e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) { toast.error('Please login to add to wishlist'); return; }
+    if (wishBusy) return;
+    // Optimistic: flip the heart now, roll back if the request fails.
+    const next = !inWishlist;
+    setWishBusy(true);
+    setInWishlist(next);
+    if (next) setPopKey((k) => k + 1);
     try {
       const { data } = await wishlistApi.toggle(product.id);
       setInWishlist(data.data.inWishlist);
       onWishlistChange?.(data.data.inWishlist);
       toast.success(data.data.inWishlist ? 'Added to wishlist' : 'Removed from wishlist');
-    } catch {}
+    } catch {
+      setInWishlist(!next);
+      toast.error('Could not update your wishlist. Please try again.');
+    } finally {
+      setWishBusy(false);
+    }
   };
 
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (addingToCart) return;
     setAddingToCart(true);
     await addToCart(product.id);
     setAddingToCart(false);
@@ -80,7 +95,7 @@ export default function ProductCard({
     >
       {/* ── Image block ── */}
       <Box
-        sx={{ position: 'relative', paddingTop: '133%', bgcolor: '#f4f4f4', overflow: 'hidden', mb: 1.5 }}
+        sx={{ position: 'relative', paddingTop: '133%', bgcolor: '#F1E8D8', overflow: 'hidden', mb: 1.5 }}
         onMouseEnter={() => { if (!isTouch.current) setHovered(true); }}
         onMouseLeave={() => { if (!isTouch.current) setHovered(false); }}
       >
@@ -90,11 +105,16 @@ export default function ProductCard({
             src={primaryImage}
             alt={product.name}
             fill
+            onLoad={() => setImgLoaded(true)}
+            onError={() => setImgLoaded(true)}
+            // Visible by default (SSR / cached image); only an image that is
+            // genuinely still loading at mount is faded in.
+            ref={(el) => { if (el && !el.complete) setImgLoaded(false); }}
             style={{
               objectFit: 'cover',
-              opacity: hovered && secondaryImage ? 0 : 1,
-              transform: hovered ? 'scale(1.04)' : 'scale(1)',
-              transition: 'opacity 0.45s ease, transform 0.7s ease',
+              opacity: !imgLoaded ? 0 : hovered && secondaryImage ? 0 : 1,
+              transform: hovered ? 'scale(1.05)' : 'scale(1)',
+              transition: 'opacity 0.5s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1)',
             }}
             sizes="(max-width: 600px) 50vw, (max-width: 900px) 33vw, 25vw"
           />
@@ -113,8 +133,8 @@ export default function ProductCard({
             style={{
               objectFit: 'cover',
               opacity: hovered ? 1 : 0,
-              transform: hovered ? 'scale(1.04)' : 'scale(1)',
-              transition: 'opacity 0.45s ease, transform 0.7s ease',
+              transform: hovered ? 'scale(1.05)' : 'scale(1)',
+              transition: 'opacity 0.5s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1)',
             }}
             sizes="(max-width: 600px) 50vw, (max-width: 900px) 33vw, 25vw"
           />
@@ -157,6 +177,8 @@ export default function ProductCard({
         <IconButton
           onClick={handleWishlist}
           size="small"
+          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-pressed={inWishlist}
           sx={{
             position: 'absolute', top: 8, right: 8,
             bgcolor: 'rgba(255,255,255,0.92)',
@@ -167,7 +189,7 @@ export default function ProductCard({
           }}
         >
           {inWishlist ? (
-            <Favorite sx={{ fontSize: 15, color: '#d93025' }} />
+            <Favorite key={popKey} className={popKey ? 'pop' : undefined} sx={{ fontSize: 15, color: '#d93025' }} />
           ) : (
             <FavoriteBorder sx={{ fontSize: 15, color: '#333' }} />
           )}
@@ -185,7 +207,7 @@ export default function ProductCard({
             onClick={handleQuickAdd}
             disabled={addingToCart}
             sx={{
-              bgcolor: 'rgba(17,17,17,0.92)',
+              bgcolor: 'rgba(42,25,14,0.94)',
               backdropFilter: 'blur(4px)',
               color: 'white',
               borderRadius: 0,
@@ -193,11 +215,11 @@ export default function ProductCard({
               fontSize: '0.7rem',
               letterSpacing: '0.1em',
               fontWeight: 700,
-              '&:hover': { bgcolor: '#000' },
-              '&.Mui-disabled': { bgcolor: 'rgba(50,50,50,0.85)', color: 'rgba(255,255,255,0.6)' },
+              '&:hover': { bgcolor: '#A0693A' },
+              '&.Mui-disabled': { bgcolor: 'rgba(42,25,14,0.85)', color: 'rgba(255,255,255,0.6)' },
             }}
           >
-            {addingToCart ? 'Adding…' : '+ Quick Add'}
+            {addingToCart ? <><CircularProgress size={12} thickness={5} sx={{ color: 'inherit', mr: 1 }} />Adding</> : '+ Quick Add'}
           </Button>
         </Box>
       </Box>
@@ -294,7 +316,7 @@ export default function ProductCard({
 export function ProductCardSkeleton() {
   return (
     <Box>
-      <Skeleton variant="rectangular" sx={{ paddingTop: '133%', borderRadius: 0, mb: 1.5 }} />
+      <Skeleton variant="rectangular" animation="wave" sx={{ paddingTop: '133%', height: 0, borderRadius: 0, mb: 1.5 }} />
       <Skeleton variant="text" width="40%" height={12} sx={{ mb: 0.5 }} />
       <Skeleton variant="text" width="85%" height={14} />
       <Skeleton variant="text" width="85%" height={14} sx={{ mb: 0.75 }} />

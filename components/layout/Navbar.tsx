@@ -65,6 +65,13 @@ export default function Navbar({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { itemCount } = useAppSelector((s) => s.cart);
+  // Bump the bag badge when something is added (not on first load).
+  const prevItemCount = useRef(itemCount);
+  const [bagBump, setBagBump] = useState(0);
+  useEffect(() => {
+    if (itemCount > prevItemCount.current) setBagBump((b) => b + 1);
+    prevItemCount.current = itemCount;
+  }, [itemCount]);
   const gender = useAppSelector((s) => s.gender.selected);
   // Multi-market chrome only shows once there is something to switch between.
   const { countries: enabledCountries, country } = useCountry();
@@ -430,6 +437,8 @@ export default function Navbar({
               <IconButton onClick={() => dispatch(toggleCart())} size="small" sx={{ position: 'relative' }}>
                 <Badge
                   badgeContent={itemCount}
+                  key={bagBump}
+                  className={bagBump ? 'badge-bump' : undefined}
                   sx={{
                     '& .MuiBadge-badge': {
                       bgcolor: '#3B2314',
