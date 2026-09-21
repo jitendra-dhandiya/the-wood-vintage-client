@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { Cart, CartItem } from '../../types';
+import type { Cart, CartItem, CartCombo } from '../../types';
 
 interface CartState {
   cart: Cart | null;
@@ -9,9 +9,10 @@ interface CartState {
   isOpen: boolean;
 }
 
-const calculateTotals = (items: CartItem[]) => ({
-  itemCount: items.reduce((sum, i) => sum + i.quantity, 0),
-  subtotal: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+// A combo bundle counts as `quantity` bundles at its server-priced combo price.
+const calculateTotals = (items: CartItem[], combos: CartCombo[] = []) => ({
+  itemCount: items.reduce((sum, i) => sum + i.quantity, 0) + combos.reduce((sum, c) => sum + c.quantity, 0),
+  subtotal: items.reduce((sum, i) => sum + i.price * i.quantity, 0) + combos.reduce((sum, c) => sum + (c.lineTotal ?? 0), 0),
 });
 
 const initialState: CartState = {
@@ -28,7 +29,7 @@ const cartSlice = createSlice({
   reducers: {
     setCart(state, action: PayloadAction<Cart>) {
       state.cart = action.payload;
-      const totals = calculateTotals(action.payload.items);
+      const totals = calculateTotals(action.payload.items, action.payload.combos);
       state.itemCount = totals.itemCount;
       state.subtotal = totals.subtotal;
     },

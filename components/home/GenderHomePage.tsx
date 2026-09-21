@@ -22,6 +22,7 @@ import ShopTheLook from './craft/ShopTheLook';
 import InstagramGallery from './craft/InstagramGallery';
 import TrustRow from './craft/TrustRow';
 import NewsletterBand from './craft/NewsletterBand';
+import ComboOffersSection from '../combo/ComboOffersSection';
 import { productApi, bannerApi, instagramReelsApi, roomApi, materialApi, artisanApi } from '../../services/api.service';
 import type { GenderType } from '../../lib/genderPreference';
 import { useCountry } from '../../contexts/CountryContext';
@@ -309,6 +310,8 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
         return <StoreLocations key={section.id} stores={initialData.stores} title={title} subtitle={section.subtitle} />;
       case 'MARQUEE':
         return <MarqueeStrip key={section.id} config={section.config || {}} />;
+      case 'COMBO_OFFERS':
+        return <ComboOffersSection key={section.id} title={title} subtitle={subtitle} limit={section.config?.limit ?? 3} />;
       case 'INSTAGRAM_REELS':
         return <InstagramReels key={section.id} reels={reels} sectionTitle={section.title} />;
       default:

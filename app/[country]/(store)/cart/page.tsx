@@ -10,6 +10,7 @@ import { Add, Remove, DeleteOutline, ShoppingBag } from '@mui/icons-material';
 import { useCart } from '../../../../hooks/useCart';
 import { useCoupon, useCouponOffers } from '../../../../hooks/useCoupon';
 import CouponBox from '../../../../components/cart/CouponBox';
+import CartComboLine from '../../../../components/combo/CartComboLine';
 import { formatPrice } from '../../../../utils/format';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_CHARGE } from '../../../../constants';
 import { useCountry } from '../../../../contexts/CountryContext';
@@ -50,7 +51,11 @@ export default function CartPage() {
 
   if (!mounted || (!cart && !ready)) return <CartSkeleton />;
 
-  if (!cart?.items.length) {
+  const combos = cart?.combos ?? [];
+  const lineCount = (cart?.items.length ?? 0) + combos.length;
+  const comboProblem = combos.find((c) => c.problem);
+
+  if (!lineCount) {
     return (
       <Container maxWidth="md" sx={{ py: { xs: 4, md: 8 } }}>
         <EmptyState
@@ -67,14 +72,21 @@ export default function CartPage() {
   return (
     <Container maxWidth="xl" sx={{ py: 4, pb: { xs: 10, md: 6 } }}>
       <Typography variant="h4" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, mb: 4 }}>
-        Shopping Bag ({cart.items.length} item{cart.items.length !== 1 ? 's' : ''})
+        Shopping Bag ({lineCount} item{lineCount !== 1 ? 's' : ''})
       </Typography>
 
       <Grid container spacing={4}>
         {/* Items */}
         <Grid item xs={12} md={8}>
           <Stack spacing={2}>
-            {cart.items.map((item) => (
+            {combos.map((line) => (
+              <Card key={line.id} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, bgcolor: '#FFFCF5' }}>
+                <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                  <CartComboLine line={line} />
+                </CardContent>
+              </Card>
+            ))}
+            {cart!.items.map((item) => (
               <Card key={item.id} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
                 <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
                   <Box sx={{ display: 'flex', gap: 2 }}>
@@ -176,10 +188,16 @@ export default function CartPage() {
                 </Box>
               </Stack>
 
+              {comboProblem && (
+                <Typography variant="caption" sx={{ display: 'block', color: '#b3261e', mb: 1, textAlign: 'center' }}>
+                  {comboProblem.combo.name}: {comboProblem.problem}. Fix it to check out.
+                </Typography>
+              )}
               <Button
                 fullWidth variant="contained" size="large"
-                component={Link}
-                href={withCountry('/checkout', country)}
+                component={comboProblem ? 'button' : Link}
+                disabled={!!comboProblem}
+                href={comboProblem ? undefined : withCountry('/checkout', country)}
                 sx={{ bgcolor: '#3B2314', py: 1.75, letterSpacing: '0.1em', fontWeight: 700 }}
               >
                 Proceed to Checkout

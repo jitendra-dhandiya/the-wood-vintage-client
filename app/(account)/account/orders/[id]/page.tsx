@@ -126,6 +126,10 @@ export default function OrderDetailPage() {
                       sx={{ width: 60, height: 75, bgcolor: '#f5f5f5' }} />
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Typography variant="body2" fontWeight={600}>{item.name || item.product?.name}</Typography>
+                      {item.comboName && (
+                        <Chip size="small" label={`Combo: ${item.comboName}${item.bundleQty > 1 ? ` × ${item.bundleQty}` : ''}`}
+                          sx={{ height: 20, fontSize: '0.65rem', fontWeight: 700, bgcolor: '#3B2314', color: '#fff', mt: 0.5 }} />
+                      )}
                       {(() => {
                         // Snapshotted on the line at checkout; the variant is a
                         // fallback for orders placed before that was recorded.
@@ -139,7 +143,7 @@ export default function OrderDetailPage() {
                         Qty: {item.quantity} × {formatPrice(item.price)}
                       </Typography>
                     </Box>
-                    <Typography variant="body2" fontWeight={700}>{formatPrice(item.price * item.quantity)}</Typography>
+                    <Typography variant="body2" fontWeight={700}>{formatPrice(item.comboName ? item.total : item.price * item.quantity)}</Typography>
                   </Box>
                 ))}
               </Stack>

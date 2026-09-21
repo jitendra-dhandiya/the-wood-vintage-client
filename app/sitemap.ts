@@ -22,6 +22,16 @@ async function getProducts(countryCode: string) {
   } catch { return []; }
 }
 
+// Combos live at /<country>/combo/<slug> only where offered in that market (decision 0037).
+async function getCombos(countryCode: string) {
+  try {
+    const qs = countryCode ? `?country=${encodeURIComponent(countryCode.toUpperCase())}&limit=48` : '?limit=48';
+    const res = await fetch(`${BACKEND_API_URL}/combos${qs}`, FETCH_OPTS);
+    const json = await res.json();
+    return json.data || [];
+  } catch { return []; }
+}
+
 async function getCategories() {
   try {
     const res = await fetch(`${BACKEND_API_URL}/categories`, FETCH_OPTS);
@@ -101,6 +111,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     await Promise.all(codes.map(async (c) => [c, await getProducts(c)] as [string, any[]])),
   );
 
+  const combosByCountry = new Map<string, any[]>(
+    await Promise.all(codes.map(async (c) => [c, await getCombos(c)] as [string, any[]])),
+  );
+
   const sitemap: MetadataRoute.Sitemap = [];
 
   for (const code of codes) {
@@ -109,6 +123,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     sitemap.push(
       { url: base || SITE_URL, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
       { url: `${base}/shop`, lastModified: new Date(), changeFrequency: 'hourly', priority: 0.9 },
+      { url: `${base}/combos`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
       { url: `${base}/collections`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
       { url: `${base}/artisans`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.5 },
       { url: `${base}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
@@ -116,6 +131,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       { url: `${base}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
       { url: `${base}/faq`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
     );
+
+    for (const cb of combosByCountry.get(code) ?? []) {
+      sitemap.push({ url: `${base}/combo/${cb.slug}`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 });
+    }
 
     for (const p of productsByCountry.get(code) ?? []) {
       sitemap.push({

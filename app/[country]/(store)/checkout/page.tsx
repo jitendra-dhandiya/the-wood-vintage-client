@@ -227,7 +227,9 @@ export default function CheckoutPage() {
   // ── Place order ────────────────────────────────────────────────
   const handlePlaceOrder = async (shippingAddress: object) => {
     if (loading) return; // double-submit guard (Enter key, double click)
-    if (!cart?.items.length) { toast.error('Your cart is empty'); return; }
+    if (!cart?.items.length && !cart?.combos?.length) { toast.error('Your cart is empty'); return; }
+    const badCombo = cart?.combos?.find((c) => c.problem);
+    if (badCombo) { toast.error(`${badCombo.combo.name}: ${badCombo.problem}. Remove it from your bag to continue.`); return; }
     setLoading(true);
     try {
       // `POST /orders` hard-400s on a country it cannot resolve (unlike the
@@ -257,12 +259,14 @@ export default function CheckoutPage() {
         utmSource: attribution?.utmSource,
         utmMedium: attribution?.utmMedium,
         utmCampaign: attribution?.utmCampaign,
-        items: cart.items.map((i) => ({
+        items: (cart?.items ?? []).map((i) => ({
           productId: i.productId,
           variantId: i.variantId,
           quantity:  i.quantity,
           price:     i.price,
         })),
+        // Bundles: id + quantity only. The server prices them (decision 0037).
+        combos: (cart?.combos ?? []).map((c) => ({ comboId: c.comboId, quantity: c.quantity })),
       });
       const order = orderData.data;
       // The order now carries (and has redeemed) the coupon: forget the code.
@@ -641,6 +645,28 @@ export default function CheckoutPage() {
                 <Typography variant="h6" fontWeight={700} sx={{ mb: 2.5 }}>Order Summary</Typography>
 
                 <Stack spacing={1.5} sx={{ mb: 2 }}>
+                  {cart?.combos?.map((line) => (
+                    <Box key={line.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, minWidth: 0 }}>
+                        <Typography variant="caption" sx={{
+                          bgcolor: '#3B2314', color: 'white', borderRadius: '50%',
+                          width: 18, height: 18, display: 'flex', alignItems: 'center',
+                          justifyContent: 'center', fontSize: '0.6rem', flexShrink: 0, mt: '2px',
+                        }}>
+                          {line.quantity}
+                        </Typography>
+                        <Box sx={{ minWidth: 0 }}>
+                          <Typography variant="body2" sx={{ fontWeight: 600 }}>{line.combo.name} <Typography component="span" variant="caption" sx={{ color: '#A0693A', fontWeight: 700 }}>COMBO</Typography></Typography>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1.4 }}>
+                            {line.combo.items.map((it) => `${it.quantity} × ${it.name}`).join(', ')}
+                          </Typography>
+                          {line.problem && <Typography variant="caption" sx={{ color: '#b3261e', display: 'block' }}>{line.problem}. Remove it in your bag.</Typography>}
+                          {!!line.savings && <Typography variant="caption" sx={{ color: '#2e7d32', fontWeight: 700 }}>You save {formatPrice(line.savings, currencySymbol)}</Typography>}
+                        </Box>
+                      </Box>
+                      <Typography variant="body2" fontWeight={600} sx={{ whiteSpace: 'nowrap' }}>{formatPrice(line.lineTotal ?? 0, currencySymbol)}</Typography>
+                    </Box>
+                  ))}
                   {cart?.items.map((item) => (
                     <Box key={item.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

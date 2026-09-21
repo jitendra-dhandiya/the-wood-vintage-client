@@ -49,6 +49,7 @@ const SECTION_LABELS: Record<string, string> = {
   STORE_LOCATOR: 'Store Locations',
   MARQUEE: 'Marquee / Ticker',
   INSTAGRAM_REELS: 'Instagram Reels',
+  COMBO_OFFERS: 'Combo Offers',
 };
 
 // Section types available when adding a new section
@@ -70,6 +71,7 @@ const ADDABLE_SECTIONS = [
   { type: 'STORE_LOCATOR',        label: 'Store Locations',       desc: '"Visit Our Stores" section with map links' },
   { type: 'NEWSLETTER',           label: 'Newsletter Signup',     desc: 'Email subscription form' },
   { type: 'MARQUEE',             label: 'Marquee / Ticker',      desc: 'Scrolling announcement strip with admin-controlled messages' },
+  { type: 'COMBO_OFFERS',       label: 'Combo Offers',          desc: 'Cards for combos flagged "Show on home" — manage in Catalogue → Combos' },
   { type: 'INSTAGRAM_REELS',    label: 'Instagram Reels',       desc: 'Auto-playing reels strip — manage reels in Content → Instagram Reels' },
 ];
 

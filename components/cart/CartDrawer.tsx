@@ -15,6 +15,7 @@ import { formatPrice } from '../../utils/format';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_CHARGE } from '../../constants';
 import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
+import CartComboLine from '../combo/CartComboLine';
 
 export default function CartDrawer() {
   const { country } = useCountry();
@@ -22,6 +23,8 @@ export default function CartDrawer() {
   const { isOpen } = useAppSelector((s) => s.cart);
   const { cart, subtotal, isLoading, updateQuantity, removeFromCart } = useCart();
 
+  const combos = cart?.combos ?? [];
+  const lineCount = (cart?.items.length ?? 0) + combos.length;
   const shippingCharge = subtotal < FREE_SHIPPING_THRESHOLD ? SHIPPING_CHARGE : 0;
   const total = subtotal + shippingCharge;
 
@@ -36,9 +39,9 @@ export default function CartDrawer() {
       <Box sx={{ p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid', borderColor: 'divider' }}>
         <Typography variant="h6" sx={{ fontWeight: 600, letterSpacing: '0.05em' }}>
           Shopping Bag
-          {cart?.items.length ? (
+          {lineCount ? (
             <Typography component="span" sx={{ ml: 1, fontSize: '0.85rem', color: 'text.secondary', fontWeight: 400 }}>
-              ({cart.items.length} item{cart.items.length !== 1 ? 's' : ''})
+              ({lineCount} item{lineCount !== 1 ? 's' : ''})
             </Typography>
           ) : null}
         </Typography>
@@ -49,7 +52,7 @@ export default function CartDrawer() {
 
       {/* Items */}
       <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
-        {isLoading && !cart?.items.length ? (
+        {isLoading && !lineCount ? (
           <Stack spacing={2} aria-busy="true" aria-label="Loading your bag">
             {[0, 1, 2].map((i) => (
               <Box key={i} sx={{ display: 'flex', gap: 2, pb: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
@@ -62,7 +65,7 @@ export default function CartDrawer() {
               </Box>
             ))}
           </Stack>
-        ) : !cart?.items.length ? (
+        ) : !lineCount ? (
           <Box sx={{ textAlign: 'center', pt: 8 }}>
             <ShoppingBag sx={{ fontSize: 64, color: '#e0e0e0', mb: 2 }} />
             <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>Your bag is empty</Typography>
@@ -81,7 +84,10 @@ export default function CartDrawer() {
           </Box>
         ) : (
           <Stack spacing={2} sx={{ opacity: isLoading ? 0.6 : 1, transition: 'opacity 0.2s ease', pointerEvents: isLoading ? 'none' : 'auto' }}>
-            {cart.items.map((item) => (
+            {combos.map((line) => (
+              <CartComboLine key={line.id} line={line} compact onNavigate={() => dispatch(closeCart())} />
+            ))}
+            {cart!.items.map((item) => (
               <Box key={item.id} sx={{ display: 'flex', gap: 2, pb: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
                 {/* Product image */}
                 <Box sx={{ position: 'relative', width: 80, height: 107, flexShrink: 0, bgcolor: '#f5f5f5', borderRadius: 1, overflow: 'hidden' }}>
@@ -135,7 +141,7 @@ export default function CartDrawer() {
       </Box>
 
       {/* Footer */}
-      {cart?.items.length ? (
+      {lineCount ? (
         <Box sx={{ p: 2.5, borderTop: '1px solid', borderColor: 'divider' }}>
           {/* Shipping message */}
           {shippingCharge > 0 && (

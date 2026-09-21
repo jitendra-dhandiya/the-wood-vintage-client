@@ -33,6 +33,7 @@ const NAV_ITEMS = [
       { label: 'Products', href: '/admin/products' },
       { label: 'Categories', href: '/admin/categories' },
       { label: 'Collections', href: '/admin/collections' },
+      { label: 'Combo offers', href: '/admin/combos' },
       { label: 'Materials', href: '/admin/materials' },
       { label: 'Styles', href: '/admin/styles' },
       { label: 'Rooms', href: '/admin/rooms' },

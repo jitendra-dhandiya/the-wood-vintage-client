@@ -180,7 +180,12 @@ export const countryShippingRuleApi = {
 
 // ─── Cart ─────────────────────────────────────────────────────
 export const cartApi = {
-  get: () => api.get<{ data: Cart }>('/cart'),
+  get: (country?: string | null) => api.get<{ data: Cart }>('/cart', { params: country ? { country } : undefined }),
+  addCombo: (comboId: string, quantity = 1, country?: string | null) =>
+    api.post('/cart/combo/add', { comboId, quantity, country: country || undefined }),
+  updateCombo: (id: string, quantity: number, country?: string | null) =>
+    api.put(`/cart/combo/${id}`, { quantity, country: country || undefined }),
+  removeCombo: (id: string) => api.delete(`/cart/combo/${id}`),
   addItem: (productId: string, variantId?: string, quantity = 1) =>
     api.post('/cart/add', { productId, variantId, quantity }),
   updateItem: (itemId: string, quantity: number) =>
@@ -434,6 +439,24 @@ export const couponApi = {
   update: (id: string, data: object) => api.put(`/coupons/${id}`, data),
   setActive: (id: string, isActive: boolean) => api.patch(`/coupons/${id}/active`, { isActive }),
   delete: (id: string) => api.delete(`/coupons/${id}`),
+};
+
+// ─── Combo offers (decision 0037) ─────────────────────────────
+export const comboApi = {
+  // Storefront: the server locks the market to the visitor's location.
+  list: (opts: { country?: string | null; home?: boolean; productId?: string; limit?: number } = {}) =>
+    api.get('/combos', { params: { country: opts.country || undefined, home: opts.home ? 'true' : undefined, productId: opts.productId, limit: opts.limit } }),
+  getBySlug: (slug: string, country?: string | null) =>
+    api.get(`/combos/${slug}`, { params: { country: country || undefined } }),
+  // Admin (multipart when an image is attached)
+  adminList: (params?: Record<string, unknown>) => api.get('/combos/admin/list', { params }),
+  adminGet: (id: string) => api.get(`/combos/admin/${id}`),
+  preview: (data: object) => api.post('/combos/admin/preview', data),
+  create: (form: FormData) => api.post('/combos/admin', form, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  update: (id: string, form: FormData) => api.put(`/combos/admin/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  setActive: (id: string, isActive: boolean) => api.patch(`/combos/admin/${id}/active`, { isActive }),
+  duplicate: (id: string) => api.post(`/combos/admin/${id}/duplicate`),
+  delete: (id: string) => api.delete(`/combos/admin/${id}`),
 };
 
 // ─── Collections ──────────────────────────────────────────────

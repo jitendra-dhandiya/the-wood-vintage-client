@@ -20,6 +20,7 @@ import { wishlistApi, productApi, userApi } from '../../services/api.service';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import ProductSection from '../home/ProductSection';
+import ComboProductBlock from '../combo/ComboProductBlock';
 import OptionBox from './OptionBox';
 import { galleryFor, groupGalleryByColor, firstIndexOfColor, sameColor } from '../../lib/productImages';
 import { sortSizes } from '../../lib/sizeSort';
@@ -771,6 +772,11 @@ export default function ProductDetailClient({ product }: Props) {
                     <Share fontSize="small" />
                   </IconButton>
                 </Box>
+              </Box>
+
+              {/* Combos containing this product (renders nothing when there are none) — decision 0037 */}
+              <Box sx={{ mb: 3, '& > [data-combo-block]': { mt: 0 } }}>
+                <ComboProductBlock productId={product.id} />
               </Box>
 
               {/* Trust badges */}

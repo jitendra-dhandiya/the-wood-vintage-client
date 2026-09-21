@@ -59,8 +59,11 @@ export function useCoupon(shippingMethod: string = 'STANDARD') {
   const [appliedTick, setAppliedTick] = useState(0);
   const seq = useRef(0);
 
-  const signature = (cart?.items ?? []).map((i) => `${i.productId}:${i.variantId ?? ''}:${i.quantity}`).join('|');
-  const hasItems = !!cart?.items?.length;
+  const signature = [
+    ...(cart?.items ?? []).map((i) => `${i.productId}:${i.variantId ?? ''}:${i.quantity}`),
+    ...(cart?.combos ?? []).map((c) => `combo:${c.comboId}:${c.quantity}`),
+  ].join('|');
+  const hasItems = !!(cart?.items?.length || cart?.combos?.length);
 
   const run = useCallback(
     async (candidate: string): Promise<CouponPreview> => {

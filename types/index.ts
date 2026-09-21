@@ -235,9 +235,60 @@ export interface CartItem {
   variant?: ProductVariant;
 }
 
+export interface ComboItemView {
+  productId: string;
+  variantId: string | null;
+  name: string;
+  slug: string;
+  image: string | null;
+  size: string | null;
+  color: string | null;
+  quantity: number;
+  unitPrice: number;
+  stock: number;
+}
+
+/** A combo offer priced for the visitor's market (decision 0037). */
+export interface Combo {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: string | null;
+  badgeText: string | null;
+  startsAt: string | null;
+  endsAt: string | null;
+  currency: string;
+  currencySymbol: string;
+  available: boolean;
+  unavailableReason: string | null;
+  price: number | null;
+  separateTotal: number | null;
+  savings: number | null;
+  savingsPercent: number | null;
+  inStock: boolean;
+  maxQuantity: number;
+  outOfStock: string[];
+  items: ComboItemView[];
+}
+
+/** One atomic bundle line in the cart: only whole-bundle quantity / remove. */
+export interface CartCombo {
+  id: string;
+  comboId: string;
+  quantity: number;
+  combo: Combo;
+  unitPrice: number | null;
+  lineTotal: number | null;
+  savings: number | null;
+  /** Why this bundle can't be bought right now (out of stock, ended...), else null. */
+  problem: string | null;
+}
+
 export interface Cart {
   id: string;
   items: CartItem[];
+  combos?: CartCombo[];
 }
 
 // ─── Orders ───────────────────────────────────
@@ -279,6 +330,11 @@ export interface OrderItem {
   price: number;
   total: number;
   product?: Product;
+  /** Set when this line was sold as part of a combo; price/total are its share of the combo price. */
+  comboId?: string | null;
+  comboName?: string | null;
+  bundleId?: string | null;
+  bundleQty?: number | null;
 }
 
 // ─── Categories ────────────────────────────────

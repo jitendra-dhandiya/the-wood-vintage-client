@@ -164,6 +164,10 @@ export default function OrderDetailAdminPage() {
                       sx={{ width: 64, height: 80, bgcolor: '#f5f5f5' }} />
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Typography variant="body2" fontWeight={600}>{item.name || item.product?.name}</Typography>
+                      {item.comboName && (
+                        <Chip size="small" label={`Combo: ${item.comboName}${item.bundleQty > 1 ? ` × ${item.bundleQty}` : ''}`}
+                          sx={{ height: 20, fontSize: '0.65rem', fontWeight: 700, bgcolor: '#3B2314', color: '#fff', mt: 0.5 }} />
+                      )}
                       {/* Size and colour are snapshotted on the line; the variant
                           is only a fallback for orders placed before that. */}
                       <Stack direction="row" spacing={0.5} sx={{ mt: 0.5, flexWrap: 'wrap', gap: 0.5 }}>
@@ -181,10 +185,10 @@ export default function OrderDetailAdminPage() {
                         )}
                       </Stack>
                       <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>
-                        Qty: {item.quantity} × {formatPrice(item.price)}
+                        Qty: {item.quantity} × {formatPrice(item.price)}{item.comboName ? ' (share of combo price)' : ''}
                       </Typography>
                     </Box>
-                    <Typography variant="body2" fontWeight={700}>{formatPrice(item.price * item.quantity)}</Typography>
+                    <Typography variant="body2" fontWeight={700}>{formatPrice(item.comboName ? item.total : item.price * item.quantity)}</Typography>
                   </Box>
                 ))}
               </Stack>
