@@ -12,6 +12,7 @@ import { productApi, categoryApi, materialApi, styleApi, roomApi, artisanApi } f
 import { GENDERS } from '../../../../../constants';
 import { toast } from 'react-hot-toast';
 import SortableImageGrid, { type SortableImage } from '../../../../../components/admin/SortableImageGrid';
+import ProductCountriesSection, { type CountryDraft, loadCountryDraftsForCreate, loadCountryDraftsForProduct, validateCountryDrafts, toCountriesPayload } from '../../../../../components/admin/ProductCountriesSection';
 import { parseSizeInput, SIZE_PRESETS } from '../../../../../lib/sizeInput';
 
 /**
@@ -58,6 +59,9 @@ export default function AddProductPage() {
   const [imageColors, setImageColors] = useState<(string | null)[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
+  // "Countries & pricing" — defaults to the default country only.
+  const [countryDrafts, setCountryDrafts] = useState<CountryDraft[]>([]);
+  const [countryErrors, setCountryErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     categoryApi.getAll({ page: 1, limit: 100 }).then(({ data }) => setCategories((data as any).data || data || []));
@@ -65,6 +69,7 @@ export default function AddProductPage() {
     styleApi.getAllAdmin().then(({ data }) => setStyles((data as any).data || [])).catch(() => setStyles([]));
     roomApi.getAllAdmin().then(({ data }) => setRooms((data as any).data || [])).catch(() => setRooms([]));
     artisanApi.getAllAdmin().then(({ data }) => setArtisans((data as any).data || [])).catch(() => setArtisans([]));
+    loadCountryDraftsForCreate().then(setCountryDrafts).catch(() => setCountryDrafts([]));
   }, []);
 
   const formik = useFormik({
@@ -100,6 +105,14 @@ export default function AddProductPage() {
     },
     validationSchema: schema,
     onSubmit: async (values, { setSubmitting }) => {
+      const cErrors = validateCountryDrafts(countryDrafts);
+      setCountryErrors(cErrors);
+      if (Object.keys(cErrors).length) {
+        toast.error('Fix the Countries & pricing section first');
+        document.querySelector('[data-testid="countries-section"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setSubmitting(false);
+        return;
+      }
       try {
         // Sum of every colour/size combination entered below.
         const variantStockTotal = (values.variants || []).reduce(
@@ -156,6 +169,8 @@ export default function AddProductPage() {
         if (values.customizationNotes) fd.append('customizationNotes', values.customizationNotes);
         if (values.manufacturingTimeDays !== '') fd.append('manufacturingTimeDays', String(values.manufacturingTimeDays));
         if (values.craftStory) fd.append('craftStory', values.craftStory);
+        // Countries + per-country prices ride along so create is one transaction.
+        fd.append('countries', JSON.stringify(toCountriesPayload(countryDrafts)));
         images.forEach(img => fd.append('images', img));
         // Keyed by upload position, which is exactly how the server names them.
         fd.append(
@@ -361,6 +376,9 @@ export default function AddProductPage() {
                   </Grid>
                 </CardContent>
               </Card>
+
+              <ProductCountriesSection mode="create" drafts={countryDrafts} onChange={setCountryDrafts}
+                baseInr={formik.values.basePrice} saleInr={formik.values.salePrice} errors={countryErrors} />
 
               {/* Images */}
               <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, mb: 3 }}>

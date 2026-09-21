@@ -147,7 +147,7 @@ export default function Navbar({
     setSearchLoading(true);
     searchDebounce.current = setTimeout(async () => {
       try {
-        const { data } = await productApi.search({ q: searchQuery.trim(), limit: 6 });
+        const { data } = await productApi.search({ q: searchQuery.trim(), limit: 6, country });
         setSearchResults((data as any).data || []);
       } catch {
         setSearchResults([]);
@@ -156,7 +156,7 @@ export default function Navbar({
       }
     }, 300);
     return () => { if (searchDebounce.current) clearTimeout(searchDebounce.current); };
-  }, [searchQuery]);
+  }, [searchQuery, country]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

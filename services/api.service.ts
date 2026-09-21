@@ -55,18 +55,25 @@ export const productApi = {
   getById: (id: string) => api.get(`/products/admin/${id}`),
   getBySlug: (slug: string, country?: string | null) =>
     api.get<{ data: Product }>(`/products/${slug}`, { params: country ? { country } : undefined }),
-  getFeatured: (opts?: { limit?: number; gender?: string | null }) =>
-    api.get<{ data: Product[] }>('/products/featured', { params: { limit: opts?.limit ?? 8, ...(opts?.gender ? { gender: opts.gender } : {}) } }),
-  getTrending: (opts?: { limit?: number; gender?: string | null }) =>
-    api.get<{ data: Product[] }>('/products/trending', { params: { limit: opts?.limit ?? 8, ...(opts?.gender ? { gender: opts.gender } : {}) } }),
-  getNewArrivals: (opts?: { limit?: number; gender?: string | null }) =>
-    api.get<{ data: Product[] }>('/products/new-arrivals', { params: { limit: opts?.limit ?? 8, ...(opts?.gender ? { gender: opts.gender } : {}) } }),
-  getBestSellers: (opts?: { limit?: number; gender?: string | null }) =>
-    api.get<{ data: Product[] }>('/products/best-sellers', { params: { limit: opts?.limit ?? 8, ...(opts?.gender ? { gender: opts.gender } : {}) } }),
+  getFeatured: (opts?: { limit?: number; gender?: string | null; country?: string | null }) =>
+    api.get<{ data: Product[] }>('/products/featured', { params: { limit: opts?.limit ?? 8, ...(opts?.gender ? { gender: opts.gender } : {}), ...(opts?.country ? { country: opts.country } : {}) } }),
+  getTrending: (opts?: { limit?: number; gender?: string | null; country?: string | null }) =>
+    api.get<{ data: Product[] }>('/products/trending', { params: { limit: opts?.limit ?? 8, ...(opts?.gender ? { gender: opts.gender } : {}), ...(opts?.country ? { country: opts.country } : {}) } }),
+  getNewArrivals: (opts?: { limit?: number; gender?: string | null; country?: string | null }) =>
+    api.get<{ data: Product[] }>('/products/new-arrivals', { params: { limit: opts?.limit ?? 8, ...(opts?.gender ? { gender: opts.gender } : {}), ...(opts?.country ? { country: opts.country } : {}) } }),
+  getBestSellers: (opts?: { limit?: number; gender?: string | null; country?: string | null }) =>
+    api.get<{ data: Product[] }>('/products/best-sellers', { params: { limit: opts?.limit ?? 8, ...(opts?.gender ? { gender: opts.gender } : {}), ...(opts?.country ? { country: opts.country } : {}) } }),
   search: (params: Record<string, unknown>) => api.get('/products/search', { params }),
   create: (data: FormData) => api.post('/products', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
   update: (id: string, data: FormData) => api.put(`/products/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
   delete: (id: string) => api.delete(`/products/${id}`),
+  /** Per-country selling state (all countries) — decision 0032. */
+  getCountries: (id: string) => api.get(`/products/${id}/countries`),
+  /** Atomic replace of the country selection + per-country prices. */
+  setCountries: (id: string, countries: object[]) => api.put(`/products/${id}/countries`, { countries }),
+  /** Bulk: make products available in exactly these (enabled) countries. */
+  bulkSetCountries: (productIds: string[], countryIds: string[]) =>
+    api.put('/products/countries/bulk', { productIds, countryIds }),
   /** Bulk display-priority update. Higher sortOrder shows first. */
   updatePositions: (items: { id: string; sortOrder: number }[]) =>
     api.patch('/products/positions', { items }),

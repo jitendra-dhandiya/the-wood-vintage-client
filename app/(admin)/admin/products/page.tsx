@@ -6,14 +6,15 @@ import {
   Box, Typography, Button, Card, CardContent, TextField, InputAdornment,
   Chip, IconButton, Tooltip, Select, MenuItem, FormControl, Switch,
   Dialog, DialogTitle, DialogContent, DialogActions,
-  CircularProgress, Avatar, Pagination, Stack,
+  CircularProgress, Avatar, Pagination, Stack, Checkbox, FormControlLabel,
 } from '@mui/material';
 import { Search, Add, Edit, Delete, FilterList, Refresh, FileDownload } from '@mui/icons-material';
 import {
   useReactTable, getCoreRowModel, flexRender,
   createColumnHelper, ColumnDef,
 } from '@tanstack/react-table';
-import { productApi, categoryApi } from '../../../../services/api.service';
+import { productApi, categoryApi, countryApi } from '../../../../services/api.service';
+import { flag } from '../../../../components/admin/ProductCountriesSection';
 import { formatPrice, formatDate } from '../../../../utils/format';
 import type { Product } from '../../../../types';
 import toast from 'react-hot-toast';
@@ -41,12 +42,25 @@ export default function AdminProductsPage() {
   const [priorityEdits, setPriorityEdits] = useState<Record<string, number>>({});
   const [savingPriority, setSavingPriority] = useState(false);
   const [exporting, setExporting] = useState(false);
+  // Countries: filter ("sold in ...") + bulk "Set countries" over ticked rows.
+  const [enabledCountries, setEnabledCountries] = useState<{ id: string; code: string; name: string }[]>([]);
+  const [countryFilter, setCountryFilter] = useState<string>('all');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkCountryIds, setBulkCountryIds] = useState<Set<string>>(new Set());
+  const [bulkSaving, setBulkSaving] = useState(false);
   const limit = 20;
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 400);
     return () => clearTimeout(t);
   }, [search]);
+
+  useEffect(() => {
+    countryApi.getAllAdmin()
+      .then(({ data }) => setEnabledCountries(((data as any).data as any[]).filter((c) => c.isEnabled)))
+      .catch(() => setEnabledCountries([]));
+  }, []);
 
   useEffect(() => {
     categoryApi.getAll({ limit: 200 })
@@ -66,8 +80,10 @@ export default function AdminProductsPage() {
         status: statusFilter === 'all' ? undefined : statusFilter,
         categoryId: categoryFilter === 'all' ? undefined : categoryFilter,
         gender: genderFilter === 'all' ? undefined : genderFilter,
+        country: countryFilter === 'all' ? undefined : countryFilter,
       });
       setProducts(data.data || []);
+      setSelectedIds(new Set());
       setTotal(data.meta?.total || 0);
       setPriorityEdits({});
     } catch {
@@ -114,9 +130,9 @@ export default function AdminProductsPage() {
     }
   };
 
-  useEffect(() => { fetchProducts(); }, [page, debouncedSearch, statusFilter, categoryFilter, genderFilter]);
+  useEffect(() => { fetchProducts(); }, [page, debouncedSearch, statusFilter, categoryFilter, genderFilter, countryFilter]);
   // Any filter change invalidates the current page number.
-  useEffect(() => { setPage(1); }, [debouncedSearch, statusFilter, categoryFilter, genderFilter]);
+  useEffect(() => { setPage(1); }, [debouncedSearch, statusFilter, categoryFilter, genderFilter, countryFilter]);
 
   const dirtyPriorities = Object.entries(priorityEdits).filter(([id, value]) => {
     const current = products.find(p => p.id === id)?.sortOrder ?? 0;
@@ -156,7 +172,41 @@ export default function AdminProductsPage() {
     }
   };
 
+  const handleBulkCountries = async () => {
+    setBulkSaving(true);
+    try {
+      await productApi.bulkSetCountries([...selectedIds], [...bulkCountryIds]);
+      toast.success(`Countries updated for ${selectedIds.size} product${selectedIds.size > 1 ? 's' : ''}`);
+      setBulkOpen(false);
+      fetchProducts();
+    } catch (e: any) {
+      toast.error(e?.response?.data?.message || 'Failed to update countries');
+    } finally {
+      setBulkSaving(false);
+    }
+  };
+
+  const allOnPageSelected = products.length > 0 && products.every((p) => selectedIds.has(p.id));
+
   const columns = useMemo<ColumnDef<Product, any>[]>(() => [
+    columnHelper.display({
+      id: 'select',
+      header: () => (
+        <Checkbox size="small" checked={allOnPageSelected}
+          indeterminate={!allOnPageSelected && selectedIds.size > 0}
+          onChange={(e) => setSelectedIds(e.target.checked ? new Set(products.map((p) => p.id)) : new Set())}
+          inputProps={{ 'aria-label': 'Select all products on this page' }} />
+      ),
+      cell: ({ row }) => (
+        <Checkbox size="small" checked={selectedIds.has(row.original.id)}
+          onChange={(e) => setSelectedIds((prev) => {
+            const n = new Set(prev);
+            if (e.target.checked) n.add(row.original.id); else n.delete(row.original.id);
+            return n;
+          })}
+          inputProps={{ 'aria-label': `Select ${row.original.name}` }} />
+      ),
+    }),
     columnHelper.display({
       id: 'image',
       header: '',
@@ -232,6 +282,22 @@ export default function AdminProductsPage() {
         </Box>
       ),
     }),
+    columnHelper.display({
+      id: 'countries',
+      header: 'Countries',
+      cell: ({ row }) => {
+        const codes: string[] = (row.original as any).availableCountries || [];
+        return codes.length ? (
+          <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+            {codes.map((c) => (
+              <Chip key={c} size="small" label={`${flag(c)} ${c}`} sx={{ height: 20, fontSize: '0.68rem', fontWeight: 700 }} />
+            ))}
+          </Box>
+        ) : (
+          <Typography variant="caption" color="error">Nowhere</Typography>
+        );
+      },
+    }),
     columnHelper.accessor('stockQuantity', {
       header: 'Stock',
       cell: ({ getValue }) => (
@@ -289,7 +355,7 @@ export default function AdminProductsPage() {
         </Box>
       ),
     }),
-  ], [priorityEdits]);
+  ], [priorityEdits, selectedIds, products, allOnPageSelected]);
 
   const table = useReactTable({
     data: products,
@@ -363,6 +429,15 @@ export default function AdminProductsPage() {
                 ))}
               </Select>
             </FormControl>
+            <FormControl size="small" sx={{ minWidth: 170 }}>
+              <Select value={countryFilter} onChange={(e) => setCountryFilter(e.target.value)} displayEmpty
+                inputProps={{ 'aria-label': 'Filter by country' }}>
+                <MenuItem value="all">Sold in: any country</MenuItem>
+                {enabledCountries.map((c) => (
+                  <MenuItem key={c.id} value={c.code}>Sold in {flag(c.code)} {c.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             {/* Gender filter removed: the handicraft catalogue is not gendered (genderFilter stays 'all'). */}
             <FormControl size="small" sx={{ minWidth: 150 }}>
               <Select
@@ -374,10 +449,10 @@ export default function AdminProductsPage() {
                 <MenuItem value="draft">Drafts only</MenuItem>
               </Select>
             </FormControl>
-            {(categoryFilter !== 'all' || genderFilter !== 'all' || statusFilter !== 'all' || search) && (
+            {(categoryFilter !== 'all' || genderFilter !== 'all' || statusFilter !== 'all' || countryFilter !== 'all' || search) && (
               <Button
                 size="small"
-                onClick={() => { setCategoryFilter('all'); setGenderFilter('all'); setStatusFilter('all'); setSearch(''); }}
+                onClick={() => { setCategoryFilter('all'); setGenderFilter('all'); setStatusFilter('all'); setCountryFilter('all'); setSearch(''); }}
                 sx={{ color: '#888', whiteSpace: 'nowrap' }}
               >
                 Clear
@@ -399,6 +474,17 @@ export default function AdminProductsPage() {
                 : `Showing this category in shopper order. Highest priority first; edit the numbers and press Save order.`}
             </Typography>
           </Box>
+
+          {selectedIds.size > 0 && (
+            <Box sx={{ mb: 2, px: 2, py: 1, borderRadius: 1, bgcolor: '#f3ece4', display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+              <Typography variant="body2" fontWeight={700}>{selectedIds.size} selected</Typography>
+              <Button size="small" variant="contained" sx={{ bgcolor: '#3B2314' }}
+                onClick={() => { setBulkCountryIds(new Set(enabledCountries.filter((c) => c.code).map((c) => c.id))); setBulkOpen(true); }}>
+                Set countries
+              </Button>
+              <Button size="small" onClick={() => setSelectedIds(new Set())}>Clear selection</Button>
+            </Box>
+          )}
 
           {/* Table */}
           <Box sx={{ overflowX: 'auto' }}>
@@ -460,6 +546,29 @@ export default function AdminProductsPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Bulk set countries */}
+      <Dialog open={bulkOpen} onClose={() => setBulkOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ fontWeight: 700 }}>Set countries for {selectedIds.size} product{selectedIds.size > 1 ? 's' : ''}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            The products will be sold in exactly the ticked countries and hidden everywhere else. Existing prices are kept;
+            a country a product has no price for is refused (set it on the product itself).
+          </Typography>
+          {enabledCountries.map((c) => (
+            <FormControlLabel key={c.id} sx={{ display: 'block' }}
+              control={<Checkbox size="small" checked={bulkCountryIds.has(c.id)}
+                onChange={(e) => setBulkCountryIds((prev) => { const n = new Set(prev); if (e.target.checked) n.add(c.id); else n.delete(c.id); return n; })} />}
+              label={`${flag(c.code)} ${c.name}`} />
+          ))}
+        </DialogContent>
+        <DialogActions sx={{ p: 2.5 }}>
+          <Button onClick={() => setBulkOpen(false)} variant="outlined">Cancel</Button>
+          <Button onClick={handleBulkCountries} variant="contained" sx={{ bgcolor: '#3B2314' }} disabled={bulkSaving || bulkCountryIds.size === 0}>
+            {bulkSaving ? 'Saving...' : 'Apply'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Delete dialog */}
       <Dialog open={!!deleteId} onClose={() => setDeleteId(null)} maxWidth="xs">

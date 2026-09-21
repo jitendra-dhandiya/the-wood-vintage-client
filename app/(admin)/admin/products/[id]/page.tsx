@@ -14,6 +14,7 @@ import * as Yup from 'yup';
 import { productApi, categoryApi, variantApi, materialApi, styleApi, roomApi, artisanApi } from '../../../../../services/api.service';
 import { GENDERS } from '../../../../../constants';
 import { toast } from 'react-hot-toast';
+import ProductCountriesSection, { type CountryDraft, loadCountryDraftsForCreate, loadCountryDraftsForProduct, validateCountryDrafts, toCountriesPayload } from '../../../../../components/admin/ProductCountriesSection';
 import SortableImageGrid, { type SortableImage } from '../../../../../components/admin/SortableImageGrid';
 
 const schema = Yup.object({
@@ -52,6 +53,9 @@ export default function EditProductPage() {
   // moves the underlying arrays — only the order of the keys.
   const [imageColors, setImageColors] = useState<Record<string, string | null>>({});
   const [tagInput, setTagInput] = useState('');
+  const [countryDrafts, setCountryDrafts] = useState<CountryDraft[]>([]);
+  const [countryErrors, setCountryErrors] = useState<Record<string, string>>({});
+  const [countriesLegacy, setCountriesLegacy] = useState(false);
 
   // Variant CRUD state
   const [variants, setVariants] = useState<any[]>([]);
@@ -82,6 +86,13 @@ export default function EditProductPage() {
         );
       })
       .catch(() => setLoadError('Product not found'));
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    loadCountryDraftsForProduct(id)
+      .then(({ drafts, legacy }) => { setCountryDrafts(drafts); setCountriesLegacy(legacy); })
+      .catch(() => setCountryDrafts([]));
   }, [id]);
 
   const reloadVariants = async () => {
@@ -136,6 +147,14 @@ export default function EditProductPage() {
     },
     validationSchema: schema,
     onSubmit: async (values, { setSubmitting }) => {
+      const cErrors = countryDrafts.length ? validateCountryDrafts(countryDrafts) : {};
+      setCountryErrors(cErrors);
+      if (Object.keys(cErrors).length) {
+        toast.error('Fix the Countries & pricing section first');
+        document.querySelector('[data-testid="countries-section"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setSubmitting(false);
+        return;
+      }
       try {
         const fd = new FormData();
         fd.append('name', values.name);
@@ -212,6 +231,8 @@ export default function EditProductPage() {
           ),
         );
 
+        // Countries first: an invalid selection then changes nothing at all.
+        await productApi.setCountries(id, toCountriesPayload(countryDrafts));
         await productApi.update(id, fd);
         toast.success('Product updated!');
         router.push('/admin/products');
@@ -440,6 +461,11 @@ export default function EditProductPage() {
                   </Grid>
                 </CardContent>
               </Card>
+
+              {countryDrafts.length > 0 && (
+                <ProductCountriesSection mode="edit" drafts={countryDrafts} onChange={setCountryDrafts} legacy={countriesLegacy}
+                  baseInr={formik.values.basePrice} saleInr={formik.values.salePrice} errors={countryErrors} />
+              )}
 
               {/* Delivery Charges */}
               <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, mb: 3 }}>

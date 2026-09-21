@@ -11,9 +11,12 @@ const FETCH_OPTS = {
   signal: AbortSignal.timeout(8000),
 };
 
-async function getProducts() {
+// Per country: a product switched off for a country must not be advertised
+// under that country's URLs (the page 404s there).
+async function getProducts(countryCode: string) {
   try {
-    const res = await fetch(`${BACKEND_API_URL}/products?limit=500&page=1`, FETCH_OPTS);
+    const qs = countryCode ? `&country=${encodeURIComponent(countryCode.toUpperCase())}` : '';
+    const res = await fetch(`${BACKEND_API_URL}/products?limit=500&page=1${qs}`, FETCH_OPTS);
     const json = await res.json();
     return json.data || [];
   } catch { return []; }
@@ -85,8 +88,8 @@ async function getStyles() {
  * here (`0004`'s "Consequences" already flagged this).
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, categories, blogs, collections, artisans, materials, rooms, styles, countries] = await Promise.all([
-    getProducts(), getCategories(), getBlogs(), getCollections(), getArtisans(),
+  const [categories, blogs, collections, artisans, materials, rooms, styles, countries] = await Promise.all([
+    getCategories(), getBlogs(), getCollections(), getArtisans(),
     getMaterials(), getRooms(), getStyles(), getEnabledCountries(),
   ]);
 
@@ -94,6 +97,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // if the countries endpoint is unreachable — better than an empty sitemap.
   const codes = countries.length ? countries.map((c) => c.code.toLowerCase()) : [''];
   const prefixOf = (code: string) => (code ? `/${code}` : '');
+  const productsByCountry = new Map<string, any[]>(
+    await Promise.all(codes.map(async (c) => [c, await getProducts(c)] as [string, any[]])),
+  );
 
   const sitemap: MetadataRoute.Sitemap = [];
 
@@ -111,7 +117,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       { url: `${base}/faq`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
     );
 
-    for (const p of products) {
+    for (const p of productsByCountry.get(code) ?? []) {
       sitemap.push({
         url: `${base}/product/${p.slug}`,
         lastModified: new Date(p.updatedAt),

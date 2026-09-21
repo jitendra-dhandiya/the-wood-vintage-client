@@ -31,9 +31,9 @@ async function getHomepageData(gender: GenderType) {
   } catch { return null; }
 }
 
-async function getProducts(type: string, gender: GenderType) {
+async function getProducts(type: string, gender: GenderType, country: string) {
   try {
-    const res = await fetch(`${API}/products/${type}?limit=8&gender=${gender}`, { cache: 'no-store' });
+    const res = await fetch(`${API}/products/${type}?limit=8&gender=${gender}&country=${encodeURIComponent(country)}`, { cache: 'no-store' });
     if (!res.ok) return [];
     return (await res.json()).data || [];
   } catch { return []; }
@@ -68,7 +68,8 @@ async function getReels(gender: GenderType) {
   } catch { return []; }
 }
 
-export default async function HomePage() {
+export default async function HomePage({ params }: Props) {
+  const { country } = await params;
   // The shopper's WOMEN/MEN preference. Without this the server always rendered
   // the unfiltered catalogue while the restored toggle showed MEN, so a refresh
   // left the toggle and the products disagreeing.
@@ -76,10 +77,10 @@ export default async function HomePage() {
 
   const [homepageData, featured, newArrivals, trending, bestSellers, categories, stores, reels] = await Promise.all([
     getHomepageData(gender),
-    getProducts('featured', gender),
-    getProducts('new-arrivals', gender),
-    getProducts('trending', gender),
-    getProducts('best-sellers', gender),
+    getProducts('featured', gender, country),
+    getProducts('new-arrivals', gender, country),
+    getProducts('trending', gender, country),
+    getProducts('best-sellers', gender, country),
     getCategories(),
     getStores(),
     getReels(gender),

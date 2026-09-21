@@ -24,6 +24,7 @@ import TrustRow from './craft/TrustRow';
 import NewsletterBand from './craft/NewsletterBand';
 import { productApi, bannerApi, instagramReelsApi, roomApi, materialApi, artisanApi } from '../../services/api.service';
 import type { GenderType } from '../../lib/genderPreference';
+import { useCountry } from '../../contexts/CountryContext';
 
 // ── Promo strip ────────────────────────────────────────────────
 function PromoStrip() {
@@ -89,6 +90,7 @@ interface Props {
 
 // ── Main component ─────────────────────────────────────────────
 export default function GenderHomePage({ sections, initialGender, initialData }: Props) {
+  const { country } = useCountry();
   const gender = useAppSelector((s) => s.gender.selected);
   const genderReady = useAppSelector((s) => s.gender.initialized);
 
@@ -175,7 +177,7 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
 
     const target = displayGender;
     setFetching(true);
-    const opts = { limit: 10, gender: target };
+    const opts = { limit: 10, gender: target, country };
 
     Promise.all([
       bannerApi.getByType('hero', target),
