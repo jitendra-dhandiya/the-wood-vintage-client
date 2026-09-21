@@ -10,7 +10,13 @@ export type AnalyticsEventName =
   | 'PRODUCT_VIEW'
   | 'ADD_TO_CART'
   | 'CHECKOUT_STARTED'
-  | 'ORDER_PLACED';
+  | 'ORDER_PLACED'
+  // Quote / lead capture (decision 0034)
+  | 'QUOTE_CTA_VIEW'
+  | 'QUOTE_CTA_CLICK'
+  | 'QUOTE_STEP1_DONE'
+  | 'LEAD_SUBMITTED'
+  | 'WHATSAPP_CLICK';
 
 interface TrackEventOptions {
   path?: string;

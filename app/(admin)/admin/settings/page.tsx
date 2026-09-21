@@ -431,6 +431,7 @@ export default function SettingsPage() {
   const homepageKeys = ['announcement_text'];
   const analyticsKeys = ['google_analytics_id', 'facebook_pixel_id'];
   const navKeys = [...NAV_SETTING_KEYS];
+  const leadKeys = ['whatsapp_number', 'whatsapp_default_message', 'lead_response_promise', 'lead_notification_email', 'whatsapp_float_sitewide'];
 
   // Resolved the same way the storefront resolves it, so the preview below
   // cannot drift from what shoppers get.
@@ -469,6 +470,7 @@ export default function SettingsPage() {
             <Tab label="Homepage" />
             <Tab label="Analytics" />
             <Tab label="Navigation" />
+            <Tab label="Leads" />
           </Tabs>
 
           <Box sx={{ p: 3 }}>
@@ -603,6 +605,46 @@ export default function SettingsPage() {
                 </Grid>
               </Grid>
               <SaveBtn keys={analyticsKeys} />
+            </TabPanel>
+
+            {/* Leads */}
+            <TabPanel value={tab} index={6}>
+              <Typography sx={{ fontSize: '0.82rem', color: '#666', mb: 3, maxWidth: '62ch' }}>
+                Quote requests and WhatsApp chat on product pages. The WhatsApp number ships as a placeholder
+                (919876543210): replace it with the real business number before running ads.
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField label="WhatsApp number" size="small" fullWidth placeholder="919876543210"
+                    helperText="International format, digits only, no + or spaces (India: 91 then the 10-digit number)."
+                    value={settings['whatsapp_number'] ?? ''} onChange={e => set('whatsapp_number', e.target.value)} />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField label="Lead notification email" size="small" fullWidth type="email"
+                    helperText="New quote requests are emailed here. Empty = the Support Email in the Store tab."
+                    value={settings['lead_notification_email'] ?? ''} onChange={e => set('lead_notification_email', e.target.value)} />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField label="Response promise" size="small" fullWidth placeholder="within 1 business day"
+                    helperText='Shown as "We reply ..." to customers. Only promise what you can keep.'
+                    value={settings['lead_response_promise'] ?? ''} onChange={e => set('lead_response_promise', e.target.value)} />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField label="Floating WhatsApp button on every page" size="small" fullWidth select SelectProps={{ native: true }}
+                    helperText="Product pages always show WhatsApp. This adds a floating button elsewhere."
+                    value={settings['whatsapp_float_sitewide'] === 'true' ? 'true' : 'false'}
+                    onChange={e => set('whatsapp_float_sitewide', e.target.value)}>
+                    <option value="false">Off (product pages only)</option>
+                    <option value="true">On (site-wide)</option>
+                  </TextField>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="WhatsApp default message" size="small" fullWidth multiline rows={2}
+                    helperText="The product name, link and the customer's room/style are appended automatically."
+                    value={settings['whatsapp_default_message'] ?? ''} onChange={e => set('whatsapp_default_message', e.target.value)} />
+                </Grid>
+              </Grid>
+              <SaveBtn keys={leadKeys} />
             </TabPanel>
 
             {/* Navigation */}

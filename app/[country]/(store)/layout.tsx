@@ -2,6 +2,7 @@ import Navbar from '../../../components/layout/Navbar';
 import Footer from '../../../components/layout/Footer';
 import CartDrawer from '../../../components/cart/CartDrawer';
 import MobileBottomNav from '../../../components/layout/MobileBottomNav';
+import WhatsAppFloat from '../../../components/common/WhatsAppFloat';
 import AuthInitializer from '../../../components/common/AuthInitializer';
 import GenderInitializer from '../../../components/common/GenderInitializer';
 import LoginModal from '../../../components/auth/LoginModal';
@@ -101,6 +102,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       <Footer settings={settings} />
       <CartDrawer />
       <MobileBottomNav />
+      <WhatsAppFloat settings={settings} />
       <LoginModal />
     </MobileMotionConfig>
   );

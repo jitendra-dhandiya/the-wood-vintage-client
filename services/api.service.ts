@@ -390,6 +390,17 @@ export const analyticsApi = {
     api.get('/analytics/transactions', { params }),
 };
 
+// ─── Leads (quote requests) ───────────────────────────────────
+export const leadApi = {
+  create: (data: object) => api.post('/leads', data),
+  // Admin
+  getAll: (params?: Record<string, unknown>) => api.get('/leads', { params }),
+  getById: (id: string) => api.get(`/leads/${id}`),
+  update: (id: string, data: object) => api.patch(`/leads/${id}`, data),
+  exportCsv: (params?: Record<string, unknown>) => api.get('/leads/export', { params, responseType: 'blob' }),
+  summary: (params?: Record<string, unknown>) => api.get('/analytics/leads-summary', { params }),
+};
+
 // ─── Settings ─────────────────────────────────────────────────
 export const settingsApi = {
   getPublic: () => api.get('/settings/public'),

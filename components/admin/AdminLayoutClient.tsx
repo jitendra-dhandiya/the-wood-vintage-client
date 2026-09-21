@@ -14,7 +14,7 @@ import {
   BarChart, Settings, Image, Article, LocalOffer, Star, Replay,
   ExpandLess, ExpandMore, Menu as MenuIcon, ChevronLeft,
   Web, Collections, Tune, Policy, Logout, Person,
-  ManageAccounts, AttachMoney, Search, LocalShipping,
+  ManageAccounts, AttachMoney, Search, LocalShipping, RequestQuote,
 } from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
 import { useEffect } from 'react';
@@ -40,6 +40,7 @@ const NAV_ITEMS = [
     ],
   },
   { label: 'Customers', icon: <People fontSize="small" />, href: '/admin/customers' },
+  { label: 'Leads', icon: <RequestQuote fontSize="small" />, href: '/admin/leads' },
   {
     label: 'Content',
     icon: <Web fontSize="small" />,

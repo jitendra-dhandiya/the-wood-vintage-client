@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -27,6 +27,11 @@ import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
 import { getRecentlyViewed, recordView } from '../../lib/recentlyViewed';
 import { trackEvent } from '../../lib/analytics';
+import { useLeadSettings } from '../../lib/leadSettings';
+import {
+  QuoteCta, WhatsAppButton, StickyQuoteBar, LeadDialog, whatsAppHref,
+  EMPTY_ANSWERS, type QuoteAnswers,
+} from './QuoteLead';
 
 interface Props {
   product: Product;
@@ -35,7 +40,32 @@ interface Props {
 export default function ProductDetailClient({ product }: Props) {
   const { country, currencySymbol } = useCountry();
   const { addToCart, isLoading } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const leadSettings = useLeadSettings();
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [quoteAnswers, setQuoteAnswers] = useState<QuoteAnswers>(EMPTY_ANSWERS);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const quoteProduct = useMemo(() => ({
+    id: product.id, name: product.name,
+  }), [product.id, product.name]);
+  const waHref = whatsAppHref(leadSettings, quoteProduct, quoteAnswers);
+  const openQuote = () => {
+    trackEvent('QUOTE_CTA_CLICK', { productId: product.id, path: window.location.pathname });
+    setQuoteOpen(true);
+  };
+  // QUOTE_CTA_VIEW: once per product view, when the primary CTA is first on screen.
+  useEffect(() => {
+    const el = ctaRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        trackEvent('QUOTE_CTA_VIEW', { productId: product.id, path: window.location.pathname });
+        io.disconnect();
+      }
+    }, { threshold: 0.6 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [product.id]);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -348,7 +378,7 @@ export default function ProductDetailClient({ product }: Props) {
   };
 
   return (
-    <Box sx={{ pb: { xs: 10, md: 6 } }}>
+    <Box sx={{ pb: { xs: 18, md: 6 } }}>
       <Container maxWidth="xl" sx={{ pt: 3 }}>
         {/* Breadcrumbs */}
         <Breadcrumbs separator={<NavigateNext fontSize="small" />} sx={{ mb: 3, fontSize: '0.8rem', position: 'relative', zIndex: 2 }}>
@@ -694,45 +724,54 @@ export default function ProductDetailClient({ product }: Props) {
                 </Typography>
               )}
 
-              {/* Actions */}
-              <Stack direction="row" spacing={1.5} sx={{ mb: 3 }}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  size="large"
-                  onClick={handleAddToCart}
-                  loading={isLoading}
-                  loadingPosition="start"
-                  sx={{
-                    bgcolor: '#3B2314', py: 1.75, fontSize: '0.8rem',
-                    letterSpacing: '0.12em', fontWeight: 700,
-                    '&:hover': { bgcolor: '#A0693A' },
-                    '&.MuiButton-loading': { color: 'transparent' },
-                    '& .MuiButton-loadingIndicator': { color: '#fff' },
-                  }}
-                >
-                  {isLoading ? 'Adding' : 'Add to Bag'}
-                </Button>
-                <IconButton
-                  onClick={handleWishlist}
-                  aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-                  aria-pressed={inWishlist}
-                  sx={{
-                    border: '1.5px solid', borderColor: '#e0e0e0',
-                    borderRadius: 1, px: 2,
-                    '&:hover': { borderColor: '#3B2314' },
-                  }}
-                >
-                  {inWishlist ? <Favorite key={wishPop} className={wishPop ? 'pop' : undefined} sx={{ color: '#7E5029' }} /> : <FavoriteBorder />}
-                </IconButton>
-                <IconButton
-                  onClick={handleShare}
-                  aria-label="Share this product"
-                  sx={{ border: '1.5px solid', borderColor: '#e0e0e0', borderRadius: 1, px: 1.5 }}
-                >
-                  <Share fontSize="small" />
-                </IconButton>
-              </Stack>
+              {/* Actions. Quote is the primary path for a high-ticket, customisable
+                  piece (decision 0034); WhatsApp is the strong secondary; Add to
+                  Bag stays but is outlined because online checkout still exists. */}
+              <Box sx={{ mb: 3 }}>
+                <Box ref={ctaRef}>
+                  <QuoteCta
+                    onClick={openQuote}
+                    sublineText={`Free design guidance. We reply ${leadSettings.responsePromise}.`}
+                  />
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1.5, mt: 1.75 }}>
+                  {waHref
+                    ? <WhatsAppButton href={waHref} productId={product.id} />
+                    : !leadSettings.loaded && <Box aria-hidden sx={{ flex: '1 1 0' }} />}
+                  <Button
+                    variant="outlined"
+                    onClick={handleAddToCart}
+                    loading={isLoading}
+                    loadingPosition="start"
+                    sx={{
+                      flex: '1 1 0', minWidth: 0, py: 1.5, fontSize: '0.78rem', letterSpacing: '0.08em', fontWeight: 700,
+                      color: '#3B2314', borderColor: '#3B2314', borderWidth: 1.5, whiteSpace: 'nowrap',
+                      '&:hover': { borderWidth: 1.5, borderColor: '#A0693A', color: '#A0693A', bgcolor: 'transparent' },
+                    }}
+                  >
+                    {isLoading ? 'Adding' : 'Add to Bag'}
+                  </Button>
+                  <IconButton
+                    onClick={handleWishlist}
+                    aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                    aria-pressed={inWishlist}
+                    sx={{
+                      border: '1.5px solid', borderColor: '#e0e0e0',
+                      borderRadius: 1, px: 1.5,
+                      '&:hover': { borderColor: '#3B2314' },
+                    }}
+                  >
+                    {inWishlist ? <Favorite key={wishPop} className={wishPop ? 'pop' : undefined} sx={{ color: '#7E5029' }} /> : <FavoriteBorder />}
+                  </IconButton>
+                  <IconButton
+                    onClick={handleShare}
+                    aria-label="Share this product"
+                    sx={{ border: '1.5px solid', borderColor: '#e0e0e0', borderRadius: 1, px: 1.5 }}
+                  >
+                    <Share fontSize="small" />
+                  </IconButton>
+                </Box>
+              </Box>
 
               {/* Trust badges */}
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 3 }}>
@@ -915,6 +954,24 @@ export default function ProductDetailClient({ product }: Props) {
           </Box>
         )}
       </Container>
+
+      <StickyQuoteBar
+        targetRef={ctaRef}
+        hidden={quoteOpen}
+        onQuote={openQuote}
+        waHref={waHref}
+        productId={product.id}
+      />
+      <LeadDialog
+        open={quoteOpen}
+        onClose={() => setQuoteOpen(false)}
+        product={quoteProduct}
+        settings={leadSettings}
+        defaultCountry={country || 'IN'}
+        prefill={{ name: user ? `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() : '', email: user?.email }}
+        answers={quoteAnswers}
+        setAnswers={setQuoteAnswers}
+      />
     </Box>
   );
 }

@@ -5,8 +5,8 @@ import {
   Table, TableBody, TableCell, TableHead, TableRow,
   Chip, Avatar,
 } from '@mui/material';
-import { TrendingUp, ShoppingCart, People, Inventory2 } from '@mui/icons-material';
-import { analyticsApi } from '../../../../services/api.service';
+import { TrendingUp, ShoppingCart, People, Inventory2, RequestQuote } from '@mui/icons-material';
+import { analyticsApi, leadApi } from '../../../../services/api.service';
 import { formatPrice, formatDate } from '../../../../utils/format';
 
 const StatCard = ({ title, value, icon, color, loading }: any) => (
@@ -38,8 +38,11 @@ const ORDER_STATUS_COLORS: Record<string, any> = {
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [leads, setLeads] = useState<any>(null);
 
   useEffect(() => {
+    const since = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+    leadApi.summary({ startDate: since }).then(({ data: r }) => setLeads(r.data)).catch(() => {});
     analyticsApi.getDashboard().then(({ data: res }) => {
       setData(res.data);
     }).finally(() => setLoading(false));
@@ -79,6 +82,16 @@ export default function AdminDashboard() {
             title="Total Products"
             value={loading ? '' : data?.products || 0}
             icon={<Inventory2 />} color="#A0693A" loading={loading}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2.5} sx={{ mb: 4 }}>
+        <Grid item xs={12} sm={6} lg={3}>
+          <StatCard
+            title="Leads (30 days)"
+            value={leads ? leads.total : ''}
+            icon={<RequestQuote />} color="#A0693A" loading={!leads}
           />
         </Grid>
       </Grid>

@@ -305,3 +305,39 @@ img { max-width: 100%; height: auto; }
   .nav-overlay__mark, .nav-overlay__text { animation: none !important; }
   .nav-overlay__ring svg { animation: wvSpin 2.4s linear infinite !important; }
 }
+
+/* ── Quote CTA (decision 0034) ──────────────────────────────────────────
+   Attention without nagging: a soft copper ring pulse around the button and a
+   slow shimmer sweep across it, 4 cycles after a short delay, then still.
+   transform/opacity only (no layout shift). `.quiet` is set from JS on the
+   first hover/focus/touch so it never restarts. */
+.quote-cta-wrap { position: relative; display: block; }
+.quote-cta-wrap::before {
+  content: ''; position: absolute; inset: 0; border-radius: 4px; pointer-events: none;
+  border: 2px solid #A0693A; opacity: 0; transform: scale(1);
+  animation: wvQuoteRing 2.4s ease-out 1.5s 4;
+}
+.quote-cta { position: relative; overflow: hidden; }
+.quote-cta::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 45%; pointer-events: none;
+  background: linear-gradient(105deg, transparent 0%, rgba(255, 252, 245, 0.28) 50%, transparent 100%);
+  transform: translateX(-130%);
+  animation: wvQuoteShimmer 2.4s ease-in-out 1.5s 4;
+}
+.quote-cta-wrap.quiet::before, .quote-cta-wrap.quiet .quote-cta::after,
+.quote-cta-wrap:hover::before, .quote-cta-wrap:hover .quote-cta::after,
+.quote-cta-wrap:focus-within::before, .quote-cta-wrap:focus-within .quote-cta::after { animation: none; }
+@keyframes wvQuoteRing {
+  0%   { opacity: 0.6; transform: scale(1); }
+  70%  { opacity: 0;   transform: scale(1.045, 1.2); }
+  100% { opacity: 0;   transform: scale(1.045, 1.2); }
+}
+@keyframes wvQuoteShimmer {
+  0%   { transform: translateX(-130%); }
+  55%, 100% { transform: translateX(330%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quote-cta-wrap::before, .quote-cta::after { animation: none !important; }
+}
+.quote-sticky { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease; }
+@media (prefers-reduced-motion: reduce) { .quote-sticky { transition: none; } }
