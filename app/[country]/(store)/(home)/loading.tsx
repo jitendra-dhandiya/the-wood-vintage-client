@@ -2,8 +2,9 @@ import { Box, Container, Grid, Skeleton } from '@mui/material';
 
 function HeroSkeleton() {
   return (
-    <Box sx={{ position: 'relative', width: '100%', height: { xs: 340, sm: 460, md: 580 }, overflow: 'hidden' }}>
-      <Skeleton variant="rectangular" width="100%" height="100%" animation="wave" />
+    <Box sx={{ position: 'relative', width: '100%', height: { xs: 340, sm: 460, md: 580 }, overflow: 'hidden', bgcolor: '#2A190E' }}>
+      {/* Mirrors the split hero: dark copy panel left, photo right. */}
+      <Skeleton variant="rectangular" animation="wave" sx={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: { xs: '100%', md: '58%' }, bgcolor: 'rgba(255,255,255,0.07)', '&::after': { background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)' } }} />
       {/* Overlay text placeholders */}
       <Box sx={{
         position: 'absolute', bottom: { xs: 32, md: 60 }, left: { xs: 24, md: 80 },

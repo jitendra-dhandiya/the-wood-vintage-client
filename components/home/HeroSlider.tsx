@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Box, Container, Typography } from '@mui/material';
-import { useReducedMotion } from 'framer-motion';
 import type { Banner } from '../../types';
 import { resolveBannerLink } from '../../lib/bannerLink';
 import { useCountry } from '../../contexts/CountryContext';
@@ -28,7 +27,15 @@ interface Props {
  */
 export default function HeroSlider({ banners, config }: Props) {
   const { country } = useCountry();
-  const reduce = useReducedMotion();
+  // State (not a render-time media read) so SSR and the first client render match.
+  const [reduce, setReduce] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const on = () => setReduce(mq.matches);
+    on();
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
   const n = banners.length;
@@ -60,10 +67,10 @@ export default function HeroSlider({ banners, config }: Props) {
       {/* Photography */}
       <Box sx={{ order: { xs: 1, md: 2 }, position: 'relative', overflow: 'hidden', aspectRatio: { xs: '5 / 4', md: 'auto' }, bgcolor: C.walnut }}>
         {banners.map((bn, i) => (
-          <Box key={bn.id} aria-hidden={i !== idx} sx={{ position: 'absolute', inset: 0, opacity: i === idx ? 1 : 0, transition: reduce ? 'none' : 'opacity 1.2s ease', zIndex: i === idx ? 1 : 0 }}>
-            <Box sx={{
+          <Box key={bn.id} aria-hidden={i !== idx} sx={{ position: 'absolute', inset: 0, opacity: i === idx ? 1 : 0, transition: 'opacity 1.2s ease', zIndex: i === idx ? 1 : 0 }}>
+            <Box className="hero-ken" sx={{
               position: 'absolute', inset: 0,
-              ...(reduce ? {} : { animation: i === idx ? `wvKen ${DELAY + 2500}ms ease-out forwards` : 'none' }),
+              animation: i === idx ? `wvKen ${DELAY + 2500}ms ease-out forwards` : 'none',
               '@keyframes wvKen': { from: { transform: 'scale(1)' }, to: { transform: 'scale(1.07)' } },
             }}>
               <Image src={bn.image} alt={bn.title} fill priority={i === 0} loading={i === 0 ? 'eager' : 'lazy'} sizes="(max-width: 900px) 100vw, 58vw" style={{ objectFit: 'cover', objectPosition: 'center 30%' }} />
@@ -95,16 +102,15 @@ export default function HeroSlider({ banners, config }: Props) {
             <Typography sx={{ color: C.gold, letterSpacing: '0.32em', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', mb: 2.25 }}>
               Handcrafted in India
             </Typography>
-            <Typography key={b.id} component="h1" sx={{
+            <Typography key={b.id} component="h1" className="hero-rise" style={{ '--hero-delay': '0.05s' } as React.CSSProperties} sx={{
               fontFamily: SERIF, fontWeight: 600, lineHeight: 1.02, letterSpacing: '-0.015em', fontSize: { xs: '2.6rem', sm: '3.2rem', md: '3.6rem', lg: '4.6rem' },
-              ...(reduce ? {} : { animation: 'wvRise .9s cubic-bezier(0.22,1,0.36,1) both', '@keyframes wvRise': { from: { opacity: 0, transform: 'translateY(22px)' }, to: { opacity: 1, transform: 'none' } } }),
             }}>
               {b.title}
             </Typography>
             {b.subtitle && (
-              <Typography sx={{ color: 'rgba(255,252,245,0.88)', mt: 2.5, fontSize: { xs: '1rem', md: '1.1rem' }, lineHeight: 1.7, maxWidth: 460 }}>{b.subtitle}</Typography>
+              <Typography key={`s${b.id}`} className="hero-rise" style={{ '--hero-delay': '0.18s' } as React.CSSProperties} sx={{ color: 'rgba(255,252,245,0.88)', mt: 2.5, fontSize: { xs: '1rem', md: '1.1rem' }, lineHeight: 1.7, maxWidth: 460 }}>{b.subtitle}</Typography>
             )}
-            <Box sx={{ mt: 4, display: 'flex', gap: 2.5, alignItems: 'center', flexWrap: 'wrap' }}>
+            <Box key={`c${b.id}`} className="hero-rise" style={{ '--hero-delay': '0.3s' } as React.CSSProperties} sx={{ mt: 4, display: 'flex', gap: 2.5, alignItems: 'center', flexWrap: 'wrap' }}>
               {href && b.ctaText && (
                 <Box component={Link} href={href} sx={{
                   display: 'inline-flex', bgcolor: C.copper, color: '#fff', px: 4.25, py: 1.75, fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.16em', textTransform: 'uppercase', textDecoration: 'none',
@@ -126,7 +132,7 @@ export default function HeroSlider({ banners, config }: Props) {
                     flex: 1, height: 22, p: 0, border: 0, bgcolor: 'transparent', cursor: 'pointer', position: 'relative',
                     '&::before': { content: '""', position: 'absolute', left: 0, right: 0, top: 10, height: 2, bgcolor: 'rgba(255,255,255,0.28)' },
                     '&::after': { content: '""', position: 'absolute', left: 0, top: 10, height: 2, bgcolor: C.gold, width: i < idx || (i === idx && (reduce || paused || n < 2)) ? '100%' : 0,
-                      ...(i === idx && !reduce && !paused ? { animation: `wvBar ${DELAY}ms linear forwards`, '@keyframes wvBar': { from: { width: 0 }, to: { width: '100%' } } } : {}) },
+                      ...(i === idx && !paused ? { animation: `wvBar ${DELAY}ms linear forwards`, '@keyframes wvBar': { from: { width: 0 }, to: { width: '100%' } } } : {}) },
                     '&:focus-visible': { outline: `2px solid ${C.gold}`, outlineOffset: 2 },
                   }} />
                 ))}
