@@ -17,7 +17,7 @@ import { Box, Container, Grid, Skeleton } from '@mui/material';
 export function ProductCardSkeleton() {
   return (
     <Box>
-      <Box sx={{ position: 'relative', paddingTop: '133%', bgcolor: '#f4f4f4', mb: 1.5 }}>
+      <Box sx={{ position: 'relative', paddingTop: '133%', bgcolor: '#F1E8D8', mb: 1.5 }}>
         <Skeleton
           variant="rectangular"
           animation="wave"
@@ -161,5 +161,67 @@ export function AdminPageSkeleton({ rows = 6 }: { rows?: number }) {
         <Skeleton key={i} variant="rectangular" height={72} animation="wave" sx={{ borderRadius: 2, mb: 1.5 }} />
       ))}
     </Box>
+  );
+}
+
+/** Cart: line items on the left, order summary on the right (mirrors cart/page.tsx). */
+export function CartSkeleton() {
+  return (
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Skeleton variant="text" width={260} height={44} animation="wave" sx={{ mb: 3 }} />
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={8}>
+          {[0, 1, 2].map(i => (
+            <Box key={i} sx={{ display: 'flex', gap: 2, p: 2, mb: 2, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+              <Skeleton variant="rectangular" width={100} height={130} animation="wave" sx={{ borderRadius: 1, flexShrink: 0 }} />
+              <Box sx={{ flex: 1 }}>
+                <Skeleton variant="text" width="60%" height={24} animation="wave" />
+                <Skeleton variant="text" width="30%" height={18} animation="wave" />
+                <Skeleton variant="rectangular" width={110} height={36} animation="wave" sx={{ borderRadius: 1, mt: 2 }} />
+              </Box>
+            </Box>
+          ))}
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Box sx={{ p: 3, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+            <Skeleton variant="text" width={140} height={28} animation="wave" sx={{ mb: 2 }} />
+            {[0, 1, 2].map(i => <Skeleton key={i} variant="text" height={22} animation="wave" />)}
+            <Skeleton variant="rectangular" height={52} animation="wave" sx={{ borderRadius: 1, mt: 3 }} />
+          </Box>
+        </Grid>
+      </Grid>
+    </Container>
+  );
+}
+
+/** Blog post / artisan profile: cover, title, then a column of text. */
+export function ArticleSkeleton() {
+  return (
+    <Container maxWidth="md" sx={{ py: { xs: 3, md: 6 } }}>
+      <Skeleton variant="text" width={200} height={20} animation="wave" sx={{ mb: 2 }} />
+      <Skeleton variant="text" width="85%" height={54} animation="wave" />
+      <Skeleton variant="text" width="40%" height={20} animation="wave" sx={{ mb: 3 }} />
+      <Skeleton variant="rectangular" animation="wave" sx={{ width: '100%', aspectRatio: '16 / 9', borderRadius: 2, mb: 4 }} />
+      {[95, 100, 90, 100, 70, 100, 92, 60].map((w, i) => (
+        <Skeleton key={i} variant="text" width={`${w}%`} height={22} animation="wave" />
+      ))}
+    </Container>
+  );
+}
+
+/** Placeholder rows for a plain <tbody> while a list loads (keeps the table's height stable). */
+export function TableSkeletonRows({ columns, rows = 8 }: { columns: number; rows?: number }) {
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, r) => (
+        <tr key={r} aria-hidden>
+          {Array.from({ length: columns }).map((__, c) => (
+            <td key={c} style={{ padding: '14px 12px' }}>
+              <Skeleton variant="text" animation="wave" height={20} width={c === 0 ? '40%' : `${55 + ((r * 7 + c * 13) % 40)}%`} />
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
   );
 }

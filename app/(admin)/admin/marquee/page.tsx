@@ -10,6 +10,7 @@ import {
   Preview, Campaign, Speed, Palette, Article,
 } from '@mui/icons-material';
 import api from '../../../../lib/axios';
+import { AdminPageSkeleton } from '../../../../components/common/Skeletons';
 
 // ── Types ──────────────────────────────────────────────────────────
 interface MarqueeItem {
@@ -214,9 +215,7 @@ export default function MarqueeAdminPage() {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 320 }}>
-        <CircularProgress />
-      </Box>
+      <AdminPageSkeleton rows={4} />
     );
   }
 

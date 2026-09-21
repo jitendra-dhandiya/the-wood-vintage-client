@@ -13,6 +13,7 @@ import { settingsApi } from '../../../../services/api.service';
 import api from '../../../../lib/axios';
 import { toast } from 'react-hot-toast';
 import { useImageCropper } from '../../../../components/common/ImageCropperProvider';
+import { AdminPageSkeleton } from '../../../../components/common/Skeletons';
 import {
   NAV_LAYOUT_DEFAULTS, NAV_LAYOUT_RANGES, NAV_SETTING_KEYS, resolveNavLayout,
   type NavLayout, type NavRangeKey,
@@ -422,7 +423,7 @@ export default function SettingsPage() {
     }
   };
 
-  if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}><CircularProgress /></Box>;
+  if (loading) return <AdminPageSkeleton rows={5} />;
 
   const storeKeys = ['site_name', 'site_tagline', 'site_description', 'site_email', 'site_phone', 'site_address', 'contact_hours', 'logo_url', 'currency', 'currency_symbol'];
   const shippingKeys = ['free_shipping_threshold', 'standard_shipping_rate', 'express_shipping_rate', 'self_delivery_pincodes'];

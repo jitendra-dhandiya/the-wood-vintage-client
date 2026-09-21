@@ -18,6 +18,7 @@ import { flag } from '../../../../components/admin/ProductCountriesSection';
 import { formatPrice, formatDate } from '../../../../utils/format';
 import type { Product } from '../../../../types';
 import toast from 'react-hot-toast';
+import { TableSkeletonRows } from '../../../../components/common/Skeletons';
 
 const columnHelper = createColumnHelper<Product>();
 
@@ -506,11 +507,7 @@ export default function AdminProductsPage() {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr>
-                    <td colSpan={columns.length} style={{ padding: '48px', textAlign: 'center' }}>
-                      <CircularProgress size={28} sx={{ color: '#3B2314' }} />
-                    </td>
-                  </tr>
+                  <TableSkeletonRows columns={columns.length} />
                 ) : products.length === 0 ? (
                   <tr>
                     <td colSpan={columns.length} style={{ padding: '48px', textAlign: 'center', color: '#999' }}>

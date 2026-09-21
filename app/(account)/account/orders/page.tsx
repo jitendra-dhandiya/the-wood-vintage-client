@@ -11,6 +11,8 @@ import { ORDER_STATUSES } from '../../../../constants';
 import type { Order } from '../../../../types';
 import { useCountry } from '../../../../contexts/CountryContext';
 import { withCountry } from '../../../../lib/withCountry';
+import EmptyState from '../../../../components/common/EmptyState';
+import { ReceiptLong } from '@mui/icons-material';
 
 const statusColors: Record<string, any> = {
   PENDING: 'warning', CONFIRMED: 'info', PROCESSING: 'info',
@@ -46,17 +48,13 @@ export default function OrdersPage() {
   );
 
   if (!orders.length) return (
-    <Box sx={{ textAlign: 'center', py: 8 }}>
-      <Typography variant="h5" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, mb: 1 }}>
-        No orders yet
-      </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        When you place an order, it will appear here.
-      </Typography>
-      <Button variant="contained" component={Link} href={withCountry('/shop', country)} sx={{ bgcolor: '#3B2314' }}>
-        Start Shopping
-      </Button>
-    </Box>
+    <EmptyState
+      icon={<ReceiptLong />}
+      title="No orders yet"
+      body="When you place an order, it will appear here."
+      actionLabel="Start Shopping"
+      actionHref={withCountry('/shop', country)}
+    />
   );
 
   return (

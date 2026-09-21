@@ -39,7 +39,7 @@ export interface SmartImageProps extends Omit<ImageProps, 'onLoad' | 'onError' |
 const SHIMMER_SX: SxProps<Theme> = {
   position: 'absolute',
   inset: 0,
-  background: 'linear-gradient(90deg, #f2f2f2 0%, #e8e8e8 50%, #f2f2f2 100%)',
+  background: 'linear-gradient(90deg, #F1E8D8 0%, #F8F1E3 50%, #F1E8D8 100%)',
   backgroundSize: '200% 100%',
   animation: 'smartImageShimmer 1.4s ease-in-out infinite',
   '@keyframes smartImageShimmer': {
@@ -49,7 +49,7 @@ const SHIMMER_SX: SxProps<Theme> = {
   // Respect users who have asked the OS to reduce motion.
   '@media (prefers-reduced-motion: reduce)': {
     animation: 'none',
-    background: '#f2f2f2',
+    background: '#F1E8D8',
   },
 };
 
@@ -75,7 +75,7 @@ export default function SmartImage({
       sx={{
         position: 'relative',
         overflow: 'hidden',
-        bgcolor: '#f8f8f8',
+        bgcolor: '#F1E8D8',
         ...(fill && aspectRatio ? { aspectRatio } : null),
         ...sx,
       }}

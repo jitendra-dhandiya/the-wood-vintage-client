@@ -13,6 +13,7 @@ import { useAppSelector } from '../../../../store';
 import type { Product } from '../../../../types';
 import { useCountry } from '../../../../contexts/CountryContext';
 import { withCountry } from '../../../../lib/withCountry';
+import EmptyState from '../../../../components/common/EmptyState';
 
 interface WishlistItem {
   id: string;
@@ -110,23 +111,13 @@ export default function WishlistPage() {
     return (
       <Box>
         {Header}
-        <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
-          <CardContent sx={{ textAlign: 'center', py: { xs: 6, md: 9 } }}>
-            <FavoriteBorder sx={{ fontSize: 56, color: '#e0e0e0', mb: 2 }} />
-            <Typography variant="h6" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, mb: 1 }}>
-              Your wishlist is empty
-            </Typography>
-            <Typography color="text.secondary" sx={{ mb: 3, px: 2 }}>
-              Tap the heart on anything you like and it will be waiting here.
-            </Typography>
-            <Button
-              variant="contained" component={Link} href={withCountry('/shop', country)}
-              sx={{ bgcolor: '#3B2314', '&:hover': { bgcolor: '#333' }, px: 4 }}
-            >
-              Start shopping
-            </Button>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={<FavoriteBorder />}
+          title="Your wishlist is empty"
+          body="Tap the heart on anything you like and it will be waiting here."
+          actionLabel="Start shopping"
+          actionHref={withCountry('/shop', country)}
+        />
       </Box>
     );
   }

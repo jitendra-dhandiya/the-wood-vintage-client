@@ -16,6 +16,7 @@ import { orderApi } from '../../../../services/api.service';
 import { formatPrice, formatDate } from '../../../../utils/format';
 import { orderAddress } from '../../../../lib/orderAddress';
 import toast from 'react-hot-toast';
+import { TableSkeletonRows } from '../../../../components/common/Skeletons';
 
 interface Order {
   id: string; orderNumber: string; status: string; paymentStatus: string;
@@ -283,11 +284,7 @@ export default function AdminOrdersPage() {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr>
-                    <td colSpan={columns.length} style={{ padding: 48, textAlign: 'center' }}>
-                      <CircularProgress size={28} sx={{ color: '#3B2314' }} />
-                    </td>
-                  </tr>
+                  <TableSkeletonRows columns={columns.length} />
                 ) : orders.length === 0 ? (
                   <tr>
                     <td colSpan={columns.length} style={{ padding: 48, textAlign: 'center', color: '#999' }}>

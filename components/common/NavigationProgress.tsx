@@ -6,76 +6,83 @@ import { usePathname, useSearchParams } from 'next/navigation';
  * A thin progress bar across the top during navigation.
  *
  * Next's App Router keeps the current page on screen while the next one is
- * fetched, which is good for perceived speed but leaves a click with no
- * feedback at all — on a slow connection the site simply looks broken until
- * the new page appears. This is the acknowledgement.
+ * fetched, so a click gets no feedback on a slow connection. The bar starts on
+ * the CLICK of an internal link (a capture-phase listener, so it works for
+ * every next/link including the country-prefixed /in/... routes and needs no
+ * per-link wiring) and completes when the pathname/search params change.
+ * Navigations that finish in under ~120ms never show it, so fast pages do not
+ * flicker. Programmatic router.push() calls, which have no click, get a short
+ * completion flash instead.
  *
- * Deliberately CSS-driven rather than framer-motion: MobileMotionConfig turns
- * framer-motion off below 900px, and this has to work on exactly the
- * connections where it matters most. Animating only `transform` and `opacity`
- * keeps it on the compositor, so it cannot contend with the render it is
- * reporting on.
+ * CSS-driven (transform + opacity only) so it works where framer-motion is off
+ * (< 900px). It is a status indicator and keeps running under reduced motion.
  */
 export default function NavigationProgress() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const search = searchParams.toString();
   const [state, setState] = useState<'idle' | 'loading' | 'done'>('idle');
   const first = useRef(true);
+  const pending = useRef(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const here = useRef('');
+  here.current = pathname + (search ? `?${search}` : '');
 
-  // A navigation has COMPLETED by the time the new route's effects run, so this
-  // shows the bar filling and then finishing, rather than tracking real
-  // progress — which the router does not expose. Honest enough: the bar is a
-  // "something happened" signal, and it always resolves.
+  const clear = () => { timers.current.forEach(clearTimeout); timers.current = []; };
+
+  // Start on click of an internal link.
   useEffect(() => {
-    if (first.current) {
-      first.current = false;
-      return;
-    }
-    timers.current.forEach(clearTimeout);
-    timers.current = [];
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+      if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
+      let url: URL;
+      try { url = new URL(a.href, window.location.href); } catch { return; }
+      if (url.origin !== window.location.origin) return;
+      if (url.pathname + url.search === here.current) return;
+      if (url.pathname === window.location.pathname && url.hash) return;
 
-    setState('loading');
-    timers.current.push(setTimeout(() => setState('done'), 320));
-    timers.current.push(setTimeout(() => setState('idle'), 720));
-
-    return () => {
-      timers.current.forEach(clearTimeout);
-      timers.current = [];
+      clear();
+      pending.current = true;
+      // Only show if it is still pending after 120ms; give up after 10s.
+      timers.current.push(setTimeout(() => { if (pending.current) setState('loading'); }, 120));
+      timers.current.push(setTimeout(() => { pending.current = false; setState('idle'); }, 10000));
     };
-  }, [pathname, searchParams]);
+    document.addEventListener('click', onClick, true);
+    return () => document.removeEventListener('click', onClick, true);
+  }, []);
+
+  // The route changed: finish.
+  useEffect(() => {
+    if (first.current) { first.current = false; return; }
+    clear();
+    const wasShown = pending.current;
+    pending.current = false;
+    setState('done');
+    timers.current.push(setTimeout(() => setState('idle'), wasShown ? 500 : 450));
+    return clear;
+  }, [pathname, search]);
 
   if (state === 'idle') return null;
 
   return (
     <div
+      className="nav-progress"
+      role="progressbar"
+      aria-label="Loading page"
       aria-hidden
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        // 2px read as a hairline on a busy header and was easy to miss —
-        // which defeats the point of an acknowledgement.
-        height: 4,
-        zIndex: 2000,
-        pointerEvents: 'none',
-      }}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 3, zIndex: 2000, pointerEvents: 'none' }}
     >
       <div
         style={{
           height: '100%',
           width: '100%',
           transformOrigin: '0 50%',
-          background: 'linear-gradient(90deg, #A0693A, #e6cf8a)',
-          // A soft bloom so the bar reads against both the white header and a
-          // dark hero without needing a heavier stroke.
-          boxShadow: '0 0 8px rgba(201,168,76,0.6)',
-          transform: state === 'done' ? 'scaleX(1)' : 'scaleX(0.65)',
-          opacity: state === 'done' ? 0 : 1,
-          transition: state === 'done'
-            ? 'transform 0.28s ease-out, opacity 0.28s ease-in 0.12s'
-            : 'transform 0.3s ease-out',
+          background: 'linear-gradient(90deg, #A0693A, #D9A66E)',
+          boxShadow: '0 0 8px rgba(160,105,58,0.55)',
+          ...(state === 'loading'
+            ? { animation: 'wvTrickle 9s cubic-bezier(0.05, 0.7, 0.1, 1) forwards' }
+            : { transform: 'scaleX(1)', opacity: 0, transition: 'opacity 0.35s ease-in 0.08s' }),
         }}
       />
     </div>

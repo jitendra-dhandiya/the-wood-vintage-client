@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   Drawer, Box, Typography, IconButton, Button, Divider,
-  Stack, Badge, CircularProgress,
+  Stack, Badge, Skeleton,
 } from '@mui/material';
 import { Close, Add, Remove, DeleteOutline, ShoppingBag } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -49,10 +49,19 @@ export default function CartDrawer() {
 
       {/* Items */}
       <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
-        {isLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', pt: 8 }}>
-            <CircularProgress size={32} sx={{ color: '#3B2314' }} />
-          </Box>
+        {isLoading && !cart?.items.length ? (
+          <Stack spacing={2} aria-busy="true" aria-label="Loading your bag">
+            {[0, 1, 2].map((i) => (
+              <Box key={i} sx={{ display: 'flex', gap: 2, pb: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+                <Skeleton variant="rectangular" width={80} height={107} animation="wave" sx={{ borderRadius: 1, flexShrink: 0 }} />
+                <Box sx={{ flex: 1 }}>
+                  <Skeleton variant="text" width="75%" height={22} animation="wave" />
+                  <Skeleton variant="text" width="35%" height={18} animation="wave" />
+                  <Skeleton variant="rectangular" width={96} height={30} animation="wave" sx={{ borderRadius: 1, mt: 1.5 }} />
+                </Box>
+              </Box>
+            ))}
+          </Stack>
         ) : !cart?.items.length ? (
           <Box sx={{ textAlign: 'center', pt: 8 }}>
             <ShoppingBag sx={{ fontSize: 64, color: '#e0e0e0', mb: 2 }} />
@@ -71,7 +80,7 @@ export default function CartDrawer() {
             </Button>
           </Box>
         ) : (
-          <Stack spacing={2}>
+          <Stack spacing={2} sx={{ opacity: isLoading ? 0.6 : 1, transition: 'opacity 0.2s ease', pointerEvents: isLoading ? 'none' : 'auto' }}>
             {cart.items.map((item) => (
               <Box key={item.id} sx={{ display: 'flex', gap: 2, pb: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
                 {/* Product image */}

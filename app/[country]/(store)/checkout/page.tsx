@@ -276,6 +276,7 @@ export default function CheckoutPage() {
 
   // ── Place order ────────────────────────────────────────────────
   const handlePlaceOrder = async (shippingAddress: object) => {
+    if (loading) return; // double-submit guard (Enter key, double click)
     if (!cart?.items.length) { toast.error('Your cart is empty'); return; }
     setLoading(true);
     try {
@@ -653,14 +654,16 @@ export default function CheckoutPage() {
                   <Button
                     type="submit" fullWidth variant="contained" size="large"
                     disabled={loading}
+                    aria-busy={loading}
                     sx={{
                       bgcolor: '#3B2314', py: 2, fontSize: '0.85rem',
                       letterSpacing: '0.12em', fontWeight: 700,
-                      '&:hover': { bgcolor: '#333' },
+                      '&:hover': { bgcolor: '#A0693A' },
+                      '&.Mui-disabled': { bgcolor: '#5A3D2B', color: '#fff' },
                     }}
                   >
                     {loading
-                      ? <CircularProgress size={20} sx={{ color: 'white' }} />
+                      ? <><CircularProgress size={18} thickness={5} sx={{ color: 'white', mr: 1.25 }} />Placing your order…</>
                       : shippingMethod === 'COD'
                         ? `Pay Delivery ₹${selectedShipping.charge} & Place Order`
                         : `Place Order & Pay — ${formatPrice(total, currencySymbol)}`

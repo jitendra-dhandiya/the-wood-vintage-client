@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -14,6 +14,8 @@ import { FREE_SHIPPING_THRESHOLD, SHIPPING_CHARGE } from '../../../../constants'
 import { useCountry } from '../../../../contexts/CountryContext';
 import { withCountry } from '../../../../lib/withCountry';
 import toast from 'react-hot-toast';
+import EmptyState from '../../../../components/common/EmptyState';
+import { CartSkeleton } from '../../../../components/common/Skeletons';
 
 export default function CartPage() {
   const { cart, subtotal, updateQuantity, removeFromCart, fetchCart } = useCart();
@@ -23,6 +25,19 @@ export default function CartPage() {
   const [appliedCoupon, setAppliedCoupon] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
   const [freeShipping, setFreeShipping] = useState(false);
+
+  // Until the first fetch settles, `cart` is null and the page would flash
+  // "Your bag is empty" at someone whose bag is not.
+  // `mounted` keeps the first client render identical to the server's (the
+  // store may already hold the cart by the time this page hydrates).
+  const [mounted, setMounted] = useState(false);
+  const [ready, setReady] = useState(false);
+  useLayoutEffect(() => setMounted(true), []);
+  useEffect(() => {
+    if (cart) { setReady(true); return; }
+    fetchCart().finally(() => setReady(true));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const baseShipping = subtotal < FREE_SHIPPING_THRESHOLD ? SHIPPING_CHARGE : 0;
   const shippingCharge = freeShipping ? 0 : baseShipping;
@@ -52,19 +67,18 @@ export default function CartPage() {
     }
   };
 
+  if (!mounted || (!cart && !ready)) return <CartSkeleton />;
+
   if (!cart?.items.length) {
     return (
-      <Container maxWidth="md" sx={{ py: 10, textAlign: 'center' }}>
-        <ShoppingBag sx={{ fontSize: 80, color: '#e0e0e0', mb: 3 }} />
-        <Typography variant="h4" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, mb: 1 }}>
-          Your bag is empty
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          Looks like you haven't added anything to your bag yet
-        </Typography>
-        <Button variant="contained" component={Link} href={withCountry('/shop', country)} sx={{ bgcolor: '#3B2314', py: 1.5, px: 5 }}>
-          Start Shopping
-        </Button>
+      <Container maxWidth="md" sx={{ py: { xs: 4, md: 8 } }}>
+        <EmptyState
+          icon={<ShoppingBag />}
+          title="Your bag is empty"
+          body="Looks like you haven't added anything to your bag yet. Handcrafted pieces are waiting."
+          actionLabel="Start Shopping"
+          actionHref={withCountry('/shop', country)}
+        />
       </Container>
     );
   }
