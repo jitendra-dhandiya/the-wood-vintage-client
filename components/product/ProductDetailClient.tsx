@@ -351,7 +351,7 @@ export default function ProductDetailClient({ product }: Props) {
     <Box sx={{ pb: { xs: 10, md: 6 } }}>
       <Container maxWidth="xl" sx={{ pt: 3 }}>
         {/* Breadcrumbs */}
-        <Breadcrumbs separator={<NavigateNext fontSize="small" />} sx={{ mb: 3, fontSize: '0.8rem' }}>
+        <Breadcrumbs separator={<NavigateNext fontSize="small" />} sx={{ mb: 3, fontSize: '0.8rem', position: 'relative', zIndex: 2 }}>
           <Link href={withCountry('/', country)} style={{ color: '#888', textDecoration: 'none' }}>Home</Link>
           <Link href={withCountry('/shop', country)} style={{ color: '#888', textDecoration: 'none' }}>Shop</Link>
           {product.category && (
