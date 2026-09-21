@@ -99,6 +99,18 @@ const baseTheme = createTheme({
     '0 84px 320px rgba(0,0,0,0.52)',
   ],
   components: {
+    // Loading placeholders in the walnut/cream palette instead of MUI grey.
+    MuiSkeleton: {
+      styleOverrides: {
+        root: { backgroundColor: 'rgba(59,35,20,0.07)' },
+        wave: {
+          '&::after': {
+            background: 'linear-gradient(90deg, transparent, rgba(255,252,245,0.75), transparent)',
+            animationDuration: '1.8s',
+          },
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

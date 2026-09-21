@@ -193,3 +193,89 @@ img { max-width: 100%; height: auto; }
    pulses as a group rather than each tile keeping its own time — which is
    what made loading screens read as noise. */
 .skeleton-stagger > * { animation-delay: calc(var(--i, 0) * 60ms); }
+
+
+/* ══ Motion & loading system (decision 0033) ═══════════════════════════════
+   Everything below animates transform/opacity only, and every rule has a
+   reduced-motion counterpart at the bottom of this block. */
+
+/* ── Scroll reveal ─────────────────────────────────────────────────
+   Content is VISIBLE by default (SSR, no-JS, above the fold). components/
+   common/Reveal marks a below-the-fold element data-reveal="hidden" in a
+   layout effect (before paint) and flips it to "shown" when it scrolls in. */
+.reveal[data-reveal='hidden'] {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y, 24px), 0);
+}
+.reveal[data-reveal='shown'] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+}
+
+/* ── Hero text entrance (CSS only; text is never hidden waiting on JS) ── */
+@keyframes wvHeroRise {
+  from { opacity: 0.001; transform: translate3d(0, 18px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-rise {
+  animation: wvHeroRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--hero-delay, 0s);
+}
+
+/* ── Micro-interactions ────────────────────────────────────────── */
+@keyframes wvPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  70%  { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+.pop { animation: wvPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@keyframes wvBump {
+  0%, 100% { transform: scale(1) translate(50%, -50%); }
+  45%      { transform: scale(1.5) translate(50%, -50%); }
+}
+.badge-bump .MuiBadge-badge { animation: wvBump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* ── Image fade-in on a themed placeholder ─────────────────────── */
+.img-fade { opacity: 0; transition: opacity 0.5s ease; }
+.img-fade.is-loaded { opacity: 1; }
+
+/* ── Navigation progress trickle ───────────────────────────────── */
+@keyframes wvTrickle {
+  from { transform: scaleX(0.04); }
+  to   { transform: scaleX(0.88); }
+}
+
+/* ── Form field validation ─────────────────────────────────────── */
+.MuiFormHelperText-root.Mui-error { animation: wvHelper 0.25s ease-out; }
+@keyframes wvHelper {
+  from { opacity: 0; transform: translate3d(0, -4px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Admin: rows and dialogs stay subtle ───────────────────────── */
+.MuiTableBody-root .MuiTableRow-root { transition: background-color 0.15s ease; }
+
+/* ── Reduced motion: content, not movement ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal[data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .hero-rise, .hero-ken, .pop, .badge-bump .MuiBadge-badge, .page-enter { animation: none !important; }
+  .img-fade { transition: none; opacity: 1; }
+  /* Loading placeholders keep their colour but stop shimmering. */
+  .MuiSkeleton-root, .MuiSkeleton-root::after { animation: none !important; }
+  /* Catch-all for CSS motion (marquee, Ken Burns, hovers). Spinners and the
+     navigation bar are status indicators, so they keep running. */
+  *:not(.MuiCircularProgress-root):not(.MuiCircularProgress-svg):not(.MuiCircularProgress-circle):not(.nav-progress):not(.nav-progress *),
+  *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}

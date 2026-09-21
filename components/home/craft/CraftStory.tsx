@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Box, Container, Typography } from '@mui/material';
 import { useCountry } from '../../../contexts/CountryContext';
 import { withCountry } from '../../../lib/withCountry';
+import CountUp from '../../common/CountUp';
 import { C, SERIF, Reveal } from './shared';
 
 interface Props { section: any }
@@ -83,7 +84,7 @@ export default function CraftStory({ section }: Props) {
               <Box sx={{ mt: 5, pt: 3.5, borderTop: '1px solid rgba(59,35,20,0.15)', display: 'flex', gap: { xs: 3, md: 6 }, flexWrap: 'wrap' }}>
                 {stats.map((s) => (
                   <Box key={s.label}>
-                    <Typography sx={{ fontFamily: SERIF, fontSize: { xs: '2.4rem', md: '3rem' }, fontWeight: 600, color: C.copper, lineHeight: 1 }}>{s.value}</Typography>
+                    <Typography sx={{ fontFamily: SERIF, fontSize: { xs: '2.4rem', md: '3rem' }, fontWeight: 600, color: C.copper, lineHeight: 1 }}><CountUp value={s.value} /></Typography>
                     <Typography sx={{ color: '#6b5643', fontSize: '0.78rem', letterSpacing: '0.12em', textTransform: 'uppercase', mt: 0.75, fontWeight: 600 }}>{s.label}</Typography>
                   </Box>
                 ))}

@@ -130,6 +130,7 @@ export default function MarqueeStrip({ config = {} }: Props) {
              Defining keyframes inside sx causes Emotion to inject a new CSS
              rule on every render, triggering style recalculation in the browser. */
           animation: `marquee-scroll ${speed}s linear infinite`,
+          willChange: 'transform',
           py: 1.25,
           gap: 0,
           cursor: pauseOnHover ? 'default' : 'unset',

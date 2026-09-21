@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import Link from 'next/link';
 import { Box, Typography, IconButton, Container, Grid } from '@mui/material';
 import { ArrowForward, ArrowBack } from '@mui/icons-material';
-import { motion } from 'framer-motion';
+import Reveal from '../common/Reveal';
 import ProductCard, { ProductCardSkeleton } from '../product/ProductCard';
 import type { Product } from '../../types';
 
@@ -16,15 +16,6 @@ interface ProductSectionProps {
   bgColor?: string;
   layout?: 'grid' | 'carousel';
 }
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
-};
-const itemVariants = {
-  hidden: { opacity: 0, y: 18 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-};
 
 // ── How many cards are visible + the peek amount ──────────────
 const CARD_W = {
@@ -63,7 +54,7 @@ export default function ProductSection({
       <Box sx={{ bgcolor: bgColor, py: { xs: 6, md: 10 } }}>
         <Container maxWidth="xl">
           <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', mb: { xs: 3, md: 4 }, flexWrap: 'wrap', gap: 1.5 }}>
-            <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} style={{ minWidth: 0 }}>
+            <Reveal y={16} style={{ minWidth: 0 }}>
               <Box>
                 {subtitle && (
                   <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.26em', fontWeight: 700, display: 'block', fontSize: '0.7rem', mb: 1 }}>
@@ -74,26 +65,26 @@ export default function ProductSection({
                   {title}
                 </Typography>
               </Box>
-            </motion.div>
+            </Reveal>
             {viewAllLink && (
               <Typography component={Link} href={viewAllLink} sx={{ fontSize: '0.75rem', fontWeight: 700, color: '#111', textDecoration: 'underline', textUnderlineOffset: 3, '&:hover': { color: '#A0693A' } }}>
                 View all
               </Typography>
             )}
           </Box>
-          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <div>
             <Grid container spacing={{ xs: 1.5, md: 2.5 }}>
               {loading
                 ? Array.from({ length: 4 }).map((_, i) => (
                     <Grid key={i} item xs={6} sm={4} md={3}><ProductCardSkeleton /></Grid>
                   ))
-                : products.map((product) => (
+                : products.map((product, i) => (
                     <Grid key={product.id} item xs={6} sm={4} md={3}>
-                      <motion.div variants={itemVariants}><ProductCard product={product} /></motion.div>
+                      <Reveal y={18} index={i % 4}><ProductCard product={product} /></Reveal>
                     </Grid>
                   ))}
             </Grid>
-          </motion.div>
+          </div>
         </Container>
       </Box>
     );
@@ -125,7 +116,7 @@ export default function ProductSection({
             flexShrink: 0. Without wrapping, a long title pushes this row past a
             phone's width and clips the whole page, not just the header. */}
         <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', mb: { xs: 3, md: 4 }, flexWrap: 'wrap', gap: 1.5 }}>
-          <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} style={{ minWidth: 0 }}>
+          <Reveal y={16} style={{ minWidth: 0 }}>
             <Box>
               {subtitle && (
                 <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.26em', fontWeight: 700, display: 'block', fontSize: '0.7rem', mb: 1 }}>
@@ -136,7 +127,7 @@ export default function ProductSection({
                 {title}
               </Typography>
             </Box>
-          </motion.div>
+          </Reveal>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, ml: { xs: 0, sm: 2 }, flexShrink: 0 }}>
             {viewAllLink && (
@@ -185,7 +176,7 @@ export default function ProductSection({
               data-card
               sx={{ flexShrink: 0, scrollSnapAlign: 'start', width: CARD_W }}
             >
-              {loading ? <ProductCardSkeleton /> : <ProductCard product={product} />}
+              {loading ? <ProductCardSkeleton /> : <Reveal y={18} index={i}><ProductCard product={product} /></Reveal>}
             </Box>
           ))}
         </Box>

@@ -25,7 +25,7 @@ export default function MobileMotionConfig({ children }: { children: React.React
   }, []);
 
   return (
-    <MotionConfig reducedMotion={isMobile ? 'always' : 'never'}>
+    <MotionConfig reducedMotion={isMobile ? 'always' : 'user'}>
       {children}
     </MotionConfig>
   );
