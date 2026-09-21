@@ -22,6 +22,7 @@ export default function NavigationProgress() {
   const searchParams = useSearchParams();
   const search = searchParams.toString();
   const [state, setState] = useState<'idle' | 'loading' | 'done'>('idle');
+  const [overlay, setOverlay] = useState(false);
   const first = useRef(true);
   const pending = useRef(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -46,7 +47,9 @@ export default function NavigationProgress() {
       pending.current = true;
       // Only show if it is still pending after 120ms; give up after 10s.
       timers.current.push(setTimeout(() => { if (pending.current) setState('loading'); }, 120));
-      timers.current.push(setTimeout(() => { pending.current = false; setState('idle'); }, 10000));
+      // Slow navigation (still pending after 450ms): add the branded overlay.
+      timers.current.push(setTimeout(() => { if (pending.current) setOverlay(true); }, 450));
+      timers.current.push(setTimeout(() => { pending.current = false; setOverlay(false); setState('idle'); }, 10000));
     };
     document.addEventListener('click', onClick, true);
     return () => document.removeEventListener('click', onClick, true);
@@ -58,14 +61,32 @@ export default function NavigationProgress() {
     clear();
     const wasShown = pending.current;
     pending.current = false;
+    setOverlay(false);
     setState('done');
     timers.current.push(setTimeout(() => setState('idle'), wasShown ? 500 : 450));
     return clear;
   }, [pathname, search]);
 
-  if (state === 'idle') return null;
+  if (state === 'idle' && !overlay) return null;
 
   return (
+    <>
+    {overlay && (
+      <div className="nav-overlay" role="status" aria-live="polite" aria-label="Loading page">
+        <div className="nav-overlay__box">
+          <div className="nav-overlay__ring">
+            <svg viewBox="0 0 100 100" aria-hidden>
+              <circle className="nav-overlay__track" cx="50" cy="50" r="44" />
+              <circle className="nav-overlay__arc" cx="50" cy="50" r="44" />
+            </svg>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-mark.png" alt="" className="nav-overlay__mark" />
+          </div>
+          <span className="nav-overlay__text">Crafting your page…</span>
+        </div>
+      </div>
+    )}
+    {state !== 'idle' && (
     <div
       className="nav-progress"
       role="progressbar"
@@ -86,5 +107,7 @@ export default function NavigationProgress() {
         }}
       />
     </div>
+    )}
+    </>
   );
 }

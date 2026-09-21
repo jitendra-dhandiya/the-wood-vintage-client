@@ -269,7 +269,7 @@ img { max-width: 100%; height: auto; }
   .MuiSkeleton-root, .MuiSkeleton-root::after { animation: none !important; }
   /* Catch-all for CSS motion (marquee, Ken Burns, hovers). Spinners and the
      navigation bar are status indicators, so they keep running. */
-  *:not(.MuiCircularProgress-root):not(.MuiCircularProgress-svg):not(.MuiCircularProgress-circle):not(.nav-progress):not(.nav-progress *),
+  *:not(.MuiCircularProgress-root):not(.MuiCircularProgress-svg):not(.MuiCircularProgress-circle):not(.nav-progress):not(.nav-progress *):not(.nav-overlay):not(.nav-overlay *),
   *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
@@ -278,4 +278,30 @@ img { max-width: 100%; height: auto; }
     transition-delay: 0s !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ── Navigation overlay (slow navigations) ─────────────────────────
+   Branded loader shown by NavigationProgress after 450ms pending. Non-blocking
+   (pointer-events: none). Status indicator, so it keeps running under reduced
+   motion (gentle rotation only). */
+.nav-overlay {
+  position: fixed; inset: 0; z-index: 1999; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 252, 245, 0.78);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  animation: wvOverlayIn .25s ease-out both;
+}
+.nav-overlay__box { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.nav-overlay__ring { position: relative; width: 96px; height: 96px; }
+.nav-overlay__ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); animation: wvSpin 1.4s linear infinite; }
+.nav-overlay__track { fill: none; stroke: rgba(59, 35, 20, 0.12); stroke-width: 3; }
+.nav-overlay__arc { fill: none; stroke: #A0693A; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 90 190; }
+.nav-overlay__mark { position: absolute; inset: 22px; width: 52px; height: 52px; object-fit: contain; animation: wvBreathe 1.8s ease-in-out infinite; }
+.nav-overlay__text { font-family: var(--font-playfair), Georgia, serif; font-size: 1.05rem; letter-spacing: .04em; color: #3B2314; animation: wvBreathe 1.8s ease-in-out infinite; }
+@keyframes wvOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes wvSpin { to { transform: rotate(270deg); } }
+@keyframes wvBreathe { 0%, 100% { opacity: .55; transform: scale(.96); } 50% { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .nav-overlay__mark, .nav-overlay__text { animation: none !important; }
+  .nav-overlay__ring svg { animation: wvSpin 2.4s linear infinite !important; }
 }
