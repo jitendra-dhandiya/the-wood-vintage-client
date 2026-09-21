@@ -15,7 +15,10 @@ export const formatPrice = (
 ): string => {
   if (price === null || price === undefined) return '';
   const num = typeof price === 'string' ? parseFloat(price) : price;
-  return `${symbol}${num.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  // Whole amounts stay whole (₹1,090); fractional ones keep their paise/cents
+  // ($3.60), so a discount is never shown rounded to a different number.
+  const digits = Number.isInteger(num) ? 0 : 2;
+  return `${symbol}${num.toLocaleString('en-IN', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
 };
 
 export const getDiscountPercent = (basePrice: number, salePrice: number): number => {

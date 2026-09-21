@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {
   Box, Container, Grid, Typography, TextField, Button,
   Radio, RadioGroup, FormControlLabel,
@@ -14,7 +14,9 @@ import {
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useCart } from '../../../../hooks/useCart';
-import { orderApi, paymentApi, userApi, cartApi } from '../../../../services/api.service';
+import { orderApi, paymentApi, userApi } from '../../../../services/api.service';
+import { useCoupon, useCouponOffers, clearStoredCoupon } from '../../../../hooks/useCoupon';
+import CouponBox from '../../../../components/cart/CouponBox';
 import { trackEvent } from '../../../../lib/analytics';
 import { readStoredAttribution } from '../../../../lib/attribution';
 import { formatPrice } from '../../../../utils/format';
@@ -48,7 +50,6 @@ const SHIPPING_ICONS: Record<string, React.ReactNode> = {
 
 export default function CheckoutPage() {
   const router        = useRouter();
-  const searchParams  = useSearchParams();
   const { cart, subtotal, clearCart } = useCart();
   const dispatch = useAppDispatch();
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
@@ -62,16 +63,14 @@ export default function CheckoutPage() {
   const [payStatus,  setPayStatus]  = useState<PayStatus>('idle');
   const [successOrder, setSuccessOrder] = useState<{ orderNumber: string; orderId: string } | null>(null);
 
-  // Seeded from the cart page's link, but editable here too. The cart drawer
-  // sends people straight to /checkout, so for most customers this is the only
-  // place a coupon can be entered at all.
-  const [couponInput, setCouponInput] = useState('');
-  const [couponCode, setCouponCode] = useState<string | undefined>(
-    searchParams.get('coupon') || undefined,
-  );
-  const [couponDiscount, setCouponDiscount] = useState(Number(searchParams.get('discount') || 0));
-  const [freeShipping, setFreeShipping] = useState(false);
-  const [couponLoading, setCouponLoading] = useState(false);
+  // The coupon code is remembered client-side (cart -> checkout), but every
+  // figure comes from the server's preview of this cart. The cart drawer skips
+  // /cart entirely, so this is the only place most customers can enter one.
+  const coupon = useCoupon(shippingMethod);
+  const offers = useCouponOffers();
+  const couponCode = coupon.code ?? undefined;
+  const couponDiscount = coupon.discount;
+  const freeShipping = coupon.freeShipping;
 
   // Resolve shipping charge from selected method. Mirrors order.service.ts's
   // server-side logic exactly: a per-product shipping-charge override (set on
@@ -95,65 +94,16 @@ export default function CheckoutPage() {
   // Storewide threshold: Standard delivery is free above it (mirrors order.service.ts).
   const qualifiesForFreeStandard =
     shippingMethod === 'STANDARD' && subtotal - couponDiscount >= FREE_SHIPPING_THRESHOLD;
-  const shippingCharge = freeShipping || qualifiesForFreeStandard
+  const localShipping = freeShipping || qualifiesForFreeStandard
     ? 0
     : productOverrides.length > 0
       ? Math.max(...productOverrides)
       : selectedShipping.charge;
-  const total            = subtotal - couponDiscount + shippingCharge;
-
-  const applyCoupon = async () => {
-    const code = couponInput.trim();
-    if (!code) return;
-    setCouponLoading(true);
-    try {
-      const { data } = await cartApi.applyCoupon(code, subtotal);
-      const d = (data as any).data;
-      setCouponDiscount(Number(d.discountAmount) || 0);
-      setFreeShipping(Boolean(d.freeShipping));
-      setCouponCode(code);
-      setCouponInput('');
-      toast.success(
-        d.freeShipping
-          ? 'Free delivery applied'
-          : `Coupon applied — you save ${formatPrice(Number(d.discountAmount) || 0, currencySymbol)}`,
-      );
-    } catch (e: any) {
-      toast.error(e?.response?.data?.message || 'That coupon could not be applied');
-    } finally {
-      setCouponLoading(false);
-    }
-  };
-
-  const removeCoupon = () => {
-    setCouponCode(undefined);
-    setCouponDiscount(0);
-    setFreeShipping(false);
-    setCouponInput('');
-  };
-
-  // A coupon with a minimum order stops qualifying if items are removed while
-  // the customer is on this page, so it is re-checked whenever the subtotal
-  // moves rather than trusting what the cart page decided earlier.
-  useEffect(() => {
-    if (!couponCode || subtotal <= 0) return;
-    let cancelled = false;
-    cartApi.applyCoupon(couponCode, subtotal)
-      .then(({ data }) => {
-        if (cancelled) return;
-        const d = (data as any).data;
-        setCouponDiscount(Number(d.discountAmount) || 0);
-        setFreeShipping(Boolean(d.freeShipping));
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setCouponCode(undefined);
-        setCouponDiscount(0);
-        setFreeShipping(false);
-        toast.error('Your coupon no longer applies to this cart');
-      });
-    return () => { cancelled = true; };
-  }, [subtotal]); // eslint-disable-line react-hooks/exhaustive-deps
+  // With a coupon on, the server's preview (same engine that prices the order)
+  // supplies the delivery charge and total, so what is shown is what is charged.
+  const pv = coupon.preview && !coupon.checking ? coupon.preview : null;
+  const shippingCharge = pv ? pv.shippingCharge : localShipping;
+  const total            = pv ? pv.total : subtotal - couponDiscount + shippingCharge;
 
   // When COD shipping is chosen, payment is always COD. When switching away, default to Cashfree.
   useEffect(() => {
@@ -315,6 +265,8 @@ export default function CheckoutPage() {
         })),
       });
       const order = orderData.data;
+      // The order now carries (and has redeemed) the coupon: forget the code.
+      clearStoredCoupon();
 
       // COD — collect delivery charge upfront via Cashfree, product paid on delivery
       if (paymentMethod === 'COD') {
@@ -352,7 +304,15 @@ export default function CheckoutPage() {
       await openCashfreeModal(order.id, order.orderNumber);
 
     } catch (e: any) {
-      toast.error(e?.response?.data?.message || 'Failed to place order');
+      const body = e?.response?.data;
+      if (String(body?.code ?? '').startsWith('COUPON_')) {
+        // The coupon stopped qualifying between preview and placing the order
+        // (limit reached, expired...). Nothing was charged; drop it and say why.
+        coupon.dropWithError(body.message);
+        toast.error(`${body.message} Your order was not placed. Review the total and try again.`);
+      } else {
+        toast.error(body?.message || 'Failed to place order');
+      }
     } finally {
       setLoading(false);
     }
@@ -700,41 +660,13 @@ export default function CheckoutPage() {
 
                 <Divider sx={{ my: 2 }} />
 
-                {/* Coupon. The cart drawer skips /cart entirely, so without
-                    this most customers never see a place to enter one. */}
                 <Box sx={{ mb: 2 }}>
-                  {couponCode ? (
-                    <Box sx={{
-                      display: 'flex', alignItems: 'center', gap: 1,
-                      bgcolor: '#f1f8f1', border: '1px solid #cfe6cf',
-                      borderRadius: 1, px: 1.5, py: 1,
-                    }}>
-                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#1b5e20', flexGrow: 1 }}>
-                        {couponCode.toUpperCase()} applied
-                      </Typography>
-                      <Button size="small" onClick={removeCoupon}
-                        sx={{ minWidth: 'auto', color: 'text.secondary', textTransform: 'none' }}>
-                        Remove
-                      </Button>
-                    </Box>
-                  ) : (
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <TextField
-                        size="small" fullWidth placeholder="Coupon code"
-                        value={couponInput}
-                        onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
-                        inputProps={{ style: { textTransform: 'uppercase' } }}
-                      />
-                      <Button
-                        variant="outlined" onClick={applyCoupon}
-                        disabled={couponLoading || !couponInput.trim()}
-                        sx={{ borderColor: '#3B2314', color: '#3B2314', px: 2, whiteSpace: 'nowrap' }}
-                      >
-                        {couponLoading ? '…' : 'Apply'}
-                      </Button>
-                    </Box>
-                  )}
+                  <CouponBox
+                    code={coupon.code} preview={coupon.preview} applying={coupon.applying}
+                    checking={coupon.checking} error={coupon.error} appliedTick={coupon.appliedTick}
+                    offers={offers} onApply={coupon.apply} onRemove={coupon.remove}
+                    onInputChange={coupon.clearError} currencySymbol={currencySymbol}
+                  />
                 </Box>
 
                 <Stack spacing={1} sx={{ mb: 2 }}>
@@ -743,8 +675,8 @@ export default function CheckoutPage() {
                     <Typography variant="body2">{formatPrice(subtotal, currencySymbol)}</Typography>
                   </Box>
                   {couponDiscount > 0 && (
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" color="success.main">Discount</Typography>
+                    <Box key={coupon.appliedTick} className={coupon.appliedTick ? 'coupon-flash' : undefined} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant="body2" color="success.main">Coupon ({couponCode})</Typography>
                       <Typography variant="body2" color="success.main">-{formatPrice(couponDiscount, currencySymbol)}</Typography>
                     </Box>
                   )}

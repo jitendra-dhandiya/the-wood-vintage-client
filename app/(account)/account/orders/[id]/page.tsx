@@ -152,12 +152,22 @@ export default function OrderDetailPage() {
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant="body2" color="text.secondary">Shipping</Typography>
-                  <Typography variant="body2">{order.shippingCost === 0 ? 'Free' : formatPrice(order.shippingCost)}</Typography>
+                  <Typography variant="body2">{Number(order.shippingCharge) === 0 ? 'Free' : formatPrice(order.shippingCharge)}</Typography>
                 </Box>
-                {order.discount > 0 && (
+                {Number(order.discount) > 0 && (
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="body2" color="text.secondary">Discount</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Coupon{order.couponCode ? ` (${order.couponCode})` : ''}
+                    </Typography>
                     <Typography variant="body2" color="success.main">-{formatPrice(order.discount)}</Typography>
+                  </Box>
+                )}
+                {Number(order.couponShippingDiscount) > 0 && (
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Free delivery{order.couponCode ? ` (${order.couponCode})` : ''}
+                    </Typography>
+                    <Typography variant="body2" color="success.main">You saved {formatPrice(order.couponShippingDiscount)}</Typography>
                   </Box>
                 )}
                 <Divider sx={{ my: 0.5 }} />

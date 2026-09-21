@@ -207,9 +207,17 @@ export default function OrderDetailAdminPage() {
                 {Number(order.discount) > 0 && (
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="body2" color="text.secondary">
-                      Discount{order.couponCode ? ` (${order.couponCode})` : ''}
+                      Coupon{order.couponCode ? ` (${order.couponCode}${order.couponType ? ` · ${String(order.couponType).replace('_', ' ').toLowerCase()}` : ''})` : ''}
                     </Typography>
                     <Typography variant="body2" color="success.main">-{formatPrice(order.discount)}</Typography>
+                  </Box>
+                )}
+                {Number(order.couponShippingDiscount) > 0 && (
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Delivery waived{order.couponCode ? ` (${order.couponCode})` : ''}
+                    </Typography>
+                    <Typography variant="body2" color="success.main">{formatPrice(order.couponShippingDiscount)} saved</Typography>
                   </Box>
                 )}
                 {Number(order.taxAmount) > 0 && (

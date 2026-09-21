@@ -256,6 +256,9 @@ export interface Order {
   total: number;
   couponCode?: string;
   couponDiscount: number;
+  couponType?: 'PERCENTAGE' | 'FIXED' | 'FREE_SHIPPING' | null;
+  /** Delivery charge the coupon waived (FREE_SHIPPING). */
+  couponShippingDiscount?: number;
   trackingNumber?: string;
   trackingUrl?: string;
   deliveryDate?: string;

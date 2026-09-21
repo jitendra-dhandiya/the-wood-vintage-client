@@ -187,8 +187,6 @@ export const cartApi = {
     api.put(`/cart/item/${itemId}`, { quantity }),
   removeItem: (itemId: string) => api.delete(`/cart/item/${itemId}`),
   clear: () => api.delete('/cart/clear'),
-  applyCoupon: (code: string, cartTotal: number) =>
-    api.post('/cart/coupon', { code, cartTotal }),
 };
 
 // ─── Orders ───────────────────────────────────────────────────
@@ -424,10 +422,17 @@ export const seoApi = {
 
 // ─── Coupons ──────────────────────────────────────────────────
 export const couponApi = {
+  // Storefront. The server prices the requester's own cart: no amounts are sent.
+  preview: (code: string, opts: { country?: string | null; shippingMethod?: string } = {}) =>
+    api.post('/coupons/validate', { code, country: opts.country || undefined, shippingMethod: opts.shippingMethod }),
+  offers: (country?: string | null) => api.get('/coupons/offers', { params: { country: country || undefined } }),
+  // Admin
   getAll: (params?: Record<string, unknown>) => api.get('/coupons', { params }),
-  validate: (code: string, cartTotal: number) => api.post('/coupons/validate', { code, cartTotal }),
+  getOne: (id: string) => api.get(`/coupons/${id}`),
+  usages: (id: string, params?: Record<string, unknown>) => api.get(`/coupons/${id}/usages`, { params }),
   create: (data: object) => api.post('/coupons', data),
   update: (id: string, data: object) => api.put(`/coupons/${id}`, data),
+  setActive: (id: string, isActive: boolean) => api.patch(`/coupons/${id}/active`, { isActive }),
   delete: (id: string) => api.delete(`/coupons/${id}`),
 };
 

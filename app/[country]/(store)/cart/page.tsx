@@ -8,7 +8,8 @@ import {
 } from '@mui/material';
 import { Add, Remove, DeleteOutline, ShoppingBag } from '@mui/icons-material';
 import { useCart } from '../../../../hooks/useCart';
-import { cartApi } from '../../../../services/api.service';
+import { useCoupon, useCouponOffers } from '../../../../hooks/useCoupon';
+import CouponBox from '../../../../components/cart/CouponBox';
 import { formatPrice } from '../../../../utils/format';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_CHARGE } from '../../../../constants';
 import { useCountry } from '../../../../contexts/CountryContext';
@@ -20,11 +21,11 @@ import { CartSkeleton } from '../../../../components/common/Skeletons';
 export default function CartPage() {
   const { cart, subtotal, updateQuantity, removeFromCart, fetchCart } = useCart();
   const { currencySymbol, country } = useCountry();
-  const [couponCode, setCouponCode] = useState('');
-  const [couponDiscount, setCouponDiscount] = useState(0);
-  const [appliedCoupon, setAppliedCoupon] = useState('');
-  const [couponLoading, setCouponLoading] = useState(false);
-  const [freeShipping, setFreeShipping] = useState(false);
+  // Coupon: code kept client-side, every figure from the server (decision 0035).
+  const coupon = useCoupon('STANDARD');
+  const offers = useCouponOffers();
+  const couponDiscount = coupon.discount;
+  const freeShipping = coupon.freeShipping;
 
   // Until the first fetch settles, `cart` is null and the page would flash
   // "Your bag is empty" at someone whose bag is not.
@@ -39,33 +40,13 @@ export default function CartPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // With a coupon on, the server's preview is the source of truth for every
+  // line (same engine as the order); without one, the local estimate as before.
+  const p = coupon.preview;
   const baseShipping = subtotal < FREE_SHIPPING_THRESHOLD ? SHIPPING_CHARGE : 0;
-  const shippingCharge = freeShipping ? 0 : baseShipping;
-  const total = subtotal - couponDiscount + shippingCharge;
-
-  const applyCoupon = async () => {
-    if (!couponCode.trim()) return;
-    setCouponLoading(true);
-    try {
-      const { data } = await cartApi.applyCoupon(couponCode, subtotal);
-      const d = (data as any).data;
-      const amount = Number(d.discountAmount) || 0;
-      setCouponDiscount(amount);
-      setFreeShipping(Boolean(d.freeShipping));
-      setAppliedCoupon(couponCode.trim().toUpperCase());
-      // A free-delivery coupon takes nothing off the goods, so reporting the
-      // discount would announce a saving of zero on a coupon that works.
-      toast.success(
-        d.freeShipping
-          ? 'Free delivery applied'
-          : `Coupon applied! You save ${formatPrice(amount, currencySymbol)}`,
-      );
-    } catch (e: any) {
-      toast.error(e?.response?.data?.message || 'Invalid coupon');
-    } finally {
-      setCouponLoading(false);
-    }
-  };
+  const shippingCharge = p ? p.shippingCharge : freeShipping ? 0 : baseShipping;
+  const shownSubtotal = p ? p.subtotal : subtotal;
+  const total = p ? p.total : subtotal - couponDiscount + shippingCharge;
 
   if (!mounted || (!cart && !ready)) return <CartSkeleton />;
 
@@ -161,24 +142,12 @@ export default function CartPage() {
               {/* Coupon */}
               <Box sx={{ mb: 3 }}>
                 <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>Have a coupon?</Typography>
-                {appliedCoupon ? (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Chip label={`${appliedCoupon} applied`} color="success" size="small" onDelete={() => { setAppliedCoupon(''); setCouponDiscount(0); setFreeShipping(false); setCouponCode(''); }} />
-                  </Box>
-                ) : (
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <TextField
-                      placeholder="Enter code"
-                      size="small"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                      sx={{ flex: 1 }}
-                    />
-                    <Button variant="outlined" onClick={applyCoupon} disabled={couponLoading} sx={{ borderColor: '#3B2314', color: '#3B2314', px: 2 }}>
-                      Apply
-                    </Button>
-                  </Box>
-                )}
+                <CouponBox
+                  code={coupon.code} preview={coupon.preview} applying={coupon.applying}
+                  checking={coupon.checking} error={coupon.error} appliedTick={coupon.appliedTick}
+                  offers={offers} onApply={coupon.apply} onRemove={coupon.remove}
+                  onInputChange={coupon.clearError} currencySymbol={currencySymbol}
+                />
               </Box>
 
               <Divider sx={{ mb: 2 }} />
@@ -186,11 +155,11 @@ export default function CartPage() {
               <Stack spacing={1.5} sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography color="text.secondary">Subtotal</Typography>
-                  <Typography fontWeight={500}>{formatPrice(subtotal, currencySymbol)}</Typography>
+                  <Typography fontWeight={500}>{formatPrice(shownSubtotal, currencySymbol)}</Typography>
                 </Box>
                 {couponDiscount > 0 && (
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography color="success.main">Coupon Discount</Typography>
+                  <Box key={coupon.appliedTick} className={coupon.appliedTick ? 'coupon-flash' : undefined} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography color="success.main">Coupon ({coupon.code})</Typography>
                     <Typography fontWeight={500} color="success.main">-{formatPrice(couponDiscount, currencySymbol)}</Typography>
                   </Box>
                 )}
@@ -210,7 +179,7 @@ export default function CartPage() {
               <Button
                 fullWidth variant="contained" size="large"
                 component={Link}
-                href={withCountry(`/checkout?coupon=${encodeURIComponent(appliedCoupon || '')}&discount=${couponDiscount}`, country)}
+                href={withCountry('/checkout', country)}
                 sx={{ bgcolor: '#3B2314', py: 1.75, letterSpacing: '0.1em', fontWeight: 700 }}
               >
                 Proceed to Checkout
