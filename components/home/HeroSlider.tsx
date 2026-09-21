@@ -1,292 +1,140 @@
 'use client';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
-import { buildImageUrl, buildSrcSet, MOBILE_WIDTHS } from '../../lib/imageUrl';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Box, Typography, Button, Container } from '@mui/material';
-import { motion } from 'framer-motion';
+import { Box, Container, Typography } from '@mui/material';
+import { useReducedMotion } from 'framer-motion';
 import type { Banner } from '../../types';
-
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
 import { resolveBannerLink } from '../../lib/bannerLink';
 import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
+import { buildImageUrl } from '../../lib/imageUrl';
+import { C, SERIF } from './craft/shared';
 
-// Hero artwork is authored at 1440x560 (2.57:1) and the backend crops every
-// desktop master to exactly that ratio.
-//
-// The height used to be fixed pixels per breakpoint (xs 260, sm 400, md 500).
-// A phone viewport is far taller relative to its width than 2.57:1, so
-// object-fit:cover had to slice the sides off to fill that box — at 375px wide
-// only 56% of the banner width survived, cutting straight through headlines
-// baked into the artwork ("BEST SELLERS" lost its last letter) and chopping the
-// models at both edges. Tablets were nearly as bad at 58%.
-//
-// Deriving the height from the artwork's own ratio means cover has nothing left
-// to crop, so the whole banner is always visible.
-const HERO_ASPECT = '1440 / 560';
-// A dedicated mobile crop is portrait by design, so it gets a portrait box
-// instead — that is the point of uploading one.
-const HERO_ASPECT_MOBILE_ART = '4 / 5';
-// The <picture> mobile source switches at 768px; the box must switch with it.
-const MOBILE_BP = '@media (max-width: 768px)';
-// Above this the 2.57:1 ratio would make the hero 747px tall and push the rest
-// of the page below the fold, so desktop keeps its established fixed height.
-const DESKTOP_BP = '@media (min-width: 1200px)';
-const HERO_H_DESKTOP = 580;
-// No artwork to respect in the empty state, so it keeps plain fixed heights.
-const PLACEHOLDER_H = { xs: 320, sm: 400, md: 500, lg: HERO_H_DESKTOP };
+const DELAY = 6500;
+const HERO_H = { md: 640, lg: 680 };
 
-interface HeroSliderProps {
+interface Props {
   banners: Banner[];
+  /** Section config: `texture` is a walnut wood-grain background for the copy panel. */
+  config?: { texture?: string } | null;
 }
 
-export default function HeroSlider({ banners }: HeroSliderProps) {
+/**
+ * Split hero: a walnut copy panel beside full-height craft photography that
+ * crossfades between 2-3 slides. Autoplay pauses on hover/focus and is off
+ * entirely (with no Ken Burns drift) under prefers-reduced-motion. The image
+ * column has a fixed box, so slides changing never shifts layout.
+ */
+export default function HeroSlider({ banners, config }: Props) {
   const { country } = useCountry();
-  if (!banners.length) {
-    return (
-      <Box sx={{
-        height: PLACEHOLDER_H,
-        position: 'relative', overflow: 'hidden',
-        display: 'flex', alignItems: 'center',
-        background: 'linear-gradient(135deg, #2A190E 0%, #3B2314 60%, #4A2F1D 100%)',
-      }}>
-        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
-          <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.85 }}>
-            <Typography variant="overline" sx={{ color: '#D9A66E', letterSpacing: '0.32em', display: 'block', mb: 2, fontSize: '0.7rem', fontWeight: 600 }}>
-              HANDCRAFTED IN INDIA
-            </Typography>
-            <Typography
-              variant="h1"
-              sx={{
-                fontFamily: 'var(--font-playfair)', color: 'white',
-                fontSize: { xs: '2.4rem', sm: '3.4rem', md: '5rem' },
-                lineHeight: 1.08, mb: 3, fontWeight: 700,
-                maxWidth: 540,
-              }}
-            >
-              Furniture with<br />a story
-            </Typography>
-            <Button
-              component={Link} href={withCountry('/shop', country)}
-              variant="contained"
-              sx={{
-                bgcolor: '#D9A66E', color: '#fff',
-                fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.14em',
-                py: 1.6, px: 5,
-                borderRadius: 0,
-                '&:hover': { bgcolor: '#7E5029' },
-                boxShadow: '0 4px 20px rgba(160,105,58,0.4)',
-              }}
-            >
-              Shop the Collection
-            </Button>
-          </motion.div>
-        </Container>
+  const reduce = useReducedMotion();
+  const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const n = banners.length;
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-        {/* Decorative gold accent lines */}
-        <Box sx={{ position: 'absolute', right: { xs: -60, md: 80 }, top: '50%', transform: 'translateY(-50%)', opacity: 0.06 }}>
-          <Box sx={{ width: 320, height: 320, border: '1px solid #A0693A', borderRadius: '50%' }} />
-          <Box sx={{ position: 'absolute', top: 30, left: 30, width: 260, height: 260, border: '1px solid #A0693A', borderRadius: '50%' }} />
-        </Box>
-      </Box>
-    );
+  const go = useCallback((i: number) => setIdx(((i % n) + n) % n), [n]);
+
+  useEffect(() => {
+    if (reduce || paused || n < 2) return;
+    timer.current = setTimeout(() => setIdx((i) => (i + 1) % n), DELAY);
+    return () => { if (timer.current) clearTimeout(timer.current); };
+  }, [idx, reduce, paused, n]);
+
+  if (!n) {
+    return <Box sx={{ minHeight: { xs: 360, md: 520 }, bgcolor: C.walnut }} />;
   }
-
-  // Swiper gives every slide one shared height, so this is a per-slider
-  // decision rather than a per-banner one.
-  const hasMobileArt = banners.some((b) => b.mobileImage);
-  const hasOverlay = banners.some((b) => b.title);
+  const b = banners[idx];
+  const target = resolveBannerLink(b.link);
+  const href = target ? (target.external ? target.href : withCountry(target.href, country)) : null;
+  const tex = config?.texture ? buildImageUrl(config.texture, 1440) : null;
 
   return (
     <Box
-      sx={{
-        width: '100%',
-        aspectRatio: HERO_ASPECT,
-        height: 'auto',
-        ...(hasMobileArt
-          ? { [MOBILE_BP]: { aspectRatio: HERO_ASPECT_MOBILE_ART } }
-          // Slides carry a text overlay: give a phone a taller box so it fits.
-          : hasOverlay ? { [MOBILE_BP]: { aspectRatio: '4 / 3' } } : {}),
-        [DESKTOP_BP]: { aspectRatio: 'auto', height: HERO_H_DESKTOP },
-        position: 'relative', overflow: 'hidden',
-        '& .swiper, & .swiper-wrapper, & .swiper-slide': { height: '100%' },
-        '& .swiper-pagination': { bottom: { xs: 14, md: 22 } },
-        '& .swiper-pagination-bullet': {
-          bgcolor: 'rgba(255,255,255,0.5)',
-          width: 6, height: 6,
-          transition: 'all 0.3s',
-        },
-        '& .swiper-pagination-bullet-active': {
-          bgcolor: 'white',
-          width: 22,
-          borderRadius: 4,
-        },
-        '& .swiper-button-next, & .swiper-button-prev': {
-          color: 'white',
-          width: 40, height: 40,
-          '&::after': { fontSize: '14px', fontWeight: 700 },
-          '&:hover': { opacity: 0.75 },
-          // Touch users swipe, and on the short mobile hero the arrows sit on
-          // top of the artwork they are meant to help you see.
-          [MOBILE_BP]: { display: 'none' },
-        },
-      }}
+      component="section" aria-roledescription="carousel" aria-label="Featured craft"
+      onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}
+      sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '5fr 7fr' }, height: { md: HERO_H.md, lg: HERO_H.lg }, bgcolor: C.deep }}
     >
-      <Swiper
-        modules={[Autoplay, Navigation, Pagination, EffectFade]}
-        effect="fade"
-        fadeEffect={{ crossFade: false }}
-        autoplay={{ delay: 5500, disableOnInteraction: false }}
-        navigation
-        pagination={{ clickable: true }}
-        loop={banners.length > 1}
-        touchStartPreventDefault={false}
-        style={{ width: '100%', height: '100%' }}
-      >
-        {banners.map((banner, idx) => (
-          <SwiperSlide key={banner.id}>
-            <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
-              {/**
-                * Native <picture> rather than next/image, because next/image
-                * cannot art-direct: it rescales one file, it cannot swap the
-                * file at a breakpoint. A hero is ~2.5:1, so on a phone the
-                * desktop crop is either a letterboxed sliver or loses the
-                * subject. When a portrait crop has been uploaded the browser
-                * takes that instead — and downloads only the matching source,
-                * never both.
-                *
-                * The srcsets still come from the derivative pipeline, so each
-                * breakpoint gets a viewport-sized AVIF/WebP.
-                */}
-              <picture>
-                {banner.mobileImage && (
-                  <source
-                    media="(max-width: 768px)"
-                    srcSet={buildSrcSet(banner.mobileImage, MOBILE_WIDTHS)}
-                    sizes="100vw"
-                  />
-                )}
-                <img
-                  src={buildImageUrl(banner.image, 1920)}
-                  srcSet={buildSrcSet(banner.image)}
-                  sizes="100vw"
-                  alt={banner.title}
-                  // The first slide is the LCP element on the homepage: load it
-                  // eagerly and tell the browser it outranks everything else.
-                  // Later slides are off-screen and must not compete with it.
-                  loading={idx === 0 ? 'eager' : 'lazy'}
-                  fetchPriority={idx === 0 ? 'high' : 'low'}
-                  decoding={idx === 0 ? 'sync' : 'async'}
-                  style={{
-                    position: 'absolute', inset: 0,
-                    width: '100%', height: '100%',
-                    objectFit: 'cover', objectPosition: 'center center',
-                  }}
-                />
-              </picture>
-              {/* The artwork itself is the link.
-                  A hero exists to be clicked, and a shopper's instinct is to
-                  tap the picture, not hunt for a small button — which was the
-                  only clickable thing here, and only when a button label had
-                  been filled in too.
-
-                  Rendered as a sibling that covers the slide rather than a
-                  wrapper around it, so the swiper's own controls — arrows and
-                  pagination — stay outside the link and keep working.
-
-                  An absolute URL leaves the site, so it opens in a new tab and
-                  carries rel=noopener; a path stays in the SPA router. */}
-              {(() => {
-                const target = resolveBannerLink(banner.link);
-                if (!target) return null;
-                return target.external ? (
-                  <Box
-                    component="a"
-                    href={target.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={banner.title || 'View offer'}
-                    sx={{ position: 'absolute', inset: 0, zIndex: 1 }}
-                  />
-                ) : (
-                  <Box
-                    component={Link}
-                    href={withCountry(target.href, country)}
-                    aria-label={banner.title || 'View offer'}
-                    sx={{ position: 'absolute', inset: 0, zIndex: 1 }}
-                  />
-                );
-              })()}
-
-              {/* Editorial overlay: left-aligned headline, sub-line and CTA over a
-                  walnut scrim so the copy stays readable on any photograph.
-                  The whole slide remains the link (zIndex 1 above); only the
-                  button re-enables pointer events. */}
-              {banner.title && (
-                <>
-                  <Box sx={{
-                    position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-                    background: {
-                      xs: 'linear-gradient(to top, rgba(36,20,10,0.85) 0%, rgba(36,20,10,0.35) 55%, rgba(36,20,10,0.1) 100%)',
-                      md: 'linear-gradient(90deg, rgba(36,20,10,0.82) 0%, rgba(36,20,10,0.55) 38%, rgba(36,20,10,0) 72%)',
-                    },
-                  }} />
-                  <Container maxWidth="xl" sx={{
-                    position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-                    display: 'flex', alignItems: { xs: 'flex-end', md: 'center' },
-                    pb: { xs: 6, md: 0 },
-                  }}>
-                    <Box sx={{ maxWidth: { xs: '100%', md: 560 } }}>
-                      <Typography sx={{ color: '#D9A66E', letterSpacing: '0.3em', fontSize: { xs: '0.6rem', md: '0.72rem' }, fontWeight: 700, mb: { xs: 1, md: 2 }, textTransform: 'uppercase' }}>
-                        The Wood Vintage
-                      </Typography>
-                      <Typography component="h2" sx={{
-                        fontFamily: 'var(--font-playfair)', color: '#fff', fontWeight: 600,
-                        fontSize: { xs: '1.5rem', sm: '2.2rem', md: '2.8rem', lg: '3.6rem' }, lineHeight: 1.08,
-                        letterSpacing: '-0.01em', mb: { xs: 1, md: 2 }, textShadow: '0 2px 18px rgba(0,0,0,0.35)',
-                      }}>
-                        {banner.title}
-                      </Typography>
-                      {banner.subtitle && (
-                        <Typography sx={{
-                          color: 'rgba(255,252,245,0.9)', fontSize: { xs: '0.8rem', md: '1.05rem' }, lineHeight: 1.6,
-                          mb: { xs: 0, md: 3.5 }, maxWidth: 480, display: { xs: 'none', md: 'block' },
-                          WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                        }}>
-                          {banner.subtitle}
-                        </Typography>
-                      )}
-                      {banner.ctaText && (() => {
-                        const t = resolveBannerLink(banner.link);
-                        if (!t || t.external) return null;
-                        return (
-                          <Button
-                            component={Link}
-                            href={withCountry(t.href, country)}
-                            variant="contained"
-                            sx={{
-                              pointerEvents: 'auto', display: { xs: 'none', md: 'inline-flex' },
-                              bgcolor: '#A0693A', color: '#fff', borderRadius: 0,
-                              fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.14em', py: 1.5, px: 4.5,
-                              '&:hover': { bgcolor: '#7E5029' },
-                            }}
-                          >
-                            {banner.ctaText}
-                          </Button>
-                        );
-                      })()}
-                    </Box>
-                  </Container>
-                </>
-              )}
+      {/* Photography */}
+      <Box sx={{ order: { xs: 1, md: 2 }, position: 'relative', overflow: 'hidden', aspectRatio: { xs: '5 / 4', md: 'auto' }, bgcolor: C.walnut }}>
+        {banners.map((bn, i) => (
+          <Box key={bn.id} aria-hidden={i !== idx} sx={{ position: 'absolute', inset: 0, opacity: i === idx ? 1 : 0, transition: reduce ? 'none' : 'opacity 1.2s ease', zIndex: i === idx ? 1 : 0 }}>
+            <Box sx={{
+              position: 'absolute', inset: 0,
+              ...(reduce ? {} : { animation: i === idx ? `wvKen ${DELAY + 2500}ms ease-out forwards` : 'none' }),
+              '@keyframes wvKen': { from: { transform: 'scale(1)' }, to: { transform: 'scale(1.07)' } },
+            }}>
+              <Image src={bn.image} alt={bn.title} fill priority={i === 0} loading={i === 0 ? 'eager' : 'lazy'} sizes="(max-width: 900px) 100vw, 58vw" style={{ objectFit: 'cover', objectPosition: 'center 30%' }} />
             </Box>
-          </SwiperSlide>
+          </Box>
         ))}
-      </Swiper>
+        <Box sx={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', background: { md: 'linear-gradient(90deg, rgba(42,25,14,0.55) 0%, rgba(42,25,14,0) 22%)', xs: 'linear-gradient(to top, rgba(42,25,14,0.5), rgba(42,25,14,0) 40%)' } }} />
+        {n > 1 && (
+          <Box sx={{ position: 'absolute', zIndex: 3, right: { xs: 12, md: 28 }, bottom: { xs: 12, md: 28 }, display: 'flex', gap: 1 }}>
+            {[{ l: 'Previous slide', d: -1, t: '←' }, { l: 'Next slide', d: 1, t: '→' }].map((a) => (
+              <Box key={a.l} component="button" aria-label={a.l} onClick={() => go(idx + a.d)} sx={{
+                width: 44, height: 44, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.7)', bgcolor: 'rgba(42,25,14,0.35)', color: '#fff', cursor: 'pointer', fontSize: '1.1rem', backdropFilter: 'blur(4px)',
+                '&:hover': { bgcolor: C.copper, borderColor: C.copper }, '&:focus-visible': { outline: `3px solid ${C.gold}`, outlineOffset: 2 },
+              }}>{a.t}</Box>
+            ))}
+          </Box>
+        )}
+      </Box>
+
+      {/* Copy panel */}
+      <Box sx={{
+        order: { xs: 2, md: 1 }, position: 'relative', display: 'flex', alignItems: 'center', color: '#fff', overflow: 'hidden',
+        backgroundColor: C.deep,
+        backgroundImage: tex ? `linear-gradient(180deg, rgba(42,25,14,0.55), rgba(42,25,14,0.8)), url(${tex})` : undefined,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+      }}>
+        <Container maxWidth={false} sx={{ maxWidth: 640, ml: { md: 'auto' }, mr: { md: 0 }, py: { xs: 5, md: 0 }, pl: { md: 6, lg: 8 }, pr: { md: 5, lg: 7 } }}>
+          <Box aria-live={paused ? 'polite' : 'off'} sx={{ minHeight: { xs: 250, md: 0 } }}>
+            <Typography sx={{ color: C.gold, letterSpacing: '0.32em', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', mb: 2.25 }}>
+              Handcrafted in India
+            </Typography>
+            <Typography key={b.id} component="h1" sx={{
+              fontFamily: SERIF, fontWeight: 600, lineHeight: 1.02, letterSpacing: '-0.015em', fontSize: { xs: '2.6rem', sm: '3.2rem', md: '3.6rem', lg: '4.6rem' },
+              ...(reduce ? {} : { animation: 'wvRise .9s cubic-bezier(0.22,1,0.36,1) both', '@keyframes wvRise': { from: { opacity: 0, transform: 'translateY(22px)' }, to: { opacity: 1, transform: 'none' } } }),
+            }}>
+              {b.title}
+            </Typography>
+            {b.subtitle && (
+              <Typography sx={{ color: 'rgba(255,252,245,0.88)', mt: 2.5, fontSize: { xs: '1rem', md: '1.1rem' }, lineHeight: 1.7, maxWidth: 460 }}>{b.subtitle}</Typography>
+            )}
+            <Box sx={{ mt: 4, display: 'flex', gap: 2.5, alignItems: 'center', flexWrap: 'wrap' }}>
+              {href && b.ctaText && (
+                <Box component={Link} href={href} sx={{
+                  display: 'inline-flex', bgcolor: C.copper, color: '#fff', px: 4.25, py: 1.75, fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.16em', textTransform: 'uppercase', textDecoration: 'none',
+                  transition: 'background-color .25s, transform .25s', '&:hover': { bgcolor: C.copperDark, transform: 'translateY(-2px)' }, '&:focus-visible': { outline: `3px solid ${C.gold}`, outlineOffset: 3 },
+                }}>{b.ctaText}</Box>
+              )}
+              <Box component={Link} href={withCountry('/about', country)} sx={{ color: '#fff', fontWeight: 600, fontSize: '0.86rem', textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.55)', pb: 0.25, '&:hover': { borderColor: C.gold, color: C.gold } }}>
+                Meet the artisans
+              </Box>
+            </Box>
+          </Box>
+
+          {n > 1 && (
+            <Box sx={{ mt: { xs: 3.5, md: 6 }, display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Typography sx={{ fontFamily: SERIF, fontSize: '1.15rem', color: C.gold, minWidth: 54 }}>{`0${idx + 1}`}<Box component="span" sx={{ opacity: 0.55 }}>{` / 0${n}`}</Box></Typography>
+              <Box role="tablist" aria-label="Choose slide" sx={{ display: 'flex', gap: 1, flex: 1, maxWidth: 260 }}>
+                {banners.map((bn, i) => (
+                  <Box key={bn.id} component="button" role="tab" aria-selected={i === idx} aria-label={`Slide ${i + 1}: ${bn.title}`} onClick={() => go(i)} sx={{
+                    flex: 1, height: 22, p: 0, border: 0, bgcolor: 'transparent', cursor: 'pointer', position: 'relative',
+                    '&::before': { content: '""', position: 'absolute', left: 0, right: 0, top: 10, height: 2, bgcolor: 'rgba(255,255,255,0.28)' },
+                    '&::after': { content: '""', position: 'absolute', left: 0, top: 10, height: 2, bgcolor: C.gold, width: i < idx || (i === idx && (reduce || paused || n < 2)) ? '100%' : 0,
+                      ...(i === idx && !reduce && !paused ? { animation: `wvBar ${DELAY}ms linear forwards`, '@keyframes wvBar': { from: { width: 0 }, to: { width: '100%' } } } : {}) },
+                    '&:focus-visible': { outline: `2px solid ${C.gold}`, outlineOffset: 2 },
+                  }} />
+                ))}
+              </Box>
+            </Box>
+          )}
+        </Container>
+      </Box>
     </Box>
   );
 }

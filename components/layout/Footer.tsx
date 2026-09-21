@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { Box, Container, Grid, Typography, Divider, IconButton, TextField, Button, Stack } from '@mui/material';
 import { Instagram, Facebook, Twitter, YouTube, Pinterest } from '@mui/icons-material';
@@ -39,6 +40,9 @@ interface FooterProps {
 
 export default function Footer({ settings = {} }: FooterProps) {
   const { country } = useCountry();
+  const pathname = usePathname() || '/';
+  // The homepage renders its own textured newsletter band, so skip the footer duplicate there.
+  const isHome = pathname.split('/').filter(Boolean).length <= 1;
   const siteName = SITE_NAME;
   const siteDesc = settings.site_description || 'Handcrafted wooden furniture and home décor, made by skilled artisans from sustainably sourced wood.';
   const email = settings.site_email || '';
@@ -56,7 +60,7 @@ export default function Footer({ settings = {} }: FooterProps) {
   return (
     <Box component="footer" sx={{ bgcolor: '#2A190E', color: 'white', mt: 'auto' }}>
       {/* Newsletter */}
-      <Box sx={{ bgcolor: '#3B2314', py: 6 }}>
+      {!isHome && <Box sx={{ bgcolor: '#3B2314', py: 6 }}>
         <Container maxWidth="sm">
           <Box sx={{ textAlign: 'center' }}>
             <Typography
@@ -101,7 +105,7 @@ export default function Footer({ settings = {} }: FooterProps) {
             </Box>
           </Box>
         </Container>
-      </Box>
+      </Box>}
 
       {/* Main Footer */}
       <Container maxWidth="xl" sx={{ py: 6 }}>

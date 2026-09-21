@@ -13,7 +13,15 @@ import StoreLocations from './StoreLocations';
 import MarqueeStrip from './MarqueeStrip';
 import InstagramReels from './InstagramReels';
 import TaxonomyShowcase from './TaxonomyShowcase';
-import ArtisanSpotlight from './ArtisanSpotlight';
+import CraftStory from './craft/CraftStory';
+import EditorialCategories from './craft/EditorialCategories';
+import WoodStory from './craft/WoodStory';
+import WorkshopProcess from './craft/WorkshopProcess';
+import RoomsCollage from './craft/RoomsCollage';
+import ShopTheLook from './craft/ShopTheLook';
+import InstagramGallery from './craft/InstagramGallery';
+import TrustRow from './craft/TrustRow';
+import NewsletterBand from './craft/NewsletterBand';
 import { productApi, bannerApi, instagramReelsApi, roomApi, materialApi, artisanApi } from '../../services/api.service';
 import type { GenderType } from '../../lib/genderPreference';
 
@@ -206,9 +214,9 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
     const { type, title, subtitle } = section;
     switch (type) {
       case 'HERO_SLIDER':
-        return <HeroSlider key={section.id} banners={heroBanners} />;
+        return <HeroSlider key={section.id} banners={heroBanners} config={section.config} />;
       case 'PROMO_STRIP':
-        return <PromoStrip key={section.id} />;
+        return section.config?.items?.length ? <TrustRow key={section.id} section={section} /> : <PromoStrip key={section.id} />;
       case 'SHOP_LATEST':
         return (
           <ShopLatestSection
@@ -275,41 +283,26 @@ export default function GenderHomePage({ sections, initialGender, initialData }:
         );
       case 'FEATURED_CATEGORIES':
       case 'CATEGORY_SHOWCASE':
-        return <CategoryShowcase key={section.id} initialCategories={genderFilteredCategories} />;
+        return <EditorialCategories key={section.id} categories={genderFilteredCategories as any[]} title={title} subtitle={subtitle} />;
+      case 'BRAND_SECTION':
+        return <CraftStory key={section.id} section={section} />;
       case 'SHOP_BY_ROOM':
-        return (
-          <TaxonomyShowcase
-            key={section.id}
-            items={rooms}
-            linkParam="roomSlug"
-            title={title || 'Shop by Room'}
-            subtitle={subtitle || 'Find pieces for every space'}
-          />
-        );
+        return <RoomsCollage key={section.id} rooms={rooms} title={title || 'Shop by Room'} subtitle={subtitle} />;
       case 'SHOP_BY_MATERIAL':
-        return (
-          <TaxonomyShowcase
-            key={section.id}
-            items={taxonomyMaterials}
-            linkParam="materialSlug"
-            title={title || 'Shop by Material'}
-            subtitle={subtitle || 'Crafted from wood, cane, and more'}
-          />
-        );
+        return <WoodStory key={section.id} materials={taxonomyMaterials} section={section} />;
       case 'ARTISAN_SPOTLIGHT':
-        return (
-          <ArtisanSpotlight
-            key={section.id}
-            artisans={artisans}
-            title={title || 'Meet the Makers'}
-            subtitle={subtitle || 'The artisans behind every piece'}
-          />
-        );
+        return <WorkshopProcess key={section.id} section={section} artisans={artisans} />;
+      case 'SHOP_BY_LOOK':
+        return <ShopTheLook key={section.id} section={section} />;
+      case 'INSTAGRAM_GALLERY':
+        return <InstagramGallery key={section.id} section={section} />;
+      case 'NEWSLETTER':
+        return <NewsletterBand key={section.id} section={section} />;
       case 'PROMOTIONAL_BANNERS':
       case 'CUSTOM_BANNER':
         return <PromoBanners key={section.id} banners={promoBanners} title={title} />;
       case 'TESTIMONIALS':
-        return <TestimonialsSection key={section.id} testimonials={initialData.testimonials} />;
+        return <TestimonialsSection key={section.id} testimonials={initialData.testimonials} title={title} texture={section.config?.texture} />;
       case 'STORE_LOCATOR':
         return <StoreLocations key={section.id} stores={initialData.stores} title={title} subtitle={section.subtitle} />;
       case 'MARQUEE':

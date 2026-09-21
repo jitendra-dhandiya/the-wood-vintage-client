@@ -66,11 +66,11 @@ export default function ProductSection({
             <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} style={{ minWidth: 0 }}>
               <Box>
                 {subtitle && (
-                  <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', fontSize: '0.62rem', mb: 0.4 }}>
+                  <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.26em', fontWeight: 700, display: 'block', fontSize: '0.7rem', mb: 1 }}>
                     {subtitle}
                   </Typography>
                 )}
-                <Typography variant="h4" sx={{ fontWeight: 800, fontSize: { xs: '1.3rem', md: '1.75rem' }, color: '#111', letterSpacing: '-0.015em' }}>
+                <Typography variant="h2" sx={{ fontFamily: '"Cormorant Garamond", "Playfair Display", Georgia, serif', fontWeight: 600, fontSize: { xs: '2.1rem', md: '3rem' }, color: '#3B2314', letterSpacing: '-0.01em', lineHeight: 1.05 }}>
                   {title}
                 </Typography>
               </Box>
@@ -128,17 +128,17 @@ export default function ProductSection({
           <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} style={{ minWidth: 0 }}>
             <Box>
               {subtitle && (
-                <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.2em', fontWeight: 600, display: 'block', fontSize: '0.62rem', mb: 0.4 }}>
+                <Typography variant="overline" sx={{ color: '#A0693A', letterSpacing: '0.26em', fontWeight: 700, display: 'block', fontSize: '0.7rem', mb: 1 }}>
                   {subtitle}
                 </Typography>
               )}
-              <Typography variant="h4" sx={{ fontWeight: 800, fontSize: { xs: '1.3rem', md: '1.75rem' }, color: '#111', letterSpacing: '-0.015em', lineHeight: 1.15 }}>
+              <Typography variant="h2" sx={{ fontFamily: '"Cormorant Garamond", "Playfair Display", Georgia, serif', fontWeight: 600, fontSize: { xs: '2.1rem', md: '3rem' }, color: '#3B2314', letterSpacing: '-0.01em', lineHeight: 1.05 }}>
                 {title}
               </Typography>
             </Box>
           </motion.div>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, ml: 2, flexShrink: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, ml: { xs: 0, sm: 2 }, flexShrink: 0 }}>
             {viewAllLink && (
               <Typography
                 component={Link}

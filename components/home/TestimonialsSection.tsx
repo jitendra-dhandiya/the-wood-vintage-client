@@ -1,9 +1,10 @@
 'use client';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
-import { Box, Container, Typography, Avatar, Rating, Card, CardContent } from '@mui/material';
-import { FormatQuote } from '@mui/icons-material';
-import { motion } from 'framer-motion';
+import { Box, Container, Typography, Rating } from '@mui/material';
+import { useReducedMotion } from 'framer-motion';
+import { buildImageUrl } from '../../lib/imageUrl';
+import { C, SERIF, SectionHead } from './craft/shared';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -19,64 +20,49 @@ interface Testimonial {
 
 interface TestimonialsSectionProps {
   testimonials: Testimonial[];
+  title?: string;
+  /** Light wood-grain background (a lightened real photo). */
+  texture?: string;
 }
 
-export default function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
+export default function TestimonialsSection({ testimonials, title, texture }: TestimonialsSectionProps) {
+  const reduce = useReducedMotion();
   if (!testimonials.length) return null;
 
   return (
-    <Box sx={{ py: { xs: 6, md: 10 }, bgcolor: '#2A190E' }}>
+    <Box sx={{
+      py: { xs: 7, md: 11 }, bgcolor: C.sand,
+      backgroundImage: texture ? `url(${buildImageUrl(texture, 1440)})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center',
+      '& .swiper-pagination-bullet-active': { bgcolor: C.copper },
+    }}>
       <Container maxWidth="xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
-            <Typography variant="overline" sx={{ color: '#D9A66E', letterSpacing: '0.2em', fontWeight: 600, display: 'block', mb: 1 }}>
-              Testimonials
-            </Typography>
-            <Typography variant="h3" sx={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, color: 'white' }}>
-              What Our Customers Say
-            </Typography>
-          </Box>
-        </motion.div>
-
+        <SectionHead align="center" eyebrow="Testimonials" title={title || 'Kind words from our customers'} />
         <Swiper
           modules={[Autoplay, Pagination]}
           spaceBetween={24}
           slidesPerView={1}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          autoplay={reduce ? false : { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
           pagination={{ clickable: true }}
-          breakpoints={{
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
+          breakpoints={{ 700: { slidesPerView: 2 }, 1100: { slidesPerView: 3 } }}
           touchStartPreventDefault={false}
-          style={{ paddingBottom: 48 }}
+          style={{ paddingBottom: 52, paddingTop: 10 }}
         >
           {testimonials.map((t) => (
-            <SwiperSlide key={t.id}>
-              <Card elevation={0} sx={{ bgcolor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 2, height: '100%' }}>
-                <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <FormatQuote sx={{ color: '#D9A66E', fontSize: 32, transform: 'scaleX(-1)', mb: 1 }} />
-                  <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.8, flexGrow: 1, mb: 3, fontStyle: 'italic' }}>
-                    "{t.review}"
-                  </Typography>
-                  <Rating value={t.rating} readOnly size="small" sx={{ mb: 2, '& .MuiRating-iconFilled': { color: '#D9A66E' } }} />
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Avatar src={t.avatar} sx={{ width: 40, height: 40, bgcolor: '#D9A66E', fontSize: '0.85rem', fontWeight: 700 }}>
-                      {t.name.charAt(0)}
-                    </Avatar>
-                    <Box>
-                      <Typography variant="body2" sx={{ color: 'white', fontWeight: 700 }}>
-                        {t.name}
-                      </Typography>
-                      {t.designation && (
-                        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
-                          {t.designation}
-                        </Typography>
-                      )}
-                    </Box>
+            <SwiperSlide key={t.id} style={{ height: 'auto' }}>
+              <Box component="figure" sx={{ m: 0, height: '100%', p: { xs: 3, md: 4 }, bgcolor: 'rgba(255,252,245,0.94)', border: '1px solid rgba(59,35,20,0.1)', borderRadius: '3px', boxShadow: '0 22px 40px -30px rgba(42,25,14,0.55)', display: 'flex', flexDirection: 'column' }}>
+                <Typography aria-hidden sx={{ fontFamily: SERIF, color: C.copper, fontSize: '4.5rem', lineHeight: 0.7, height: 34 }}>&ldquo;</Typography>
+                <Typography component="blockquote" sx={{ m: 0, fontFamily: SERIF, color: C.walnut, fontSize: { xs: '1.3rem', md: '1.45rem' }, lineHeight: 1.45, fontWeight: 500, flexGrow: 1, mb: 3 }}>
+                  {t.review}
+                </Typography>
+                <Rating value={t.rating} readOnly size="small" sx={{ mb: 1.5, '& .MuiRating-iconFilled': { color: C.copper } }} />
+                <Box component="figcaption" sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Box sx={{ width: 40, height: 40, borderRadius: '50%', bgcolor: C.walnut, color: C.gold, display: 'grid', placeItems: 'center', fontFamily: SERIF, fontSize: '1.2rem', flexShrink: 0 }}>{t.name.charAt(0)}</Box>
+                  <Box>
+                    <Typography sx={{ color: C.walnut, fontWeight: 700, fontSize: '0.92rem', lineHeight: 1.2 }}>{t.name}</Typography>
+                    {t.designation && <Typography sx={{ color: '#7a6450', fontSize: '0.8rem' }}>{t.designation}</Typography>}
                   </Box>
-                </CardContent>
-              </Card>
+                </Box>
+              </Box>
             </SwiperSlide>
           ))}
         </Swiper>
