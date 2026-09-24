@@ -241,10 +241,13 @@ export async function middleware(req: NextRequest) {
 
   if (!isEnabledCode(countries, visitorCountry)) {
     // Located in a country we do not sell to (yet): designed region page, not a wrong storefront.
-    const url = req.nextUrl.clone();
-    url.pathname = '/not-available';
-    url.search = `?c=${encodeURIComponent(visitorCountry)}`;
-    return withHints(NextResponse.rewrite(url), null, overrideToSet);
+    // A redirect to the page's public URL, not a rewrite: behind nginx, Next builds request origins from its
+    // own bind address (https://localhost:3000), and a rewrite to that origin is treated as an external proxy
+    // and fails with a 500. The Host header is what the visitor actually used.
+    const host = req.headers.get('host') ?? req.nextUrl.host;
+    const proto = (req.headers.get('x-forwarded-proto') ?? req.nextUrl.protocol.replace(':', '')).split(',')[0];
+    const target = new URL(`/not-available?c=${encodeURIComponent(visitorCountry)}`, `${proto}://${host}`);
+    return withHints(NextResponse.redirect(target, 307), null, overrideToSet);
   }
 
   const market = visitorCountry.toLowerCase();

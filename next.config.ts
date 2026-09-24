@@ -9,11 +9,6 @@ const withBundleAnalyzer = withBundleAnalyzerInit({ enabled: process.env.ANALYZE
 const nextConfig: NextConfig = {
   // Lets verification runs build/serve into a separate dir without touching a running dev server's .next.
   distDir: process.env.NEXT_DIST_DIR || '.next',
-  // Behind nginx, Next otherwise builds request URLs from its own bind address (https://localhost:3000), so
-  // middleware redirects leaked that origin and rewrites (e.g. the region page) were treated as external
-  // proxies and failed. TRUST_HOST_HEADER=true (production only, set at build + runtime) makes Next use the
-  // Host header instead. nginx always sets Host; never enable this where the app is directly reachable.
-  experimental: (process.env.TRUST_HOST_HEADER === 'true' ? { trustHostHeader: true } : undefined) as NextConfig['experimental'], // not in Next's public types
   output: process.env.NEXT_OUTPUT === 'standalone' ? 'standalone' : undefined,
   images: {
     // Resizing is delegated to the backend's /img endpoint, which serves
