@@ -1,6 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { legacyCategoryTarget } from './lib/legacyCategorySlugs';
-import { API_URL } from './constants';
+import { API_URL as PUBLIC_API_URL } from './constants';
+
+// Middleware talks to the API over a private loopback URL when INTERNAL_API_URL is set (build time; Next
+// inlines env into middleware). Reason: nginx overwrites X-Forwarded-For with the CALLER's address, so a
+// server-to-server call through the public URL arrives as the server's own IP and the geo lock would locate
+// every visitor at the datacentre. Direct to the API, the visitor IP forwarded below is what it sees.
+// Only middleware uses this: SSR/page code keeps the public URL, which must never leak into HTML.
+const API_URL = process.env.INTERNAL_API_URL || PUBLIC_API_URL;
 import { COUNTRY_COOKIE } from './lib/countryPreference';
 import type { Country } from './types';
 
