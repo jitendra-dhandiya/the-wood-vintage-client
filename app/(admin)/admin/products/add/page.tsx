@@ -13,14 +13,9 @@ import { GENDERS } from '../../../../../constants';
 import { toast } from 'react-hot-toast';
 import SortableImageGrid, { type SortableImage } from '../../../../../components/admin/SortableImageGrid';
 import ProductCountriesSection, { type CountryDraft, loadCountryDraftsForCreate, loadCountryDraftsForProduct, validateCountryDrafts, toCountriesPayload } from '../../../../../components/admin/ProductCountriesSection';
-import { parseSizeInput, SIZE_PRESETS } from '../../../../../lib/sizeInput';
-
-/**
- * Offered as quick-add chips only. Sizes are free text — a catalogue carries
- * waist sizes (26-36), 'Free Size', UK numbers — so a fixed list cannot cover
- * it and must not be the only way in.
- */
-const SIZE_SUGGESTIONS = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Free Size'];
+import SizeDimensionPicker from '../../../../../components/admin/SizeDimensionPicker';
+import { familyForCategory, sortSizes, type SizeFamily, FINISH_SUGGESTIONS } from '../../../../../lib/handicraftSize';
+import { SIZE_LABEL, FINISH_LABEL } from '../../../../../lib/variantLabel';
 
 /**
  * Stock a newly added size row starts at.
@@ -42,6 +37,8 @@ const schema = Yup.object({
 export default function AddProductPage() {
   const router = useRouter();
   const [categories, setCategories] = useState<any[]>([]);
+  const [family, setFamily] = useState<SizeFamily>('custom');
+  const [familyTouched, setFamilyTouched] = useState(false);
   const [collections, setCollections] = useState<any[]>([]);
   // Phase 2 handicraft taxonomy — admin lists include inactive rows, since a
   // product already assigned to one should still be able to keep it on
@@ -225,6 +222,38 @@ export default function AddProductPage() {
     toast.success(`Added ${fresh.length} size${fresh.length === 1 ? '' : 's'}`);
   };
 
+  /** Add labels to EVERY finish block: the sizes x finishes matrix in one click. */
+  const addSizesToAll = (labels: string[]) => {
+    const clean = labels.filter(Boolean);
+    if (!clean.length) return;
+    let added = 0;
+    const next = formik.values.variants.map((v: any) => {
+      const have = new Set(v.sizes.map((x: any) => String(x.size).toLowerCase()));
+      const fresh = clean.filter(l => !have.has(l.toLowerCase()));
+      added += fresh.length;
+      const merged = [...v.sizes, ...fresh.map(size => ({ size, stock: DEFAULT_SIZE_STOCK, price: '' }))];
+      return { ...v, sizes: sortSizes(merged.map(m => m.size)).map(sz => merged.find(m => m.size === sz)!) };
+    });
+    if (!added) { toast('Those sizes are already added', { icon: 'ℹ️' }); return; }
+    formik.setFieldValue('variants', next);
+    toast.success(`Added ${clean.length} size${clean.length === 1 ? '' : 's'}`);
+  };
+
+  /** Add a finish block, reusing the first block when it is still blank. */
+  const addFinish = (name: string) => {
+    const vs = formik.values.variants;
+    const first = vs[0];
+    if (name && vs.length === 1 && !first.color.trim()) {
+      formik.setFieldValue('variants.0.color', name);
+      return;
+    }
+    formik.setFieldValue('variants', [...vs, {
+      color: name, colorHex: '',
+      // A new finish starts with the same size run as the first one.
+      sizes: (first?.sizes || []).map((x: any) => ({ ...x })),
+    }]);
+  };
+
   /** One stock figure across every size of a colour — the usual case. */
   const setAllStock = (vi: number, stock: number) => {
     const current = formik.values.variants[vi]?.sizes || [];
@@ -240,7 +269,7 @@ export default function AddProductPage() {
   const copySizesFrom = (targetIndex: number, sourceIndex: number) => {
     const source = formik.values.variants[sourceIndex]?.sizes || [];
     if (!source.length) {
-      toast.error('That colour has no sizes to copy yet');
+      toast.error('That finish has no sizes to copy yet');
       return;
     }
     formik.setFieldValue(
@@ -289,6 +318,20 @@ export default function AddProductPage() {
     ] as string[],
     [formik.values.variants]
   );
+
+  const finishNames = useMemo(
+    () => (formik.values.variants || []).map((v: any) => (v.color || '').trim().toLowerCase()).filter(Boolean),
+    [formik.values.variants]
+  );
+
+  // Preset family follows the chosen category until the admin picks one by hand.
+  useEffect(() => {
+    if (familyTouched) return;
+    const cat = categories.find(c => c.id === formik.values.categoryId);
+    if (!cat) return;
+    const parent = categories.find(c => c.id === cat.parentId);
+    setFamily(familyForCategory(cat.name, cat.slug, parent?.name, parent?.slug));
+  }, [formik.values.categoryId, categories, familyTouched]);
 
   const addTag = () => {
     const tag = tagInput.trim();
@@ -399,121 +442,77 @@ export default function AddProductPage() {
                     }}
                     helperText={
                       variantColorNames.length
-                        ? 'Drag to reorder — image 1 is the cover. Tag a photo with a colour to show it when that colour is picked; leave it on "All colours" and it shows for every colour that has no photos of its own.'
-                        : 'Drag to reorder — image 1 is the cover shown on listings and first in the gallery. Add colours under Variants to tag photos per colour.'
+                        ? 'Drag to reorder — image 1 is the cover. Tag a photo with a finish to show it when that finish is picked; leave it on "All finishes" and it shows for every finish that has no photos of its own.'
+                        : 'Drag to reorder — image 1 is the cover shown on listings and first in the gallery. Add finishes under Variants to tag photos per finish.'
                     }
                   />
                 </CardContent>
               </Card>
 
-              {/* Variants */}
+              {/* Variants — "Size / Dimensions" x "Finish" (decision 0039).
+                  One block per finish; each block lists that finish's sizes.
+                  "Apply to all finishes" makes the picker fill the whole
+                  sizes x finishes matrix in one click. */}
               <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, mb: 3 }}>
                 <CardContent sx={{ p: 3 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Typography variant="subtitle2" fontWeight={700}>Variants (Colors & Sizes)</Typography>
-                    <Button size="small" startIcon={<Add />} onClick={() => {
-                      formik.setFieldValue('variants', [...formik.values.variants, {
-                        color: '', colorHex: '',
-                        sizes: [] as { size: string; stock: number; price: string }[],
-                      }]);
-                    }}>
-                      Add Color
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                    <Typography variant="subtitle2" fontWeight={700}>Variants ({SIZE_LABEL} &amp; {FINISH_LABEL})</Typography>
+                    <Button size="small" startIcon={<Add />} onClick={() => addFinish('')}>
+                      Add Finish
                     </Button>
+                  </Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                    Pick sizes for the product type, or build your own. Leave the finish blank if the piece comes in one finish only.
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', alignItems: 'center', mb: 2 }}>
+                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#888', mr: 0.5 }}>QUICK ADD FINISH:</Typography>
+                    {FINISH_SUGGESTIONS.filter(f => !finishNames.includes(f.toLowerCase())).map(f => (
+                      <Chip key={f} size="small" variant="outlined" label={`+ ${f}`} onClick={() => addFinish(f)}
+                        sx={{ fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer' }} />
+                    ))}
+                  </Box>
+
+                  <Box sx={{ mb: 2, p: 2, bgcolor: '#FFFCF5', borderRadius: 1, border: '1px solid #EFE3D0' }}>
+                    <SizeDimensionPicker
+                      family={family}
+                      onFamilyChange={f => { setFamily(f); setFamilyTouched(true); }}
+                      existing={formik.values.variants.flatMap((v: any) => v.sizes.map((x: any) => x.size))}
+                      onPick={labels => addSizesToAll(labels)}
+                    />
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                      Sizes are added to {formik.values.variants.length > 1 ? `all ${formik.values.variants.length} finishes` : 'the finish below'}; remove any you do not need.
+                    </Typography>
                   </Box>
 
                   {formik.values.variants.map((variant, vi) => (
                     <Box key={vi} sx={{ mb: 3, p: 2, bgcolor: '#FFFCF5', borderRadius: 1 }}>
                       <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
-                        {/* Colour is a NAME, not a spectrum pick. Nobody
-                            merchandises "#8B4513" — they merchandise "Tan", and
-                            that is also what the customer reads. The swatch hex
-                            is derived from the name on the server. */}
-                        <TextField label="Colour Name" size="small" sx={{ flex: 1 }}
-                          placeholder="e.g. Black, Off White, Sage Green"
+                        {/* Finish is a NAME (Natural, Walnut, Honey, or any
+                            custom wood finish). The swatch hex is derived from
+                            the name on the server. */}
+                        <TextField label={`${FINISH_LABEL} (optional)`} size="small" sx={{ flex: 1 }}
+                          placeholder="e.g. Natural, Walnut, Honey, Antique Teak"
                           value={variant.color}
                           onChange={e => formik.setFieldValue(`variants.${vi}.color`, e.target.value)} />
                         {formik.values.variants.length > 1 && (
-                          <IconButton size="small" color="error" onClick={() =>
+                          <IconButton size="small" color="error" aria-label="Remove finish" onClick={() =>
                             formik.setFieldValue('variants', formik.values.variants.filter((_, i) => i !== vi))}>
                             <Remove fontSize="small" />
                           </IconButton>
                         )}
                       </Box>
 
-                      {/* Sizes stay free text — a fixed XS-XXL grid cannot
-                          express a denim catalogue (waist 26-36), "Free Size"
-                          or UK numbering. What changed is the speed: a whole
-                          run goes in with one click, because adding six waists
-                          across two colours used to be twelve separate clicks
-                          before a single stock figure had been typed. */}
-
-                      {/* Whole runs, one click each. */}
-                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center', mb: 1.5 }}>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#888', mr: 0.5 }}>
-                          ADD A SET:
-                        </Typography>
-                        {SIZE_PRESETS.map(preset => (
-                          <Chip
-                            key={preset.label}
-                            label={preset.label}
-                            size="small"
-                            onClick={() => addSizes(vi, preset.sizes.map(size => ({
-                              size, stock: DEFAULT_SIZE_STOCK, price: '',
-                            })))}
-                            sx={{
-                              fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer',
-                              bgcolor: '#3B2314', color: '#fff',
-                              '&:hover': { bgcolor: '#333' },
-                            }}
-                          />
-                        ))}
-                        {vi > 0 && (
-                          <Chip
-                            label={`Copy sizes from ${formik.values.variants[0]?.color?.trim() || 'first colour'}`}
-                            size="small"
-                            variant="outlined"
-                            onClick={() => copySizesFrom(vi, 0)}
-                            sx={{ fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer' }}
-                          />
-                        )}
-                      </Box>
-
-                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1.5 }}>
-                        {SIZE_SUGGESTIONS.filter(sz => !variant.sizes.some(x => x.size === sz)).map(sz => (
-                          <Chip
-                            key={sz}
-                            label={`+ ${sz}`}
-                            size="small"
-                            variant="outlined"
-                            onClick={() => formik.setFieldValue(`variants.${vi}.sizes`, [
-                              ...variant.sizes, { size: sz, stock: DEFAULT_SIZE_STOCK, price: '' },
-                            ])}
-                          />
-                        ))}
-                        <TextField
-                          size="small"
-                          placeholder="26, 28, 30 or 26-36 + Enter"
-                          sx={{ width: 230 }}
-                          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                            if (e.key !== 'Enter') return;
-                            e.preventDefault();
-                            const el = e.target as HTMLInputElement;
-                            // One entry can carry a list or a range — see
-                            // parseSizeInput. Typing them one at a time was the
-                            // slow part.
-                            const parsed = parseSizeInput(el.value);
-                            if (!parsed.length) return;
-                            addSizes(vi, parsed.map(size => ({
-                              size, stock: DEFAULT_SIZE_STOCK, price: '',
-                            })));
-                            el.value = '';
-                          }}
+                      {vi > 0 && (
+                        <Chip
+                          label={`Copy sizes from ${formik.values.variants[0]?.color?.trim() || 'first finish'}`}
+                          size="small" variant="outlined" onClick={() => copySizesFrom(vi, 0)}
+                          sx={{ fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer', mb: 1.5 }}
                         />
-                      </Box>
+                      )}
 
                       {variant.sizes.length === 0 ? (
                         <Typography variant="caption" color="text.secondary">
-                          No sizes yet — add the ones this colour actually comes in.
+                          No sizes yet. Pick one above, or use the box under this finish.
                         </Typography>
                       ) : (
                         <>
@@ -552,13 +551,14 @@ export default function AddProductPage() {
                         </Box>
                         <Grid container spacing={1.5}>
                           {variant.sizes.map((sv, si) => (
-                            <Grid item xs={6} sm={3} md={2} key={`${sv.size}-${si}`}>
+                            <Grid item xs={12} sm={6} md={4} key={`${sv.size}-${si}`}>
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                                <Typography variant="caption" fontWeight={700} noWrap sx={{ flex: 1 }}>
+                                <Typography variant="caption" fontWeight={700} sx={{ flex: 1, minWidth: 0, overflowWrap: 'anywhere' }}>
                                   {sv.size}
                                 </Typography>
                                 <IconButton
                                   size="small"
+                                  aria-label={`Remove ${sv.size}`}
                                   sx={{ p: 0.2, color: '#d32f2f' }}
                                   onClick={() => formik.setFieldValue(
                                     `variants.${vi}.sizes`,
@@ -568,13 +568,23 @@ export default function AddProductPage() {
                                   <Remove sx={{ fontSize: 14 }} />
                                 </IconButton>
                               </Box>
-                              <TextField
-                                label="Stock" type="number" size="small" fullWidth
-                                value={sv.stock}
-                                onChange={e => formik.setFieldValue(`variants.${vi}.sizes.${si}.stock`, Number(e.target.value))}
-                                inputProps={{ min: 0 }}
-                                helperText={Number(sv.stock) === 0 ? 'Hidden from customers' : undefined}
-                              />
+                              <Box sx={{ display: 'flex', gap: 1 }}>
+                                <TextField
+                                  label="Stock" type="number" size="small" fullWidth
+                                  value={sv.stock}
+                                  onChange={e => formik.setFieldValue(`variants.${vi}.sizes.${si}.stock`, Number(e.target.value))}
+                                  inputProps={{ min: 0 }}
+                                  helperText={Number(sv.stock) === 0 ? 'Hidden from customers' : undefined}
+                                />
+                                <TextField
+                                  label="Price (₹)" type="number" size="small" fullWidth
+                                  placeholder="Product price"
+                                  InputLabelProps={{ shrink: true }}
+                                  value={sv.price}
+                                  onChange={e => formik.setFieldValue(`variants.${vi}.sizes.${si}.price`, e.target.value)}
+                                  inputProps={{ min: 0 }}
+                                />
+                              </Box>
                             </Grid>
                           ))}
                         </Grid>
@@ -591,7 +601,6 @@ export default function AddProductPage() {
                   <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 2 }}>Product Details</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs={6}><TextField label="Material" size="small" fullWidth {...formik.getFieldProps('material')} /></Grid>
-                    <Grid item xs={6}><TextField label="Fit" size="small" fullWidth {...formik.getFieldProps('fit')} /></Grid>
                     <Grid item xs={6}><TextField label="Style" size="small" fullWidth {...formik.getFieldProps('style')} /></Grid>
                     <Grid item xs={12}><TextField label="Care Instructions" size="small" fullWidth multiline rows={2} {...formik.getFieldProps('careInstructions')} /></Grid>
                   </Grid>

@@ -1,13 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Box, Typography, Button, Slider, Divider, Chip } from '@mui/material';
-import { PRODUCT_SIZES, PRODUCT_COLORS } from '../../constants';
+import { PRODUCT_FINISHES } from '../../constants';
 
 
 import type { Material, Style, Room } from '../../types';
 
 /**
- * Shared filter sidebar/drawer content — Price, Size, Color, and the Phase 2
+ * Shared filter sidebar/drawer content — Price, Finish, and the Phase 2
  * handicraft taxonomy (Material/Style/Room). Used by both `/shop` (browsing)
  * and `/search` (Phase 4 §6) so search results get the same facets as
  * browsing rather than a narrower, duplicated filter UI.
@@ -19,7 +19,6 @@ import type { Material, Style, Room } from '../../types';
 export interface FilterPanelProps {
   isMobile: boolean;
   priceRange: number[];          // committed value (from parent)
-  selectedSizes: string[];
   selectedColors: string[];
   materials: Material[];
   styles: Style[];
@@ -29,7 +28,6 @@ export interface FilterPanelProps {
   selectedRoom: string;
   activeFilterCount: number;
   onPriceCommit: (v: number[]) => void;
-  onToggleSize: (s: string) => void;
   onToggleColor: (c: string) => void;
   onSelectMaterial: (slug: string) => void;
   onSelectStyle: (slug: string) => void;
@@ -38,9 +36,9 @@ export interface FilterPanelProps {
 }
 
 export function FilterPanel({
-  isMobile, priceRange, selectedSizes, selectedColors,
+  isMobile, priceRange, selectedColors,
   materials, styles, rooms, selectedMaterial, selectedStyle, selectedRoom,
-  activeFilterCount, onPriceCommit, onToggleSize, onToggleColor,
+  activeFilterCount, onPriceCommit, onToggleColor,
   onSelectMaterial, onSelectStyle, onSelectRoom, onClear,
 }: FilterPanelProps) {
   // Local state drives slider visuals smoothly — no API call on every drag
@@ -78,30 +76,10 @@ export function FilterPanel({
 
       <Divider sx={{ my: 2 }} />
 
-      {/* Sizes — furniture rarely has apparel sizes; the section only renders if a list is configured. */}
-      {PRODUCT_SIZES.length > 0 && (<>
-      <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Size</Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 2 }}>
-        {PRODUCT_SIZES.map((size) => (
-          <Chip
-            key={size} label={size} size="small"
-            onClick={() => onToggleSize(size)}
-            variant={selectedSizes.includes(size) ? 'filled' : 'outlined'}
-            sx={{
-              cursor: 'pointer',
-              ...(selectedSizes.includes(size) && { bgcolor: '#3B2314', color: 'white', '&:hover': { bgcolor: '#5A3D2B' } }),
-            }}
-          />
-        ))}
-      </Box>
-
-      <Divider sx={{ my: 2 }} />
-      </>)}
-
       {/* Wood finishes */}
       <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Finish</Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 2 }}>
-        {PRODUCT_COLORS.map((color) => (
+        {PRODUCT_FINISHES.map((color) => (
           <Chip
             key={color} label={color} size="small"
             onClick={() => onToggleColor(color)}
@@ -116,7 +94,7 @@ export function FilterPanel({
 
       {/* Material / Style / Room — Phase 2 handicraft taxonomy. Single-select
           per facet (a product carries one of each, not many), so these
-          render as a toggleable chip row exactly like Size/Color above but
+          render as a toggleable chip row exactly like Finish above but
           with click-to-clear on the active one instead of multi-select. Each
           section is absent entirely when the taxonomy list hasn't loaded or
           is empty, rather than showing an empty heading. */}

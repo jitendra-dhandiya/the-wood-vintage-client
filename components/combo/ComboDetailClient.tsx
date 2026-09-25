@@ -13,6 +13,7 @@ import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
 import { formatPrice } from '../../utils/format';
 import type { Combo } from '../../types';
+import { variantLabel } from '../../lib/variantLabel';
 
 /** The combo page. SSR supplies `initial` (SEO); a live refetch keeps stock and price honest. */
 export default function ComboDetailClient({ initial }: { initial: Combo }) {
@@ -92,7 +93,7 @@ export default function ComboDetailClient({ initial }: { initial: Combo }) {
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Typography sx={{ fontWeight: 600, fontSize: '0.95rem', lineHeight: 1.3 }}>{it.name}</Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {[it.size, it.color].filter(Boolean).join(' / ')}{it.size || it.color ? ' · ' : ''}Qty {it.quantity}
+                      {variantLabel(it)}{it.size || it.color ? ' · ' : ''}Qty {it.quantity}
                     </Typography>
                   </Box>
                   <Typography variant="body2" sx={{ color: '#8b7b6b', whiteSpace: 'nowrap' }}>{formatPrice(it.unitPrice * it.quantity, sym)}</Typography>

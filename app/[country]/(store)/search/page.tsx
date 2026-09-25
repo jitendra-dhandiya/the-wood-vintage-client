@@ -39,7 +39,6 @@ export default function SearchPage() {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [styles, setStyles] = useState<Style[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<number[]>(PRICE_RANGE);
   const [selectedMaterial, setSelectedMaterial] = useState('');
@@ -66,7 +65,6 @@ export default function SearchPage() {
       const params: Record<string, unknown> = {
         search: query, page, limit, sortBy, country: country || undefined,
       };
-      if (selectedSizes.length) params.sizes = selectedSizes.join(',');
       if (selectedColors.length) params.colors = selectedColors.join(',');
       if (priceRange[0] > 0) params.minPrice = priceRange[0];
       if (priceRange[1] < PRICE_RANGE[1]) params.maxPrice = priceRange[1];
@@ -82,7 +80,7 @@ export default function SearchPage() {
     } finally {
       setLoading(false);
     }
-  }, [query, page, sortBy, selectedSizes, selectedColors, priceRange, selectedMaterial, selectedStyle, selectedRoom, country]);
+  }, [query, page, sortBy, selectedColors, priceRange, selectedMaterial, selectedStyle, selectedRoom, country]);
 
   useEffect(() => { fetchResults(); }, [fetchResults]);
 
@@ -93,10 +91,6 @@ export default function SearchPage() {
     }
   };
 
-  const toggleSize = (size: string) => {
-    setSelectedSizes(prev => prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]);
-    setPage(1);
-  };
   const toggleColor = (color: string) => {
     setSelectedColors(prev => prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]);
     setPage(1);
@@ -106,19 +100,19 @@ export default function SearchPage() {
   const selectRoom = (slug: string) => { setSelectedRoom(prev => (prev === slug ? '' : slug)); setPage(1); };
   const handlePriceCommit = (v: number[]) => { setPriceRange(v); setPage(1); };
   const clearFilters = () => {
-    setSelectedSizes([]); setSelectedColors([]); setPriceRange(PRICE_RANGE);
+    setSelectedColors([]); setPriceRange(PRICE_RANGE);
     setSelectedMaterial(''); setSelectedStyle(''); setSelectedRoom(''); setPage(1);
   };
 
-  const activeFilterCount = selectedSizes.length + selectedColors.length +
+  const activeFilterCount = selectedColors.length +
     (priceRange[0] > 0 || priceRange[1] < PRICE_RANGE[1] ? 1 : 0) +
     (selectedMaterial ? 1 : 0) + (selectedStyle ? 1 : 0) + (selectedRoom ? 1 : 0);
 
   const filterProps: FilterPanelProps = {
-    isMobile, priceRange, selectedSizes, selectedColors,
+    isMobile, priceRange, selectedColors,
     materials, styles, rooms, selectedMaterial, selectedStyle, selectedRoom,
     activeFilterCount, onPriceCommit: handlePriceCommit,
-    onToggleSize: toggleSize, onToggleColor: toggleColor,
+    onToggleColor: toggleColor,
     onSelectMaterial: selectMaterial, onSelectStyle: selectStyle, onSelectRoom: selectRoom,
     onClear: clearFilters,
   };
@@ -184,9 +178,6 @@ export default function SearchPage() {
           {/* Active filter chips */}
           {activeFilterCount > 0 && (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-              {selectedSizes.map(s => (
-                <Chip key={s} label={s} size="small" onDelete={() => toggleSize(s)} sx={{ bgcolor: '#3B2314', color: 'white' }} />
-              ))}
               {selectedColors.map(c => (
                 <Chip key={c} label={c} size="small" onDelete={() => toggleColor(c)} sx={{ bgcolor: '#3B2314', color: 'white' }} />
               ))}

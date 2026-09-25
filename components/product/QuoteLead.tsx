@@ -31,7 +31,8 @@ const WA_GREEN = '#128C4A';
 const ROOMS = ['Living room', 'Bedroom', 'Dining', 'Office', 'Outdoor / other'];
 const STYLES = ['Traditional', 'Modern', 'Rustic', 'Not sure yet'];
 
-export interface QuoteProduct { id: string; name: string; image?: string }
+/** `options` is the shopper's chosen variant, e.g. "Size: Queen (5×6.5 ft) · Finish: Walnut". */
+export interface QuoteProduct { id: string; name: string; image?: string; options?: string }
 
 // ─── Shared answers (step 1) so WhatsApp can echo them ────────────────
 export interface QuoteAnswers { room: string; style: string; needs: string }
@@ -42,7 +43,7 @@ const productUrl = () => (typeof window === 'undefined' ? '' : `${window.locatio
 export function whatsAppHref(settings: LeadSettings, product: QuoteProduct, a: QuoteAnswers = EMPTY_ANSWERS) {
   if (!settings.whatsappNumber) return '';
   return buildWhatsAppLink(settings.whatsappNumber, {
-    base: settings.whatsappMessage, productName: product.name, url: productUrl(),
+    base: settings.whatsappMessage, productName: product.name, options: product.options, url: productUrl(),
     room: a.room, style: a.style, needs: a.needs,
   });
 }
@@ -229,7 +230,7 @@ export function LeadDialog({
       await leadApi.create({
         name: name.trim(), phone: phone.trim(), phoneCountry, email: email.trim(),
         preferredContact: contact, productId: product.id,
-        room: answers.room, style: answers.style, requirement: answers.needs,
+        room: answers.room, style: answers.style, requirement: [product.options, answers.needs].filter(Boolean).join(' | ').slice(0, 500),
         source: 'PRODUCT_QUOTE',
         utmSource: utm.utmSource, utmMedium: utm.utmMedium, utmCampaign: utm.utmCampaign,
         sessionId: (() => { try { return localStorage.getItem('sessionId') || undefined; } catch { return undefined; } })(),
@@ -300,7 +301,7 @@ export function LeadDialog({
             <Typography sx={{ color: '#6b5a4c', mb: 3 }}>Your request is with our design team.</Typography>
             <Stack spacing={1.5} sx={{ textAlign: 'left', mb: 3 }}>
               {[
-                ['1', 'We review your room and needs', [answers.room, answers.style].filter(Boolean).join(', ') || product.name],
+                ['1', 'We review your room and needs', [answers.room, answers.style].filter(Boolean).join(', ') || [product.name, product.options].filter(Boolean).join(' - ')],
                 ['2', `You hear from us ${settings.responsePromise}`, `by ${contactLabel}`],
                 ['3', 'We share a quote with options', 'Price, size and finish choices for this piece'],
               ].map(([n, t, s]) => (
@@ -348,8 +349,13 @@ export function LeadDialog({
               ))}
             </Box>
 
+            {product.options && (
+              <Typography sx={{ fontSize: '0.84rem', mb: 1.5, color: '#3B2314', bgcolor: '#F6EEDF', borderRadius: 1, px: 1.5, py: 1 }}>
+                <strong>Your selection:</strong> {product.options}
+              </Typography>
+            )}
             <TextField
-              label="Size or customisation needs (optional)" placeholder="Any dimensions, finish or changes you have in mind?"
+              label="Custom size or changes (optional)" placeholder="Any dimensions, finish or changes you have in mind?"
               fullWidth multiline minRows={2} value={answers.needs} slotProps={{ htmlInput: { maxLength: 500 } }}
               onChange={(e) => setAnswers((a) => ({ ...a, needs: e.target.value }))}
               sx={{ mb: 3 }}

@@ -50,10 +50,11 @@ export function useLeadSettings(): LeadSettings {
 
 export function buildWhatsAppLink(
   number: string,
-  opts: { base: string; productName?: string; url?: string; room?: string; style?: string; needs?: string },
+  opts: { base: string; productName?: string; options?: string; url?: string; room?: string; style?: string; needs?: string },
 ): string {
   const parts = [opts.base];
   if (opts.productName) parts.push(`Product: ${opts.productName}`);
+  if (opts.options) parts.push(opts.options);
   if (opts.url) parts.push(opts.url);
   const about = [opts.room && `Room: ${opts.room}`, opts.style && `Style: ${opts.style}`, opts.needs && `Needs: ${opts.needs}`].filter(Boolean);
   if (about.length) parts.push(about.join(' | '));

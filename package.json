@@ -8,7 +8,8 @@
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test:size": "tsc lib/__tests__/handicraftSize.test.ts --module commonjs --target es2020 --moduleResolution node --esModuleInterop --skipLibCheck --outDir node_modules/.cache/size-test && node node_modules/.cache/size-test/__tests__/handicraftSize.test.js"
   },
   "dependencies": {
     "@cashfreepayments/cashfree-js": "^1.0.7",

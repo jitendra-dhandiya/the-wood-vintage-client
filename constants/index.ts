@@ -10,10 +10,11 @@ export const GENDERS = [
   { value: 'UNISEX', label: 'Unisex' },
 ];
 
-// Furniture is not sold in apparel sizes; dimensions are product attributes.
-export const PRODUCT_SIZES: string[] = [];
+// Size / Dimensions is chosen per product on the product page (Single..King, 4-Seater, 60 x 40 cm ...),
+// never as a global storefront filter: see lib/handicraftSize.ts and decision 0039.
 // Finishes that exist in the catalogue's variant data (Natural / Walnut / Honey); keep in sync with the seed.
-export const PRODUCT_COLORS = ['Natural', 'Walnut', 'Honey'];
+// The query parameter stays `colors` on the API (variant.color column).
+export const PRODUCT_FINISHES = ['Natural', 'Walnut', 'Honey'];
 
 export const SORT_OPTIONS = [
   // Curated order: the admin's per-product display priority, highest first,

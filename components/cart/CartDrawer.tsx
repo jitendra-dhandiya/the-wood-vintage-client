@@ -16,6 +16,7 @@ import { FREE_SHIPPING_THRESHOLD, SHIPPING_CHARGE } from '../../constants';
 import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
 import CartComboLine from '../combo/CartComboLine';
+import { variantLabel } from '../../lib/variantLabel';
 
 export default function CartDrawer() {
   const { country } = useCountry();
@@ -111,7 +112,7 @@ export default function CartDrawer() {
                   </Typography>
                   {item.variant && (
                     <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-                      {[item.variant.size, item.variant.color].filter(Boolean).join(' / ')}
+                      {variantLabel(item.variant)}
                     </Typography>
                   )}
                   <Typography variant="body2" sx={{ fontWeight: 600, color: '#3B2314' }}>

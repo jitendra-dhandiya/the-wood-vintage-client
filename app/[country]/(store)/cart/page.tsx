@@ -18,6 +18,7 @@ import { withCountry } from '../../../../lib/withCountry';
 import toast from 'react-hot-toast';
 import EmptyState from '../../../../components/common/EmptyState';
 import { CartSkeleton } from '../../../../components/common/Skeletons';
+import { variantLabel } from '../../../../lib/variantLabel';
 
 export default function CartPage() {
   const { cart, subtotal, updateQuantity, removeFromCart, fetchCart } = useCart();
@@ -106,7 +107,7 @@ export default function CartPage() {
                           </Typography>
                           {item.variant && (
                             <Typography variant="caption" color="text.secondary" display="block">
-                              {[item.variant.size, item.variant.color].filter(Boolean).join(' / ')}
+                              {variantLabel(item.variant)}
                             </Typography>
                           )}
                           {item.product?.brand && (

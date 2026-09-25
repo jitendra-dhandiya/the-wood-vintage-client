@@ -9,6 +9,7 @@ import { Close, DeleteOutline, AddPhotoAlternate } from '@mui/icons-material';
 import { comboApi, countryApi, productApi } from '../../services/api.service';
 import type { Country } from '../../types';
 import toast from 'react-hot-toast';
+import { variantShort } from '../../lib/variantLabel';
 
 /**
  * Create / edit a combo offer (decision 0037). The "you save" preview comes from
@@ -33,7 +34,7 @@ const toLocalInput = (iso?: string | null) => {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
 };
 const isoOrNull = (v: string) => (v ? new Date(v).toISOString() : null);
-const variantLabel = (v: { size?: string | null; color?: string | null }) => [v.size, v.color].filter(Boolean).join(' / ') || 'Option';
+const variantLabel = (v: { size?: string | null; color?: string | null }) => variantShort(v) || 'Option';
 
 const blank = () => ({
   name: '', slug: '', description: '', badgeText: '', sortOrder: '0', isActive: true, showOnHome: true,
@@ -218,7 +219,7 @@ export default function ComboFormDialog({ open, comboId, onClose, onSaved }: { o
                     </Box>
                     <Typography sx={{ flex: '1 1 160px', minWidth: 0, fontSize: '0.9rem', fontWeight: 600 }}>{l.name}</Typography>
                     {l.variants.length > 0 && (
-                      <TextField select size="small" label="Option" value={l.variantId} sx={{ minWidth: 150 }}
+                      <TextField select size="small" label="Size / Finish" value={l.variantId} sx={{ minWidth: 150 }}
                         onChange={(e) => setLines((ls) => ls.map((x) => (x.key === l.key ? { ...x, variantId: e.target.value } : x)))}>
                         {l.variants.map((v) => <MenuItem key={v.id} value={v.id}>{variantLabel(v)}</MenuItem>)}
                       </TextField>

@@ -12,6 +12,7 @@ import { formatDate, formatPrice } from '../../../../../utils/format';
 import { ORDER_STATUSES } from '../../../../../constants';
 import { toast } from 'react-hot-toast';
 import { orderAddress } from '@/lib/orderAddress';
+import { variantLabel } from '../../../../../lib/variantLabel';
 
 const STATUS_COLORS: Record<string, any> = {
   PENDING: 'warning', CONFIRMED: 'info', PROCESSING: 'info',
@@ -133,10 +134,9 @@ export default function OrderDetailPage() {
                       {(() => {
                         // Snapshotted on the line at checkout; the variant is a
                         // fallback for orders placed before that was recorded.
-                        const parts = [item.size || item.variant?.size, item.color || item.variant?.color]
-                          .filter(Boolean);
-                        return parts.length ? (
-                          <Typography variant="caption" color="text.secondary">{parts.join(' · ')}</Typography>
+                        const label = variantLabel({ size: item.size || item.variant?.size, color: item.color || item.variant?.color });
+                        return label ? (
+                          <Typography variant="caption" color="text.secondary" display="block">{label}</Typography>
                         ) : null;
                       })()}
                       <Typography variant="caption" color="text.secondary" display="block">

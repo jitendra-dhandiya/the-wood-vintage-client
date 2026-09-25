@@ -24,6 +24,8 @@ import ComboProductBlock from '../combo/ComboProductBlock';
 import OptionBox from './OptionBox';
 import { galleryFor, groupGalleryByColor, firstIndexOfColor, sameColor } from '../../lib/productImages';
 import { sortSizes } from '../../lib/sizeSort';
+import { alternateUnits } from '../../lib/handicraftSize';
+import { variantLabel, SIZE_LABEL, FINISH_LABEL } from '../../lib/variantLabel';
 import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
 import { getRecentlyViewed, recordView } from '../../lib/recentlyViewed';
@@ -39,17 +41,13 @@ interface Props {
 }
 
 export default function ProductDetailClient({ product }: Props) {
-  const { country, currencySymbol } = useCountry();
+  const { country, countryData, currencySymbol } = useCountry();
   const { addToCart, isLoading } = useCart();
   const { isAuthenticated, user } = useAuth();
   const leadSettings = useLeadSettings();
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [quoteAnswers, setQuoteAnswers] = useState<QuoteAnswers>(EMPTY_ANSWERS);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const quoteProduct = useMemo(() => ({
-    id: product.id, name: product.name,
-  }), [product.id, product.name]);
-  const waHref = whatsAppHref(leadSettings, quoteProduct, quoteAnswers);
   const openQuote = () => {
     trackEvent('QUOTE_CTA_CLICK', { productId: product.id, path: window.location.pathname });
     setQuoteOpen(true);
@@ -74,8 +72,25 @@ export default function ProductDetailClient({ product }: Props) {
   const [inWishlist, setInWishlist] = useState(false);
   const [tab, setTab] = useState(0);
 
-  const displayPrice = product.salePrice || product.basePrice;
-  const discount = product.salePrice ? getDiscountPercent(product.basePrice, product.salePrice) : 0;
+  // The chosen variant's own price wins (same rule as checkout: variant sale
+  // price, else variant price, else the product's). Without a choice the page
+  // shows the product price.
+  // Variant prices are stored in the base currency (known gap, decision 0032),
+  // so they are only shown in the default market.
+  const baseMarket = !countryData || countryData.isDefault;
+  const vPrice = baseMarket && selectedVariant?.price != null ? Number(selectedVariant.price) : null;
+  const vSale = baseMarket && selectedVariant?.salePrice != null ? Number(selectedVariant.salePrice) : null;
+  const variantOnSale = vPrice != null && vSale != null && vSale > 0 && vSale < vPrice;
+  const displayPrice = vPrice != null ? (variantOnSale ? (vSale as number) : vPrice) : (product.salePrice || product.basePrice);
+  const comparePrice = vPrice != null ? (variantOnSale ? vPrice : null) : (product.salePrice ? product.basePrice : null);
+  const discount = comparePrice ? getDiscountPercent(comparePrice, displayPrice) : 0;
+
+  // What the shopper has picked, carried into the quote / WhatsApp message.
+  const chosenOptions = variantLabel({ size: selectedSize, color: selectedColor });
+  const quoteProduct = useMemo(() => ({
+    id: product.id, name: product.name, options: chosenOptions || undefined,
+  }), [product.id, product.name, chosenOptions]);
+  const waHref = whatsAppHref(leadSettings, quoteProduct, quoteAnswers);
 
   /**
    * Handicraft facts — material/style/room/finish/dimensions — as labeled
@@ -309,7 +324,11 @@ export default function ProductDetailClient({ product }: Props) {
 
   const handleAddToCart = async () => {
     if (uniqueSizes.length > 0 && !selectedSize) {
-      toast.error('Please select a size');
+      toast.error(`Please choose a ${SIZE_LABEL.toLowerCase()}`);
+      return;
+    }
+    if (uniqueColors.length > 0 && !selectedColor) {
+      toast.error(`Please choose a ${FINISH_LABEL.toLowerCase()}`);
       return;
     }
     await addToCart(product.id, selectedVariant?.id);
@@ -523,7 +542,7 @@ export default function ProductDetailClient({ product }: Props) {
                               transition: 'color 0.2s, border-color 0.2s',
                             }}
                           >
-                            {group.color ?? 'All colours'}
+                            {group.color ?? 'All finishes'}
                           </Typography>
                         )}
                         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -586,10 +605,10 @@ export default function ProductDetailClient({ product }: Props) {
                 <Typography variant="h4" sx={{ fontWeight: 800, color: '#3B2314' }}>
                   {formatPrice(displayPrice, currencySymbol)}
                 </Typography>
-                {product.salePrice && (
+                {comparePrice && (
                   <>
                     <Typography variant="h6" sx={{ textDecoration: 'line-through', color: 'text.secondary', fontWeight: 400 }}>
-                      {formatPrice(product.basePrice, currencySymbol)}
+                      {formatPrice(comparePrice, currencySymbol)}
                     </Typography>
                     <Chip label={`Save ${discount}%`} size="small" sx={{ bgcolor: '#7E5029', color: 'white', fontWeight: 700 }} />
                   </>
@@ -642,7 +661,7 @@ export default function ProductDetailClient({ product }: Props) {
               {uniqueColors.length > 0 && (
                 <Box sx={{ mb: 2.5 }}>
                   <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5 }}>
-                    Finish: <span style={{ fontWeight: 400, color: '#666' }}>{selectedColor || 'Select'}</span>
+                    {FINISH_LABEL}: <span style={{ fontWeight: 400, color: '#666' }}>{selectedColor || 'Select'}</span>
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                     {uniqueColors.map((color) => {
@@ -671,13 +690,13 @@ export default function ProductDetailClient({ product }: Props) {
               {/* Sizes */}
               {uniqueSizes.length > 0 && (
                 <Box sx={{ mb: 3 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 1, flexWrap: 'wrap', mb: 1.5 }}>
                     <Typography variant="subtitle2" fontWeight={700}>
-                      Size: <span style={{ fontWeight: 400, color: '#666' }}>{selectedSize || 'Select'}</span>
+                      {SIZE_LABEL}: <span style={{ fontWeight: 400, color: '#666' }}>{selectedSize || 'Select'}</span>
                     </Typography>
-                    <Button size="small" sx={{ p: 0, color: '#888', fontSize: '0.75rem' }}>
-                      Size Guide
-                    </Button>
+                    {selectedSize && alternateUnits(selectedSize) && (
+                      <Typography variant="caption" sx={{ color: '#888' }}>{alternateUnits(selectedSize)}</Typography>
+                    )}
                   </Box>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                     {uniqueSizes.map((size) => {
@@ -714,7 +733,7 @@ export default function ProductDetailClient({ product }: Props) {
                     color: '#c0392b', letterSpacing: '0.02em',
                   }}
                 >
-                  Only {lowStockLeft} left{selectedSize ? ` in size ${selectedSize}` : ''}
+                  Only {lowStockLeft} left{chosenOptions ? ` (${chosenOptions.replace('Size: ', '').replace(' · Finish: ', ', ')})` : ''}
                 </Typography>
               )}
 

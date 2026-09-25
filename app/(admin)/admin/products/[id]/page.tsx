@@ -16,6 +16,10 @@ import { GENDERS } from '../../../../../constants';
 import { toast } from 'react-hot-toast';
 import ProductCountriesSection, { type CountryDraft, loadCountryDraftsForCreate, loadCountryDraftsForProduct, validateCountryDrafts, toCountriesPayload } from '../../../../../components/admin/ProductCountriesSection';
 import SortableImageGrid, { type SortableImage } from '../../../../../components/admin/SortableImageGrid';
+import SizeDimensionPicker from '../../../../../components/admin/SizeDimensionPicker';
+import VariantBulkDialog, { type BulkVariant } from '../../../../../components/admin/VariantBulkDialog';
+import { familyForCategory, alternateUnits, sortSizes, normaliseSizeLabel, MAX_SIZE_LABEL, FINISH_SUGGESTIONS, type SizeFamily } from '../../../../../lib/handicraftSize';
+import { SIZE_LABEL, FINISH_LABEL } from '../../../../../lib/variantLabel';
 
 const schema = Yup.object({
   name: Yup.string().required('Product name required'),
@@ -28,7 +32,7 @@ const schema = Yup.object({
   * already hidden from customers, since zero-stock sizes are not listed. */
 const DEFAULT_VARIANT_STOCK = 2;
 
-const emptyVariantForm = () => ({ color: '', colorHex: '', size: '', stockQuantity: DEFAULT_VARIANT_STOCK, price: '', isActive: true });
+const emptyVariantForm = () => ({ color: '', size: '', sku: '', stockQuantity: DEFAULT_VARIANT_STOCK, price: '', isActive: true });
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -38,6 +42,11 @@ export default function EditProductPage() {
   const [product, setProduct] = useState<any>(null);
   const [loadError, setLoadError] = useState('');
   const [categories, setCategories] = useState<any[]>([]);
+  const [family, setFamily] = useState<SizeFamily>('custom');
+  const [familyTouched, setFamilyTouched] = useState(false);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  // Preset family follows the product's category until the admin picks one by hand.
   // Phase 2 handicraft taxonomy — admin lists include inactive rows, so a
   // product already pointed at one keeps showing it while it's edited.
   const [materials, setMaterials] = useState<any[]>([]);
@@ -94,6 +103,14 @@ export default function EditProductPage() {
       .then(({ drafts, legacy }) => { setCountryDrafts(drafts); setCountriesLegacy(legacy); })
       .catch(() => setCountryDrafts([]));
   }, [id]);
+
+  useEffect(() => {
+    if (familyTouched || !product) return;
+    const cat = categories.find(c => c.id === product.categoryId) || product.category;
+    if (!cat) return;
+    const parent = categories.find(c => c.id === cat.parentId);
+    setFamily(familyForCategory(cat.name, cat.slug, parent?.name, parent?.slug));
+  }, [product, categories, familyTouched]);
 
   const reloadVariants = async () => {
     try {
@@ -284,8 +301,8 @@ export default function EditProductPage() {
     if (mode === 'edit' && v) {
       setVariantForm({
         color: v.color || '',
-        colorHex: v.colorHex || '#000000',
         size: v.size || '',
+        sku: v.sku || '',
         stockQuantity: v.stockQuantity ?? 0,
         price: v.price != null ? String(v.price) : '',
         isActive: v.isActive ?? true,
@@ -297,13 +314,16 @@ export default function EditProductPage() {
   };
 
   const saveVariant = async () => {
+    const size = normaliseSizeLabel(variantForm.size);
+    if (size.length > MAX_SIZE_LABEL) { toast.error(`Size / Dimensions is too long (max ${MAX_SIZE_LABEL} characters)`); return; }
+    const payload = { ...variantForm, size, color: variantForm.color.trim(), sku: variantForm.sku.trim() || undefined };
     setVariantSaving(true);
     try {
       if (variantDialog.mode === 'add') {
-        await variantApi.create(id, variantForm);
+        await variantApi.create(id, payload);
         toast.success('Variant added');
       } else {
-        await variantApi.update(id, variantDialog.data.id, variantForm);
+        await variantApi.update(id, variantDialog.data.id, { ...payload, sku: variantForm.sku.trim() });
         toast.success('Variant updated');
       }
       setVariantDialog({ open: false, mode: 'add' });
@@ -313,6 +333,16 @@ export default function EditProductPage() {
     } finally {
       setVariantSaving(false);
     }
+  };
+
+  const bulkCreate = async (items: BulkVariant[]) => {
+    let ok = 0;
+    for (const it of items) {
+      try { await variantApi.create(id, { ...it, isActive: true }); ok++; }
+      catch (err: any) { toast.error(`${it.size}${it.color ? ' / ' + it.color : ''}: ${err.response?.data?.message || 'failed'}`); }
+    }
+    if (ok) toast.success(`Created ${ok} variant${ok === 1 ? '' : 's'}`);
+    await reloadVariants();
   };
 
   const confirmDeleteVariant = async () => {
@@ -537,8 +567,8 @@ export default function EditProductPage() {
                     }
                     helperText={
                       variantColorNames.length
-                        ? 'Drag to reorder — image 1 is the cover. Tag a photo with a colour to show it when that colour is picked; leave it on "All colours" and it shows for every colour that has no photos of its own.'
-                        : 'Drag to reorder — image 1 is the cover. Add colour variants below to tag photos per colour.'
+                        ? 'Drag to reorder — image 1 is the cover. Tag a photo with a finish to show it when that finish is picked; leave it on "All finishes" and it shows for every finish that has no photos of its own.'
+                        : 'Drag to reorder — image 1 is the cover. Add finish variants below to tag photos per finish.'
                     }
                   />
                 </CardContent>
@@ -549,24 +579,29 @@ export default function EditProductPage() {
                 <CardContent sx={{ p: 3 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                     <Box>
-                      <Typography variant="subtitle2" fontWeight={700}>Variants</Typography>
+                      <Typography variant="subtitle2" fontWeight={700}>Variants ({SIZE_LABEL} &amp; {FINISH_LABEL})</Typography>
                       <Typography variant="caption" color="text.secondary">
                         Only active variants are shown to customers
                       </Typography>
                     </Box>
-                    <Button size="small" variant="outlined" startIcon={<Add />}
-                      onClick={() => openVariantDialog('add')}
-                      sx={{ borderRadius: 1.5 }}>
-                      Add Variant
-                    </Button>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button size="small" variant="outlined" onClick={() => setBulkOpen(true)} sx={{ borderRadius: 1.5 }}>
+                        Bulk add
+                      </Button>
+                      <Button size="small" variant="outlined" startIcon={<Add />}
+                        onClick={() => openVariantDialog('add')}
+                        sx={{ borderRadius: 1.5 }}>
+                        Add Variant
+                      </Button>
+                    </Box>
                   </Box>
 
                   <Box sx={{ overflowX: 'auto' }}>
                     <Table size="small">
                       <TableHead>
                         <TableRow sx={{ '& th': { fontWeight: 700, fontSize: '0.72rem', color: 'text.secondary', py: 1 } }}>
-                          <TableCell>Color</TableCell>
-                          <TableCell>Size</TableCell>
+                          <TableCell>{FINISH_LABEL}</TableCell>
+                          <TableCell>{SIZE_LABEL}</TableCell>
                           <TableCell align="right">Stock</TableCell>
                           <TableCell align="right">Price</TableCell>
                           <TableCell align="center">Visible</TableCell>
@@ -577,14 +612,19 @@ export default function EditProductPage() {
                         {variants.map((v: any) => (
                           <TableRow key={v.id} sx={{ '&:last-child td': { borderBottom: 0 } }}>
                             <TableCell>
-                              {/* The name is the colour. Nothing renders a
+                              {/* The name is the finish. Nothing renders a
                                   swatch any more, here or on the storefront. */}
                               <Typography variant="caption" sx={{ textTransform: 'capitalize' }}>
                                 {v.color || '—'}
                               </Typography>
                             </TableCell>
                             <TableCell>
-                              <Typography variant="caption">{v.size || '—'}</Typography>
+                              <Typography variant="caption" sx={{ fontWeight: 600 }}>{v.size || '—'}</Typography>
+                              {alternateUnits(v.size) && (
+                                <Typography variant="caption" color="text.secondary" display="block" sx={{ fontSize: '0.65rem' }}>
+                                  {alternateUnits(v.size)}
+                                </Typography>
+                              )}
                             </TableCell>
                             <TableCell align="right">
                               <Typography variant="caption"
@@ -615,7 +655,7 @@ export default function EditProductPage() {
                           <TableRow>
                             <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
                               <Typography variant="caption" color="text.secondary">
-                                No variants yet. Add color &amp; size combinations.
+                                No variants yet. Add size and finish combinations, or use Bulk add.
                               </Typography>
                             </TableCell>
                           </TableRow>
@@ -847,7 +887,7 @@ export default function EditProductPage() {
       <Dialog
         open={variantDialog.open}
         onClose={() => !variantSaving && setVariantDialog({ open: false, mode: 'add' })}
-        maxWidth="xs"
+        maxWidth="sm"
         fullWidth
       >
         <DialogTitle sx={{ fontWeight: 700, pb: 1 }}>
@@ -856,25 +896,41 @@ export default function EditProductPage() {
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 0.25 }}>
             <Grid item xs={12}>
-              {/* One field, not two. This slot used to hold a hex picker beside
-                  the name; when the picker went, its Grid cell was refilled
-                  with a second copy of the name field bound to the same state,
-                  so the dialog showed the colour twice. */}
               <TextField
-                label="Colour Name" size="small" fullWidth
+                label={FINISH_LABEL} size="small" fullWidth
                 value={variantForm.color}
                 onChange={e => setVariantForm(prev => ({ ...prev, color: e.target.value }))}
-                placeholder="e.g. Black, Off White, Sage Green"
-                helperText="Shown to customers exactly as typed."
+                placeholder="e.g. Natural, Walnut, Honey, Antique Teak"
+                helperText="Shown to customers exactly as typed. Leave blank if there is only one finish."
               />
+              <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.75 }}>
+                {FINISH_SUGGESTIONS.map(f => (
+                  <Chip key={f} size="small" label={f} variant={variantForm.color === f ? 'filled' : 'outlined'}
+                    onClick={() => setVariantForm(prev => ({ ...prev, color: f }))}
+                    sx={{ fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer' }} />
+                ))}
+              </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <TextField
-                label="Size" size="small" fullWidth
+                label={SIZE_LABEL} size="small" fullWidth
                 value={variantForm.size}
                 onChange={e => setVariantForm(prev => ({ ...prev, size: e.target.value }))}
-                placeholder="e.g. S, M, L, XL"
+                placeholder="e.g. Queen (5×6.5 ft), 4-Seater, 60 × 40 × 75 cm"
+                helperText={alternateUnits(variantForm.size) || 'Pick a preset or build the dimensions below.'}
               />
+              <Button size="small" onClick={() => setPickerOpen(o => !o)} sx={{ mt: 0.5, px: 0 }}>
+                {pickerOpen ? 'Hide presets & dimension builder' : 'Presets & dimension builder'}
+              </Button>
+              {pickerOpen && (
+                <Box sx={{ mt: 1, p: 1.5, bgcolor: '#FFFCF5', borderRadius: 1, border: '1px solid #EFE3D0' }}>
+                  <SizeDimensionPicker
+                    compact family={family}
+                    onFamilyChange={f => { setFamily(f); setFamilyTouched(true); }}
+                    onPick={labels => { setVariantForm(prev => ({ ...prev, size: labels[0] || prev.size })); }}
+                  />
+                </Box>
+              )}
             </Grid>
             <Grid item xs={6}>
               <TextField
@@ -882,6 +938,13 @@ export default function EditProductPage() {
                 value={variantForm.stockQuantity}
                 onChange={e => setVariantForm(prev => ({ ...prev, stockQuantity: Number(e.target.value) }))}
                 inputProps={{ min: 0 }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="SKU (optional)" size="small" fullWidth value={variantForm.sku}
+                onChange={e => setVariantForm(prev => ({ ...prev, sku: e.target.value }))}
+                helperText="Unique across the catalogue, e.g. WV-BED-001-QUEEN-WALNUT"
               />
             </Grid>
             <Grid item xs={12}>
@@ -918,6 +981,12 @@ export default function EditProductPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <VariantBulkDialog
+        open={bulkOpen} onClose={() => setBulkOpen(false)} family={family}
+        onFamilyChange={f => { setFamily(f); setFamilyTouched(true); }}
+        existing={variants} onCreate={bulkCreate}
+      />
 
       {/* Delete Variant Confirmation */}
       <Dialog open={!!deleteVariantId} onClose={() => setDeleteVariantId(null)} maxWidth="xs">

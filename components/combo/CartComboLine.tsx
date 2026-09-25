@@ -8,6 +8,7 @@ import { useCountry } from '../../contexts/CountryContext';
 import { withCountry } from '../../lib/withCountry';
 import { formatPrice } from '../../utils/format';
 import type { CartCombo } from '../../types';
+import { variantShort } from '../../lib/variantLabel';
 
 /**
  * A combo bundle in the cart (decision 0037). It is ONE atomic line: the items
@@ -46,7 +47,7 @@ export default function CartComboLine({ line, compact = false, onNavigate }: { l
         <Box component="ul" sx={{ m: 0, mt: 0.5, pl: 2, color: 'text.secondary', fontSize: '0.78rem', lineHeight: 1.5 }}>
           {c.items.map((it) => (
             <li key={`${it.productId}-${it.variantId ?? ''}`}>
-              {it.quantity} × {it.name}{it.size || it.color ? ` (${[it.size, it.color].filter(Boolean).join(' / ')})` : ''}
+              {it.quantity} × {it.name}{it.size || it.color ? ` (${variantShort(it)})` : ''}
             </li>
           ))}
         </Box>

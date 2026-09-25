@@ -32,7 +32,6 @@ export default function ShopPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [page, setPage] = useState(1);
 
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<number[]>(PRICE_RANGE); // committed value only
   const [sortBy, setSortBy] = useState('featured');
@@ -72,7 +71,6 @@ export default function ShopPage() {
         country: country || undefined,
       };
 
-      if (selectedSizes.length) params.sizes = selectedSizes.join(',');
       if (selectedColors.length) params.colors = selectedColors.join(',');
       if (priceRange[0] > 0) params.minPrice = priceRange[0];
       if (priceRange[1] < PRICE_RANGE[1]) params.maxPrice = priceRange[1];
@@ -89,14 +87,9 @@ export default function ShopPage() {
       setFetching(false);
       setInitialLoading(false);
     }
-  }, [page, sortBy, selectedSizes, selectedColors, priceRange, selectedMaterial, selectedStyle, selectedRoom, searchParams, gender, country]);
+  }, [page, sortBy, selectedColors, priceRange, selectedMaterial, selectedStyle, selectedRoom, searchParams, gender, country]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
-
-  const toggleSize = (size: string) => {
-    setSelectedSizes(prev => prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]);
-    setPage(1);
-  };
 
   const toggleColor = (color: string) => {
     setSelectedColors(prev => prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]);
@@ -120,7 +113,6 @@ export default function ShopPage() {
   };
 
   const clearFilters = () => {
-    setSelectedSizes([]);
     setSelectedColors([]);
     setPriceRange(PRICE_RANGE);
     setSortBy('newest');
@@ -133,15 +125,15 @@ export default function ShopPage() {
   // Only called when slider thumb is released — not on every drag tick
   const handlePriceCommit = (v: number[]) => { setPriceRange(v); setPage(1); };
 
-  const activeFilterCount = selectedSizes.length + selectedColors.length +
+  const activeFilterCount = selectedColors.length +
     (priceRange[0] > 0 || priceRange[1] < PRICE_RANGE[1] ? 1 : 0) +
     (selectedMaterial ? 1 : 0) + (selectedStyle ? 1 : 0) + (selectedRoom ? 1 : 0);
 
   const filterProps: FilterPanelProps = {
-    isMobile, priceRange, selectedSizes, selectedColors,
+    isMobile, priceRange, selectedColors,
     materials, styles, rooms, selectedMaterial, selectedStyle, selectedRoom,
     activeFilterCount, onPriceCommit: handlePriceCommit,
-    onToggleSize: toggleSize, onToggleColor: toggleColor,
+    onToggleColor: toggleColor,
     onSelectMaterial: selectMaterial, onSelectStyle: selectStyle, onSelectRoom: selectRoom,
     onClear: clearFilters,
   };
@@ -197,9 +189,6 @@ export default function ShopPage() {
         {/* Active filter chips */}
         {activeFilterCount > 0 && (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-            {selectedSizes.map(s => (
-              <Chip key={s} label={s} size="small" onDelete={() => toggleSize(s)} sx={{ bgcolor: '#3B2314', color: 'white' }} />
-            ))}
             {selectedColors.map(c => (
               <Chip key={c} label={c} size="small" onDelete={() => toggleColor(c)} sx={{ bgcolor: '#3B2314', color: 'white' }} />
             ))}

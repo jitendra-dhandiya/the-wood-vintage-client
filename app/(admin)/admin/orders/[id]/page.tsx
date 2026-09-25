@@ -172,11 +172,11 @@ export default function OrderDetailAdminPage() {
                           is only a fallback for orders placed before that. */}
                       <Stack direction="row" spacing={0.5} sx={{ mt: 0.5, flexWrap: 'wrap', gap: 0.5 }}>
                         {(item.size || item.variant?.size) && (
-                          <Chip size="small" label={`Size ${item.size || item.variant?.size}`}
+                          <Chip size="small" label={`Size: ${item.size || item.variant?.size}`}
                             sx={{ height: 20, fontSize: '0.65rem', fontWeight: 700 }} />
                         )}
                         {(item.color || item.variant?.color) && (
-                          <Chip size="small" variant="outlined" label={item.color || item.variant?.color}
+                          <Chip size="small" variant="outlined" label={`Finish: ${item.color || item.variant?.color}`}
                             sx={{ height: 20, fontSize: '0.65rem' }} />
                         )}
                         {(item.sku || item.variant?.sku) && (

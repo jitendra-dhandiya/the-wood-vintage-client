@@ -42,7 +42,7 @@ interface Props {
 }
 
 /** Shown for an image that belongs to no particular colour. */
-const DEFAULT_LABEL = 'All colours';
+const DEFAULT_LABEL = 'All finishes';
 
 const TILE_W = 96;
 const TILE_H = 128;
@@ -146,7 +146,7 @@ function SortableTile({ image, index, onRemove, colorOptions, color, onColorChan
         <>
           <Box
             onClick={(e) => setMenuAnchor(e.currentTarget)}
-            title={color ? `Shown when "${color}" is selected` : 'Shown when the chosen colour has no images of its own'}
+            title={color ? `Shown when "${color}" is selected` : 'Shown when the chosen finish has no images of its own'}
             sx={{
               mt: 0.5, px: 0.5, py: 0.25,
               display: 'flex', alignItems: 'center', gap: 0.25,
